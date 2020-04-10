@@ -34,7 +34,7 @@ FieldDescriptor::Type FieldDescriptor::type() {
   return type_;
 }
 
-std::weak_ptr<MessageDescriptor> FieldDescriptor::type_message() {
+std::weak_ptr<MessageDescriptor> FieldDescriptor::TypeMessage() {
   if (IsScalar()) {
     throw FieldIsScalarException(shared_from_this());
   }

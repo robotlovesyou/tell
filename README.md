@@ -2,10 +2,10 @@
 
 ## Included Open Source Libraries.
 
-To simplify building a number of dependencies are included as header only, meaning their source is integrated with this project.
+To simplify building the project a number of dependencies are included as header only, meaning their source is integrated with this project.
 
 Those libraries are:
-1. Catch2 Testing Framework. The header file and license are included as catch.hpp and LICENSE.txt in the tests directory. See https://github.com/catchorg/Catch2
+1. Catch2 Testing Framework. The header file and license are included as catch.hpp and LICENSE.txt in the include/thirdparty/catch2 directory. See https://github.com/catchorg/Catch2
 2. {fmt} string formatting library. The header and source files are included in the include/thirdparty/fmt directory. See https://fmt.dev/6.2.0/index.html
 
 ### Types

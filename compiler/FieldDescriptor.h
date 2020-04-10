@@ -12,8 +12,11 @@
 
 class MessageDescriptor;
 
- class FieldDescriptor: public std::enable_shared_from_this<FieldDescriptor> {
+class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
  public:
+  /**
+   * Type is used to describe the type of the field.
+   */
   enum Type {
     TYPE_FLOAT = 1,
     TYPE_INT = 2,
@@ -23,22 +26,29 @@ class MessageDescriptor;
     TYPE_MESSAGE = 6
   };
 
- class FieldIsScalarException: public std::exception {
-  public:
-   explicit FieldIsScalarException(std::shared_ptr<FieldDescriptor> fd);
-   const char* what();
-  private:
-   std::shared_ptr<FieldDescriptor> fd_;
- };
+  /**
+   * FieldIsScalarException is thrown if any field method requiring the field to be a message type is accessed
+   */
+  class FieldIsScalarException : public std::exception {
+   public:
+    explicit FieldIsScalarException(std::shared_ptr<FieldDescriptor> fd);
+    const char *what();
+   private:
+    std::shared_ptr<FieldDescriptor> fd_;
+  };
+
 
   FieldDescriptor(Type t, std::string name, std::string doc, const std::shared_ptr<MessageDescriptor> &message);
-  FieldDescriptor(std::string name, std::string doc, const std::shared_ptr<MessageDescriptor> &message, const std::shared_ptr<MessageDescriptor> &type_message);
+  FieldDescriptor(std::string name,
+                  std::string doc,
+                  const std::shared_ptr<MessageDescriptor> &message,
+                  const std::shared_ptr<MessageDescriptor> &type_message);
   bool IsScalar();
   std::string name();
   std::string doc();
   std::weak_ptr<MessageDescriptor> message();
   Type type();
-  std::weak_ptr<MessageDescriptor> type_message();
+  std::weak_ptr<MessageDescriptor> TypeMessage();
 
  private:
   Type type_;

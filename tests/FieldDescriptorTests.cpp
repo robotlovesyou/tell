@@ -1,6 +1,5 @@
-#include "catch.hpp"
+#include "catch2/catch.hpp"
 #include <memory>
-#include <optional>
 #include "../compiler/FieldDescriptor.h"
 #include "../compiler/MessageDescriptor.h"
 
@@ -51,17 +50,21 @@ TEST_CASE("FieldDescriptor.type", "[FieldDescriptor]") {
   CHECK(fd->type() == FieldDescriptor::TYPE_INT);
 }
 
-TEST_CASE("FieldDescriptor.type_message", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.TypeMessage", "[FieldDescriptor]") {
   SECTION("Scalar field") {
-    auto fd = test_field(FieldDescriptor::TYPE_BOOL);
-    CHECK_THROWS_AS(fd->type_message(), FieldDescriptor::FieldIsScalarException);
+    auto fd = test_field(FieldDescriptor::TYPE_FLOAT);
+    CHECK_THROWS_AS(fd->TypeMessage(), FieldDescriptor::FieldIsScalarException);
   }
   SECTION("Message field") {
     auto md = test_message();
     auto type_md = test_message();
     auto fd = test_message_field("field_name", "", md, type_md);
-    CHECK(fd->type_message().lock().get() == type_md.get());
+    CHECK(fd->TypeMessage().lock().get() == type_md.get());
   }
+}
+
+TEST_CASE("FieldDescriptor.optional", "[FieldDescriptor]") {
+  CHECK(false);
 }
 
 
