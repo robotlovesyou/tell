@@ -1,0 +1,46 @@
+/// This is a doc comment for the package
+package example
+
+import "imports/imported"
+
+go_package "github.com/robotlovesyou/tell/example"
+scala_package "tell.example"
+
+// This is a standard comment. It will be ignored for all output
+
+/// This is a doc comment for address
+/// It must come directly before the address message.
+/// Doc comments start with a triple slash "///" and continue to the end of the line
+message Address {
+    /// This is a doc comment for the street field
+    street: string
+    number: int
+
+    /// This is a doc comment for the care_of field. The ? suffix marks it as an optional type
+    care_of: string?
+    post_code: string
+    city: string
+    state: string
+    country: string
+};
+
+/// This is a doc comment for user
+message User {
+    username: string
+    first_name: string
+    last_name: string
+    addresses: list[Address]
+    nicknames: list[example.imported.Alias]
+    created_at: time
+    updated_at: time
+    version: string
+}
+
+message UserForUsernameQuery {
+    username: string
+}
+
+service identity {
+    show user_for_username(UserForUsernameQuery): User
+    tell update_user(User): User
+}

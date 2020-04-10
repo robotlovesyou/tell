@@ -1,0 +1,7 @@
+syntax = "proto2";
+package example.imported;
+
+// An alias is a nickname.
+message Alias{
+  required string val = 1;
+}

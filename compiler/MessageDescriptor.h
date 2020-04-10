@@ -1,0 +1,12 @@
+//
+// Created by ANDREW SMITH on 10/04/2020.
+//
+
+#ifndef TELL_COMPILER_MESSAGEDESCRIPTOR_H_
+#define TELL_COMPILER_MESSAGEDESCRIPTOR_H_
+
+class MessageDescriptor {
+
+};
+
+#endif //TELL_COMPILER_MESSAGEDESCRIPTOR_H_
