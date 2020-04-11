@@ -10,8 +10,14 @@
 #include <optional>
 #include <string>
 
+/**
+ * Forward declaration of MessageDescriptor. See MessageDescriptor.h/MessageDescriptor.cpp for implementation.
+ */
 class MessageDescriptor;
 
+/**
+ * FieldDescriptor describes a single field of a MessageDescriptor
+ */
 class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
  public:
   /**
@@ -31,6 +37,10 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
    */
   class FieldIsScalarException : public std::exception {
    public:
+    /**
+     * Constructor
+     * @param fd The field throwing the exception
+     */
     explicit FieldIsScalarException(std::shared_ptr<FieldDescriptor> fd);
     const char *what();
    private:
@@ -38,22 +48,71 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
   };
 
 
-  FieldDescriptor(Type t, std::string name, std::string doc, const std::shared_ptr<MessageDescriptor> &message);
-  FieldDescriptor(std::string name,
-                  std::string doc,
-                  const std::shared_ptr<MessageDescriptor> &message,
-                  const std::shared_ptr<MessageDescriptor> &type_message);
+  /**
+   * Scalar field constructor
+   * @param t Type of the field.
+   * @param optional Whether the field is optional
+   * @param name Name of the field
+   * @param doc Docstring for the field
+   * @param message Containing message
+   */
+  FieldDescriptor(Type t, bool optional, std::string name, std::string doc, const std::shared_ptr<MessageDescriptor> &message);
+
+  /**
+   * Is this a scalar or message type field?
+   * @return false if the type is TYPE_MESSAGE, otherwise true
+   */
   bool IsScalar();
-  std::string name();
-  std::string doc();
-  std::weak_ptr<MessageDescriptor> message();
-  Type type();
+
+  /**
+   * If the field is a TYPE_MESSAGE then returns the MessageDescriptor for the field.
+   * If the field is a scalar type throws a FieldIsScalar exception.
+   * @return
+   */
   std::weak_ptr<MessageDescriptor> TypeMessage();
+
+  /**
+   * Set the MessageType of this field.
+   * If the field is not a TYPE_MESSAGE it throws a FieldIsScalar exception.
+   * @param message
+   */
+  void SetTypeMessage(const std::shared_ptr<MessageDescriptor> &message);
+
+  /**
+   * Accessor for the name property
+   * @return
+   */
+  std::string name();
+
+  /**
+   * Accessor for the doc property
+   * @return
+   */
+  std::string doc();
+
+  /**
+   * Accessor for the optional property
+   * @return
+   */
+  bool optional ();
+
+  /**
+   * Accessor for the message property
+   * @return
+   */
+  std::weak_ptr<MessageDescriptor> message();
+
+  /**
+   * Accessor for the type property
+   * @return
+   */
+  Type type();
 
  private:
   Type type_;
   std::string name_;
   std::string doc_;
+  bool optional_;
   std::weak_ptr<MessageDescriptor> message_;
   std::optional<std::weak_ptr<MessageDescriptor>> type_message_;
 

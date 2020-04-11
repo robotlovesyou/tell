@@ -8,6 +8,8 @@ Those libraries are:
 1. Catch2 Testing Framework. The header file and license are included as catch.hpp and LICENSE.txt in the include/thirdparty/catch2 directory. See https://github.com/catchorg/Catch2
 2. {fmt} string formatting library. The header and source files are included in the include/thirdparty/fmt directory. See https://fmt.dev/6.2.0/index.html
 
+## Til Interface Language
+
 ### Types
 
 The types supported by tell are:
@@ -51,11 +53,23 @@ message MyParentMessage {
     child: ChildMessage?
 }
 ```
+
 In the example above the `nickname` field in both the MyChildMessage and MyParentMessage is marked as optional. 
-Additonally the child field in the MyParentMessage is also marked as optional.
+Additionally the child field in the MyParentMessage is marked as optional.
 
 In host languages which support optional types such as Typescript, Kotlin, Rust or Scala, the appropriate optional type should be used. 
 In host languages which do not support optional types pointer or nullable representations should be used. For example in Go a string? in tell would map to a *string
+
+## Further Work
+
+The status of til/tell is entirely experimental. It is not ready for production use.
+
+Further work could include:
+- Imports: The current implementation skips the import of packages for the sake of simplicity. A real world implementation would certainly require this.
+- Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation. 
+- Enums: Very useful for describing things such as error codes in a single location.
+- Streams: Streams could be implemented using websockets, which are widely supported.
+- Editor plugins: Code highlighting can make development less error prone and faster. 
 
 
 1. Create the types to describe the parsed .til file. Ensure they can be serialized as json
