@@ -5,7 +5,7 @@ std::shared_ptr<MessageDescriptor> test_message(std::string name = "message", st
   return std::make_shared<MessageDescriptor>(name, doc);
 }
 
-std::shared_ptr<FieldDescriptor> add_test_field(std::shared_ptr<MessageDescriptor> md = test_message(), FieldDescriptor::Type t = FieldDescriptor::TYPE_STRING, bool optional = false, std::string name = "field_name", std::string doc = "field doc string") {
+std::shared_ptr<FieldDescriptor> add_test_field(const std::shared_ptr<MessageDescriptor> &md = test_message(), FieldDescriptor::Type t = FieldDescriptor::TYPE_STRING, bool optional = false, std::string name = "field_name", std::string doc = "field doc string") {
   return md->AddField(t, optional, name, doc);
 }
 
@@ -40,6 +40,11 @@ TEST_CASE("MessageDescriptor.AddField", "[MessageDescriptor]") {
     auto md = test_message();
     auto fd = add_test_field(md);
     CHECK(fd->message().lock().get() == md.get());
+  }
+  SECTION("Throws on clashing name") {
+    auto md = test_message();
+    add_test_field(md, FieldDescriptor::TYPE_BOOL, false, "clashes");
+    CHECK_THROWS_AS(add_test_field(md, FieldDescriptor::TYPE_BOOL, false, "clashes"), MessageDescriptor::FieldAlreadyExistsException);
   }
 }
 

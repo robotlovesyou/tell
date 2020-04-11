@@ -1,10 +1,5 @@
-/// This is a doc comment for the package
-package example
-
-import "imports/imported"
-
-go_package "github.com/robotlovesyou/tell/example"
-scala_package "tell.example"
+!go_package "github.com/robotlovesyou/tell/example"
+!scala_package "tell.example"
 
 // This is a standard comment. It will be ignored for all output
 
