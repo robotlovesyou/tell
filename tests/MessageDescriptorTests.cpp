@@ -35,6 +35,8 @@ TEST_CASE("MessageDescriptor.AddField", "[MessageDescriptor]") {
 
     auto fd = add_test_field(md);
     CHECK(md->FieldCount() == 1);
+    auto fd2 = add_test_field(md, FieldDescriptor::TYPE_BOOL, false, "other_name");
+    CHECK(md->FieldCount() == 2);
   }
   SECTION("Sets parent refs") {
     auto md = test_message();

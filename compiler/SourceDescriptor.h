@@ -36,9 +36,9 @@ class SourceDescriptor {
   bool HasDirective(const std::string &key);
   std::string Directive(const std::string &key);
 
-  std::shared_ptr<MessageDescriptor> AddMessage(std::string name, std::string doc);
+  std::shared_ptr<MessageDescriptor> AddMessage(const std::string &name, const std::string& doc);
   int MessageCount();
-  std::shared_ptr<MessageDescriptor> Message(int);
+  std::shared_ptr<MessageDescriptor> Message(int idx);
   std::shared_ptr<MessageDescriptor> MessageByName(const std::string &name);
 
 
