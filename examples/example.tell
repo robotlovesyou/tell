@@ -17,7 +17,7 @@ message Address {
     city: string
     state: string
     country: string
-};
+}
 
 /// This is a doc comment for user
 message User {
@@ -36,6 +36,6 @@ message UserForUsernameQuery {
 }
 
 service identity {
-    show user_for_username(UserForUsernameQuery): User
-    tell update_user(User): User
+    call user_for_username(UserForUsernameQuery): User
+    call update_user(User): User
 }

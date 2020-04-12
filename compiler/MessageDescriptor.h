@@ -77,7 +77,7 @@ class MessageDescriptor : public std::enable_shared_from_this<MessageDescriptor>
   std::string name_;
   std::string doc_;
   std::vector<std::shared_ptr<FieldDescriptor>> fields_;
-  std::map<std::string, int>fields_by_name_{}; // initialize here. not set up by constructor
+  std::map<std::string, int> fields_by_name_{}; // initialize here. not set up by constructor
 };
 
 #endif //TELL_COMPILER_MESSAGEDESCRIPTOR_H_

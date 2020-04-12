@@ -45,7 +45,7 @@ bool FieldDescriptor::optional() {
 }
 
 void FieldDescriptor::SetTypeMessage(const std::shared_ptr<MessageDescriptor> &message) {
-  if (type_ != TYPE_MESSAGE) {
+  if (type_!=TYPE_MESSAGE) {
     throw FieldIsScalarException(shared_from_this());
   }
   type_message_ = std::optional<std::weak_ptr<MessageDescriptor>>(message);

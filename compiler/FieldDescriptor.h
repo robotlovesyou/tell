@@ -47,7 +47,6 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
     std::shared_ptr<FieldDescriptor> fd_;
   };
 
-
   /**
    * Scalar field constructor
    * @param t Type of the field.
@@ -56,7 +55,11 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
    * @param doc Docstring for the field
    * @param message Containing message
    */
-  FieldDescriptor(Type t, bool optional, std::string name, std::string doc, const std::shared_ptr<MessageDescriptor> &message);
+  FieldDescriptor(Type t,
+                  bool optional,
+                  std::string name,
+                  std::string doc,
+                  const std::shared_ptr<MessageDescriptor> &message);
 
   /**
    * Is this a scalar or message type field?
@@ -94,7 +97,7 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
    * Accessor for the optional property
    * @return
    */
-  bool optional ();
+  bool optional();
 
   /**
    * Accessor for the message property

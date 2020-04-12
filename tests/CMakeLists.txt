@@ -1,2 +1,2 @@
-add_executable(Tests_run TestMain.cpp FieldDescriptorTests.cpp MessageDescriptorTests.cpp SourceDescriptorTests.cpp)
+add_executable(Tests_run TestMain.cpp FieldDescriptorTests.cpp MessageDescriptorTests.cpp SourceDescriptorTests.cpp TokenTests.cpp)
 target_link_libraries(Tests_run tell)
