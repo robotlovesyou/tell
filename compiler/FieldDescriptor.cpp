@@ -5,6 +5,7 @@
 #include "FieldDescriptor.h"
 #include "fmt/core.h"
 
+namespace til {
 FieldDescriptor::FieldDescriptor(FieldDescriptor::Type t,
                                  bool optional,
                                  std::string name,
@@ -58,3 +59,6 @@ const char *FieldDescriptor::FieldIsScalarException::what() {
 FieldDescriptor::FieldIsScalarException::FieldIsScalarException(std::shared_ptr<FieldDescriptor> fd)
     : fd_(std::move(fd)) {
 }
+
+} // namespace til
+

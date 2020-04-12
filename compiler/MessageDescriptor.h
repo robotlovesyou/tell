@@ -6,6 +6,7 @@
 #include <vector>
 #include "FieldDescriptor.h"
 
+namespace til {
 /**
  * Describes a message.
  */
@@ -79,5 +80,7 @@ class MessageDescriptor : public std::enable_shared_from_this<MessageDescriptor>
   std::vector<std::shared_ptr<FieldDescriptor>> fields_;
   std::map<std::string, int> fields_by_name_{}; // initialize here. not set up by constructor
 };
+}
+
 
 #endif //TELL_COMPILER_MESSAGEDESCRIPTOR_H_

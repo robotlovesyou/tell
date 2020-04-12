@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace til {
+
 static const char *kKeywordMessage = "message";
 static const char *kKeywordList = "list";
 static const char *kKeywordService = "service";
@@ -20,25 +22,25 @@ struct Token {
   enum Type {
     // String types
         kString = 1,
-        kDocString = 2,
+    kDocString = 2,
 
     // Identifiers
         kIdent = 3,
 
     // Punctuation marks
         kBang = 4,
-        kColon = 5,
-        kQMark = 6,
-        kLBrace = 7,
-        kRBrace = 8,
-        kLBracket = 9,
-        kRBracket = 10,
+    kColon = 5,
+    kQMark = 6,
+    kLBrace = 7,
+    kRBrace = 8,
+    kLBracket = 9,
+    kRBracket = 10,
 
     // Keywords
         kMessage = 11,
-        kList = 12,
-        kService = 13,
-        kCall = 14,
+    kList = 12,
+    kService = 13,
+    kCall = 14,
     // String Termination
         kLineFeed = 15,
   };
@@ -75,4 +77,5 @@ struct Token {
   std::string Literal();
 };
 
+} // namespace til
 #endif //TELL_COMPILER_TOKEN_H_

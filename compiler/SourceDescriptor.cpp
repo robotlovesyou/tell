@@ -5,6 +5,7 @@
 #include "SourceDescriptor.h"
 #include "fmt/core.h"
 
+namespace til {
 SourceDescriptor::ItemAlreadyExistsException::ItemAlreadyExistsException(std::string name) {
   name_ = std::move(name);
 }
@@ -62,3 +63,5 @@ SourceDescriptor::ItemNotFoundException::ItemNotFoundException(std::string name)
 const char *SourceDescriptor::ItemNotFoundException::what() {
   return fmt::format("Item {} not found", name_).c_str();
 }
+
+} // namespace til

@@ -11,6 +11,7 @@
 
 #include "MessageDescriptor.h"
 
+namespace til {
 class SourceDescriptor {
  public:
 
@@ -46,5 +47,7 @@ class SourceDescriptor {
   std::vector<std::shared_ptr<MessageDescriptor>> messages_;
   std::map<std::string, int> messages_by_name_{}; // always initialize to empty
 };
+
+} // namespace til
 
 #endif //TELL_COMPILER_SOURCEDESCRIPTOR_H_

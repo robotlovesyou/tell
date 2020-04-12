@@ -5,6 +5,8 @@
 #include "Token.h"
 #include "fmt/core.h"
 
+namespace til {
+
 std::string Token::TypeName() {
   switch (t) {
     case kString:return "kString";
@@ -26,7 +28,6 @@ std::string Token::TypeName() {
 }
 std::string Token::Literal() {
   switch (t) {
-
     case kString:return fmt::format("\"{}\"", repr);
     case kDocString:return fmt::format("/// {}", repr);
     case kIdent:
@@ -44,4 +45,6 @@ std::string Token::Literal() {
     case kLineFeed: return "\n";
   }
 }
+
+} // namespace til
 

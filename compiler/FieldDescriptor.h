@@ -10,6 +10,7 @@
 #include <optional>
 #include <string>
 
+namespace til {
 /**
  * Forward declaration of MessageDescriptor. See MessageDescriptor.h/MessageDescriptor.cpp for implementation.
  */
@@ -120,5 +121,6 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
   std::optional<std::weak_ptr<MessageDescriptor>> type_message_;
 
 };
+}
 
 #endif // TELL_FIELDDESCRIPTOR_H
