@@ -11,10 +11,27 @@
 #include "CharCursor.h"
 
 namespace til {
+/**
+ * Cursor over a string source.
+ * Implements the Cursor<char> interface via composition with the owned CharCursor object
+ */
 class StringCursor : public Cursor<char> {
  public:
+  /**
+   * @param source The string for the cursor
+   */
   explicit StringCursor(const std::string& source);
+
+  /**
+   * See Cursor for details
+   * @return
+   */
   std::optional<char>Next() override;
+
+  /**
+   * See Cursor for details
+   * @return
+   */
   std::optional<const char *>Peek() override;
  private:
   std::istringstream stream_;

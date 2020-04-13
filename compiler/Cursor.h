@@ -10,10 +10,23 @@
 
 namespace til {
 
+/**
+ * Interface for cursor classes
+ * @tparam T
+ */
 template <class T>
 class Cursor {
  public:
+  /**
+   * Return the next value if it exists
+   * @return the next value or an empty option
+   */
   virtual std::optional<T>Next() = 0;
+
+  /**
+   * Peek at the next value without consuming it.
+   * @return a const pointer tothe next value or an empty option
+   */
   virtual std::optional<const T*> Peek() = 0;
 };
 

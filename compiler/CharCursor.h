@@ -9,11 +9,30 @@
 #import <istream>
 
 namespace til {
+/**
+ * Base class for iterating over istream sources.
+ * Implements the Cursor<char> interface
+ */
 class CharCursor: public Cursor<char> {
  public:
+  /**
+   * See Cursor for details
+   * @return
+   */
   std::optional<char>Next() override;
+
+  /**
+   * See Cursor for details
+   * @return
+   */
   std::optional<const char*> Peek() override;
+
+  /**
+   * Construct a cursor over the provided stream
+   * @param source
+   */
   explicit CharCursor(std::istream *source);
+  
  private:
   char next_{0};
   bool eof_{false};
