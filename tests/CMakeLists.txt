@@ -1,3 +1,5 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CharCursorTestFile.txt ${CMAKE_CURRENT_BINARY_DIR}/CharCursorTestFile.txt)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CharCursorTestEmptyFile.txt ${CMAKE_CURRENT_BINARY_DIR}/CharCursorTestEmptyFile.txt)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CharCursorTestSingleCharFile.txt ${CMAKE_CURRENT_BINARY_DIR}/CharCursorTestSingleCharFile.txt)
 add_executable(Tests_run TestMain.cpp FieldDescriptorTests.cpp MessageDescriptorTests.cpp SourceDescriptorTests.cpp TokenTests.cpp CharCursorTests.cpp)
 target_link_libraries(Tests_run tell)
