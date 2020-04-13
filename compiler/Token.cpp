@@ -24,6 +24,7 @@ std::string Token::TypeName() {
     case kService:return "kService";
     case kCall:return "kCall";
     case kLineFeed: return "kLineFeed";
+    case kEOF: return "kEOF";
   }
 }
 std::string Token::Literal() {
@@ -43,6 +44,7 @@ std::string Token::Literal() {
     case kService:return kKeywordService;
     case kCall:return kKeywordCall;
     case kLineFeed: return "\n";
+    case kEOF: return "";
   }
 }
 

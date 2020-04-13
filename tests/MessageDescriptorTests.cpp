@@ -16,13 +16,13 @@ std::shared_ptr<FieldDescriptor> add_test_field(const std::shared_ptr<MessageDes
   return md->AddField(t, optional, name, doc);
 }
 
-TEST_CASE("MessageDescriptor.name", "[MessageDescriptor]") {
+TEST_CASE("MessageDescriptor.name") {
   std::string name = "MyMessage";
   auto md = test_message(name);
   CHECK(md->name()==name);
 }
 
-TEST_CASE("MessageDescriptor.FieldCount", "[MessageDescriptor]") {
+TEST_CASE("MessageDescriptor.FieldCount") {
   SECTION("No fields") {
     auto md = test_message();
     CHECK(md->FieldCount()==0);
@@ -33,7 +33,7 @@ TEST_CASE("MessageDescriptor.FieldCount", "[MessageDescriptor]") {
   }
 }
 
-TEST_CASE("MessageDescriptor.AddField", "[MessageDescriptor]") {
+TEST_CASE("MessageDescriptor.AddField") {
   SECTION("Adds to fields") {
     auto md = test_message();
     CHECK(md->FieldCount()==0);
@@ -54,7 +54,7 @@ TEST_CASE("MessageDescriptor.AddField", "[MessageDescriptor]") {
   }
 }
 
-TEST_CASE("MessageDescriptor.Field", "[MessageDescriptor]") {
+TEST_CASE("MessageDescriptor.Field") {
   SECTION("Valid index") {
     auto md = test_message();
     auto fd = add_test_field(md);

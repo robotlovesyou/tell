@@ -21,28 +21,21 @@ struct Token {
    */
   enum Type {
     // String types
-        kString = 1,
-    kDocString = 2,
+        kString = 1, kDocString = 2,
 
     // Identifiers
         kIdent = 3,
 
     // Punctuation marks
-        kBang = 4,
-    kColon = 5,
-    kQMark = 6,
-    kLBrace = 7,
-    kRBrace = 8,
-    kLBracket = 9,
-    kRBracket = 10,
+        kBang = 4, kColon = 5, kQMark = 6, kLBrace = 7, kRBrace = 8, kLBracket = 9, kRBracket = 10,
 
     // Keywords
-        kMessage = 11,
-    kList = 12,
-    kService = 13,
-    kCall = 14,
+        kMessage = 11, kList = 12, kService = 13, kCall = 14,
     // String Termination
         kLineFeed = 15,
+
+    // File Termination
+        kEOF = 16,
   };
   /**
    * The Type of the token

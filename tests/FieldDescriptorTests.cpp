@@ -16,7 +16,7 @@ std::shared_ptr<FieldDescriptor> test_field(FieldDescriptor::Type t = FieldDescr
   return std::make_shared<FieldDescriptor>(t, optional, name, doc, md);
 }
 
-TEST_CASE("FieldDescriptor.IsScalar", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.IsScalar") {
   SECTION("IsScalar = true") {
     auto fd_true = test_field(FieldDescriptor::TYPE_STRING);
     CHECK(fd_true->IsScalar());
@@ -28,30 +28,30 @@ TEST_CASE("FieldDescriptor.IsScalar", "[FieldDescriptor]") {
   }
 }
 
-TEST_CASE("FieldDescriptor.name", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.name") {
   const std::string name = "a_field_name";
   auto fd = test_field(FieldDescriptor::TYPE_BOOL, false, name);
   CHECK(fd->name()==name);
 }
 
-TEST_CASE("FieldDescriptor.message", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.message") {
   auto md = test_message();
   auto fd = test_field(FieldDescriptor::TYPE_TIME, false, "created_at", "", md);
   CHECK(fd->message().lock().get()==md.get());
 }
 
-TEST_CASE("FieldDescriptor.doc", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.doc") {
   std::string doc = "This describes the entities name";
   auto fd = test_field(FieldDescriptor::TYPE_STRING, false, "name", doc);
   CHECK(fd->doc()==doc);
 }
 
-TEST_CASE("FieldDescriptor.type", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.type") {
   auto fd = test_field(FieldDescriptor::TYPE_INT);
   CHECK(fd->type()==FieldDescriptor::TYPE_INT);
 }
 
-TEST_CASE("FieldDescriptor.SetMessageType", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.SetMessageType") {
   SECTION("Scalar field") {
     auto fd = test_field(FieldDescriptor::TYPE_BOOL);
     CHECK_THROWS_AS(fd->SetTypeMessage(test_message()), FieldDescriptor::FieldIsScalarException);
@@ -63,7 +63,7 @@ TEST_CASE("FieldDescriptor.SetMessageType", "[FieldDescriptor]") {
   }
 }
 
-TEST_CASE("FieldDescriptor.TypeMessage", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.TypeMessage") {
   SECTION("Scalar field") {
     auto fd = test_field(FieldDescriptor::TYPE_FLOAT);
     CHECK_THROWS_AS(fd->TypeMessage(), FieldDescriptor::FieldIsScalarException);
@@ -75,7 +75,7 @@ TEST_CASE("FieldDescriptor.TypeMessage", "[FieldDescriptor]") {
   }
 }
 
-TEST_CASE("FieldDescriptor.optional", "[FieldDescriptor]") {
+TEST_CASE("FieldDescriptor.optional") {
   SECTION("Required scalar field") {
     CHECK_FALSE(test_field()->optional());
   }SECTION("Optional scalar field") {

@@ -5,12 +5,12 @@
 
 namespace til {
 
-TEST_CASE("Token.TypeName", "[Token]") {
+TEST_CASE("Token.TypeName") {
   Token tk{Token::kQMark, 0, 0, ""};
   CHECK(tk.TypeName()=="kQMark");
 }
 
-TEST_CASE("Token.Literal", "[Token]") {
+TEST_CASE("Token.Literal") {
   SECTION("String") {
     const std::string repr = "A string";
     Token tk{Token::kString, 0, 0, repr};

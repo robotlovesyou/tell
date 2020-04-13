@@ -46,7 +46,7 @@ TEST_CASE("SourceDescriptor.Directive") {
   }
 }
 
-TEST_CASE("SourceDescriptor.AddMessage", "[SourceDescriptor]") {
+TEST_CASE("SourceDescriptor.AddMessage") {
   SECTION("New messages") {
     auto sd = test_source_descriptor();
     CHECK_NOTHROW(sd->AddMessage(message_name, message_doc));
@@ -58,7 +58,7 @@ TEST_CASE("SourceDescriptor.AddMessage", "[SourceDescriptor]") {
   }
 }
 
-TEST_CASE("SourceDescriptor.MessageCount", "[SourceDescriptor]") {
+TEST_CASE("SourceDescriptor.MessageCount") {
   SECTION("No messages") {
     auto sd = test_source_descriptor();
     CHECK(sd->MessageCount()==0);
@@ -69,7 +69,7 @@ TEST_CASE("SourceDescriptor.MessageCount", "[SourceDescriptor]") {
   }
 }
 
-TEST_CASE("SourceDescriptor.Message", "[SourceDescriptor]") {
+TEST_CASE("SourceDescriptor.Message") {
   SECTION("Missing message") {
     auto sd = test_source_descriptor();
     CHECK_THROWS_AS(sd->Message(0), std::out_of_range);
@@ -80,7 +80,7 @@ TEST_CASE("SourceDescriptor.Message", "[SourceDescriptor]") {
   }
 }
 
-TEST_CASE("SourceDescriptor.MessageByName", "[SourceDescriptor]") {
+TEST_CASE("SourceDescriptor.MessageByName") {
   SECTION("Missing message") {
     auto sd = test_source_descriptor();
     CHECK_THROWS_AS(sd->MessageByName(message_name), SourceDescriptor::ItemNotFoundException);
