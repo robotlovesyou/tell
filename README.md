@@ -54,11 +54,11 @@ message MyParentMessage {
 }
 ```
 
-In the example above the `nickname` field in both the MyChildMessage and MyParentMessage is marked as optional. 
+In the example above the `nickname` field in both the MyChildMessage and MyParentMessage is marked as optional.
 Additionally the child field in the MyParentMessage is marked as optional.
 
 In host languages which support optional types such as Typescript, Kotlin, Rust or Scala, the appropriate optional type should be used. 
-In host languages which do not support optional types pointer or nullable representations should be used. For example in Go a string? in tell would map to a *string
+In host languages which do not support optional types pointer or nullable representations should be used. For example string? in tell would map to a *string in Go.
 
 ## Further Work
 

@@ -10,8 +10,10 @@
 
 namespace til {
 /**
- * Base class for iterating over istream sources.
- * Implements the Cursor<char> interface
+ * Class for iterating over istream sources.
+ * Implements the Cursor<char> interface.
+ * Is consumed by StringCursor and FileCursor to allow them
+ * to implement Cursor<char> by composition.
  */
 class CharCursor: public Cursor<char> {
  public:
@@ -32,7 +34,7 @@ class CharCursor: public Cursor<char> {
    * @param source
    */
   explicit CharCursor(std::istream *source);
-  
+
  private:
   char next_{0};
   bool eof_{false};

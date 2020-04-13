@@ -17,7 +17,7 @@ class SourceDescriptor {
 
   class ItemAlreadyExistsException : public std::exception {
    public:
-    ItemAlreadyExistsException(std::string name);
+    explicit ItemAlreadyExistsException(std::string name);
 
     const char *what();
    private:
@@ -26,7 +26,7 @@ class SourceDescriptor {
 
   class ItemNotFoundException : public std::exception {
    public:
-    ItemNotFoundException(std::string name);
+    explicit ItemNotFoundException(std::string name);
 
     const char *what();
    private:
