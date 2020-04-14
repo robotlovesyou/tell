@@ -33,6 +33,14 @@ class StringCursor : public Cursor<char> {
    * @return
    */
   std::optional<const char *>Peek() override;
+
+  // explicitly delete copy constructor and copy assignment operator, move constructor and move assignment operator
+  // to encourage use of a unique_ptr
+  // The default destructor is OK for this class.
+  StringCursor(const StringCursor &) = delete;
+  StringCursor &operator=(const StringCursor &) = delete;
+  StringCursor(StringCursor &&) = delete;
+  StringCursor &operator=(StringCursor &&) = delete;
  private:
   std::istringstream stream_;
   std::unique_ptr<CharCursor> cursor_;

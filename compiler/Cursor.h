@@ -17,6 +17,11 @@ namespace til {
 template <class T>
 class Cursor {
  public:
+
+  /**
+   * Declare virtual constructor to prevent warning from -Wdelete-abstract-non-virtual-dtor
+   */
+  virtual ~Cursor() = default;
   /**
    * Return the next value if it exists
    * @return the next value or an empty option
