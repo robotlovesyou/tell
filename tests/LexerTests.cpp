@@ -15,8 +15,15 @@ TEST_CASE("Lexer constructor") {
   CHECK_NOTHROW(til::Lexer(std::move(sc), er));
 }
 
-TEST_CASE("Lexer.Next for single tokens") {
-  SECTION("String"){}
+TEST_CASE("Lexer.Next for single tokens. Happy path") {
+  SECTION("String"){
+    auto lx = make_test_lexer("\"This is a string\"");
+    auto nt = lx->Next();
+    CHECK(nt);
+    CHECK((*nt).repr == "This is a string");
+    CHECK((*nt).line == 1);
+    CHECK((*nt).col == 1);
+  }
   SECTION("DocString"){}
   SECTION("Ident"){}
   SECTION("Bang"){}

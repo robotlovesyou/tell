@@ -4,7 +4,7 @@
 
 #include "CharCursor.h"
 til::CharCursor::CharCursor(std::istream *source): source_(source) {
-  eof_ = (*source_ >> next_).eof();
+  eof_ = (*source_ >> std::noskipws >> next_).eof();
 }
 
 std::optional<char> til::CharCursor::Next() {
@@ -12,7 +12,7 @@ std::optional<char> til::CharCursor::Next() {
     return std::optional<char>();
   }
   std::optional<char> out(next_);
-  eof_ = (*source_ >> next_).eof();
+  eof_ = (*source_ >> std::noskipws >> next_).eof();
   return out;
 }
 
