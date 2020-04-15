@@ -23,9 +23,11 @@ TEST_CASE("Lexer constructor") {
 }
 
 TEST_CASE("Lexer.Next for single tokens. Happy path") {
+  // Use a generator to generate the inputs for each test
   auto p = GENERATE(
       pairs("\"This is a string\"", til::Token::kString),
-      pairs("/// This is a docstring", til::Token::kDocString)
+      pairs("/// This is a docstring", til::Token::kDocString),
+      pairs("a_field_name", til::Token::kIdent)
       );
 
   // Create a token from the generated pair. Check the peek value, check the next value
@@ -42,8 +44,6 @@ TEST_CASE("Lexer.Next for single tokens. Happy path") {
   CHECK((*nt).line == 1);
   CHECK((*nt).col == 1);
 
-//  SECTION("DocString"){}
-//  SECTION("Ident"){}
 //  SECTION("Bang"){}
 //  SECTION("Colon"){}
 //  SECTION("QMark"){}

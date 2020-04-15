@@ -31,11 +31,15 @@ class Lexer : public Cursor<Token> {
   void handle_unexpected(char c);
   std::optional<Token> try_read_string_token();
   std::optional<Token> try_read_docstring_token();
+  std::optional<Token> try_read_ident_token(char first);
   bool expect_peek(char c);
+  bool expect_peek_fn(char c, const std::function<bool(char)>& fn);
   void consume_nbsp();
   void try_consume_newline();
   void consume_remaining_line();
   static bool is_nbsp(char c);
+  static bool is_ident_start_char(char c);
+  static bool is_ident_char(char c);
   std::optional<char> read_next_char();
   void report_error(const std::string &message);
 

@@ -3,6 +3,7 @@
 //
 
 #include "Lexer.h"
+
 til::Lexer::Lexer(std::unique_ptr<Cursor<char>> cursor, std::shared_ptr<ErrorReporter> error_reporter): cursor_(std::move(cursor)), error_reporter_(std::move(error_reporter)), eof_(false) {
   read_next_token();
 }
@@ -41,6 +42,8 @@ void til::Lexer::read_next_token() {
       otoken = try_read_string_token();
     } else if (*oc == '/' && expect_peek('/')) {
       otoken = try_read_docstring_token();
+    } else if (is_ident_start_char(*oc)) {
+      otoken = try_read_ident_token(*oc);
     } else {
       handle_unexpected(*oc);
     }
@@ -67,6 +70,14 @@ bool til::Lexer::is_nbsp(char c) {
   }
 }
 
+bool til::Lexer::is_ident_start_char(char c) {
+  return std::isalpha(c) || c == '_';
+}
+
+bool til::Lexer::is_ident_char(char c) {
+  return std::isalnum(c) || c == '_';
+}
+
 void til::Lexer::try_consume_newline() {
   auto peeked = cursor_->Peek();
   if (peeked && **peeked == '\n') {
@@ -75,9 +86,10 @@ void til::Lexer::try_consume_newline() {
 }
 
 void til::Lexer::consume_remaining_line() {
-  auto onext = read_next_char();
-  while(onext && *onext != '\n') {
-    onext = read_next_char();
+  while(auto onext = read_next_char()) {
+    if(*onext == '\n') {
+      break;
+    }
   }
 }
 
@@ -89,8 +101,8 @@ void til::Lexer::handle_unexpected(char c) {
 std::optional<til::Token> til::Lexer::try_read_string_token() {
   int start_ = column_;
   std::string repr;
-  std::optional<char> oc = read_next_char();
-  while(oc) {
+
+  while(auto oc = read_next_char()) {
     if(*oc == '\n') {
       report_error("Unexpected newline in string");
       return std::optional<Token>();
@@ -102,24 +114,9 @@ std::optional<til::Token> til::Lexer::try_read_string_token() {
       return std::optional<Token>(Token{Token::kString, line_, start_, repr});
     }
     repr += *oc;
-    oc = read_next_char();
   }
   report_error("Unexpected eof in string");
   return std::optional<Token>();
-}
-
-std::optional<char> til::Lexer::read_next_char() {
-  auto oc = cursor_->Next();
-  if (oc && *oc == '\n') {
-    line_ += 1;
-    column_ = 0;
-  } else if (oc) {
-    column_ += 1;
-  }
-  return oc;
-}
-void til::Lexer::report_error(const std::string &message) {
-  error_reporter_->ReportError(fmt::format("{} at line {} column {}", message, line_, column_));
 }
 
 std::optional<til::Token> til::Lexer::try_read_docstring_token() {
@@ -137,8 +134,7 @@ std::optional<til::Token> til::Lexer::try_read_docstring_token() {
   read_next_char(); // consume the third slash
   std::string repr;
 
-  auto oc = read_next_char();
-  while (oc) {
+  while (auto oc = read_next_char()) {
     if (*oc == '\n') {
       break;
     }
@@ -146,14 +142,42 @@ std::optional<til::Token> til::Lexer::try_read_docstring_token() {
       continue;
     }
     repr += *oc;
-    oc = read_next_char();
   }
 
   return std::optional<til::Token>(til::Token{Token::kDocString, start_line, start_col, repr});
+}
+
+std::optional<til::Token> til::Lexer::try_read_ident_token(char first) {
+  int start = column_;
+  std::string repr;
+  repr += first;
+
+  while(auto peeked = cursor_->Peek()) {
+    if(is_ident_char(**peeked)) {
+      repr += *read_next_char();
+    } else {
+      break;
+    }
+  }
+  return std::optional<til::Token>({Token::kIdent, line_, start, repr});
+}
+
+std::optional<char> til::Lexer::read_next_char() {
+  auto oc = cursor_->Next();
+  if (oc && *oc == '\n') {
+    line_ += 1;
+    column_ = 0;
+  } else if (oc) {
+    column_ += 1;
+  }
+  return oc;
+}
+
+void til::Lexer::report_error(const std::string &message) {
+  error_reporter_->ReportError(fmt::format("{} at line {} column {}", message, line_, column_));
 }
 
 bool til::Lexer::expect_peek(char c) {
   auto peeked = cursor_->Peek();
   return peeked && **peeked == c;
 }
-
