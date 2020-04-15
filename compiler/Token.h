@@ -40,34 +40,40 @@ struct Token {
     kEOF = 17,
   };
 
+  Token() = default;
   Token(Type tp, int l, int c, std::string r);
 
   // Delete the copy constructor and copy assignment
+  // because tokens can contain long strings so
+  // copying them is inefficient
   Token(const Token &) = delete;
   Token &operator=(const Token &) = delete;
 
   // Explicitly define the move and move assignment
   Token(Token && source) noexcept;
   Token &operator=(Token &&source) noexcept;
+
+  ~Token() = default; // The default delete constructor is fine because there is no resource ownership.
+
   /**
    * The Type of the token
    */
-  Type t{};
+  Type t;
 
   /**
    * The source line of the start of the token
    */
-  int line{};
+  int line;
 
   /**
    * The source column of the start of the token
    */
-  int col{};
+  int col;
 
   /**
    * The string representation of the value of the token
    */
-  std::string repr{};
+  std::string repr;
 
   /**
    * Return a string containing the type name of the token

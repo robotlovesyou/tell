@@ -4,11 +4,7 @@
 
 #include "Lexer.h"
 
-til::Token make_default_token() {
-  return til::Token{til::Token::kEOF, 0, 0, ""};
-}
-
-til::Lexer::Lexer(std::unique_ptr<Cursor<char>> cursor, std::shared_ptr<ErrorReporter> error_reporter): cursor_(std::move(cursor)), error_reporter_(std::move(error_reporter)), eof_(false), next_(make_default_token()) {
+til::Lexer::Lexer(std::unique_ptr<Cursor<char>> cursor, std::shared_ptr<ErrorReporter> error_reporter): cursor_(std::move(cursor)), error_reporter_(std::move(error_reporter)), eof_(false) {
   read_next_token();
 }
 

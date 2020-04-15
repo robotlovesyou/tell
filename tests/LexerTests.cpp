@@ -10,7 +10,7 @@ std::unique_ptr<til::Lexer> make_test_lexer(const std::string &source) {
   return std::make_unique<til::Lexer>(std::move(sc), er);
 }
 
-std::pair<std::string, til::Token::Type> pairs(std::string src, til::Token::Type t) {
+std::pair<std::string, til::Token::Type> pairs(const std::string& src, til::Token::Type t) {
   return std::pair<std::string, til::Token::Type>(src, t);
 }
 
