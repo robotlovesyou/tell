@@ -88,6 +88,72 @@ TEST_CASE("FieldDescriptor.optional") {
   }
 }
 
+TEST_CASE("FieldDescriptor.SetSubType") {
+  SECTION("Has Subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_LIST);
+    CHECK_NOTHROW(fd->SetSubType(til::FieldDescriptor::TYPE_INT));
+  }
+  SECTION("Has no subtype") {
+    auto fd = test_field();
+    CHECK_THROWS_AS(fd->SetSubType(til::FieldDescriptor::TYPE_BOOL), til::FieldDescriptor::FieldHasNoSubtypeException);
+  }
+  SECTION("Illegal subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    CHECK_THROWS_AS(fd->SetSubType(til::FieldDescriptor::TYPE_LIST), til::FieldDescriptor::IllegalSubtypeException);
+  }
+}
+
+TEST_CASE("FieldDescriptor.SetSubTypeMessage") {
+  SECTION("Has message type subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    auto md = test_message();
+    fd->SetSubType(til::FieldDescriptor::TYPE_MESSAGE);
+    CHECK_NOTHROW(fd->SetSubTypeMessage(md));
+  }
+  SECTION("Has scalar subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    auto md = test_message();
+    fd->SetSubType(til::FieldDescriptor::TYPE_INT);
+    CHECK_THROWS_AS(fd->SetSubTypeMessage(md), til::FieldDescriptor::FieldIsScalarException);
+  }
+  SECTION("Has no subtype") {
+    auto fd = test_field();
+    auto md = test_message();
+    CHECK_THROWS_AS(fd->SetSubTypeMessage(md), til::FieldDescriptor::FieldHasNoSubtypeException);
+  }
+}
+
+TEST_CASE("FieldDescriptor.SubType") {
+  SECTION("Has Subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    fd->SetSubType(til::FieldDescriptor::TYPE_STRING);
+    CHECK(fd->SubType() == til::FieldDescriptor::TYPE_STRING);
+  }
+  SECTION("Has no subtype") {
+    auto fd = test_field();
+    CHECK_THROWS_AS(fd->SubType(), til::FieldDescriptor::FieldHasNoSubtypeException);
+  }
+}
+
+TEST_CASE("FieldDescriptor.SubTypeMessage") {
+  SECTION("Has message type subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    auto md = test_message();
+    fd->SetSubType(til::FieldDescriptor::TYPE_MESSAGE);
+    fd->SetSubTypeMessage(md);
+    CHECK(fd->SubTypeMessage().lock().get() == md.get());
+  }
+  SECTION("Has scalar subtype") {
+    auto fd = test_field(til::FieldDescriptor::TYPE_MAP);
+    fd->SetSubType(til::FieldDescriptor::TYPE_INT);
+    CHECK_THROWS_AS(fd->SubTypeMessage(), til::FieldDescriptor::FieldIsScalarException);
+  }
+  SECTION("Has no subtype") {
+    auto fd = test_field();
+    CHECK_THROWS_AS(fd->SubTypeMessage(), til::FieldDescriptor::FieldHasNoSubtypeException);
+  }
+}
+
 } // namespace til
 
 

@@ -38,7 +38,7 @@ std::weak_ptr<MessageDescriptor> FieldDescriptor::TypeMessage() {
   if (IsScalar()) {
     throw FieldIsScalarException(shared_from_this());
   }
-  return type_message_.value();
+  return *type_message_;
 }
 
 bool FieldDescriptor::optional() {
@@ -52,13 +52,60 @@ void FieldDescriptor::SetTypeMessage(const std::shared_ptr<MessageDescriptor> &m
   type_message_ = std::optional<std::weak_ptr<MessageDescriptor>>(message);
 }
 
+FieldDescriptor::Type FieldDescriptor::SubType() {
+  throw_on_no_subtype();
+  return sub_type_;
+}
+
+std::weak_ptr<MessageDescriptor> FieldDescriptor::SubTypeMessage() {
+  throw_on_no_subtype();
+  if(sub_type_ != TYPE_MESSAGE) {
+    throw FieldIsScalarException(shared_from_this());
+  }
+  return *sub_type_message_;
+}
+
+void FieldDescriptor::SetSubType(const FieldDescriptor::Type &sub_type) {
+  throw_on_no_subtype();
+  if(sub_type == TYPE_LIST || sub_type == TYPE_MAP) {
+    throw IllegalSubtypeException();
+  }
+  sub_type_ = sub_type;
+}
+
+void FieldDescriptor::SetSubTypeMessage(const std::shared_ptr<MessageDescriptor> &message) {
+  throw_on_no_subtype();
+  if(sub_type_ != TYPE_MESSAGE) {
+    throw FieldIsScalarException(shared_from_this());
+  }
+  sub_type_message_ = std::optional<std::weak_ptr<MessageDescriptor>>(message);
+}
+
+void FieldDescriptor::throw_on_no_subtype() {
+  if(type_ != TYPE_LIST && type_ != TYPE_MAP) {
+    throw FieldHasNoSubtypeException(shared_from_this());
+  }
+}
+
 const char *FieldDescriptor::FieldIsScalarException::what() {
-  return fmt::format("field {} is scalar and has no message_type", fd_->name_).c_str();
+  return fmt::format("field or subtype {} is scalar and has no message_type", fd_->name_).c_str();
 }
 
 FieldDescriptor::FieldIsScalarException::FieldIsScalarException(std::shared_ptr<FieldDescriptor> fd)
     : fd_(std::move(fd)) {
 }
 
+FieldDescriptor::FieldHasNoSubtypeException::FieldHasNoSubtypeException(std::shared_ptr<FieldDescriptor> fd): fd_(std::move(fd)) {
+}
+
+const char *FieldDescriptor::FieldHasNoSubtypeException::what() {
+  return fmt::format("field {} has no subtype", fd_->name_).c_str();
+}
+
+
+
+const char *FieldDescriptor::IllegalSubtypeException::what() {
+  return "cannot set TYPE_MAP or TYPE_LIST as field subtype";
+}
 } // namespace til
 

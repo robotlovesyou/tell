@@ -38,6 +38,36 @@ message MyMessage {
 
 ---
 
+### List types.
+Any field can be a list of another type, be it a scalar or compound type. 
+
+```
+message MyListMessage {
+    a_list_of_ints_field: list[int]
+    a_list_of_messages_field: list[MyMessage]
+    an_optional_list_of_messages_field: list[MyMessage]?
+}
+```
+
+In the example above there is a field which is a list of integers, a field which is a list of another message type, 
+and a field which is an optional list of another message type
+
+
+### Map Types
+
+Any field can be a map type. The key of map types is always a string. The value can be any other type. 
+
+```
+message MyMapMessage {
+    a_map_of_ints: map[int]
+    a_map_of_messages: map[MyMessage]
+    an_optional_map_of_messages: map[MyMessage]?
+}
+```
+
+In the example above there is a field which is a map from string to int, a field which is a map from string to MyMessage
+and an optional field which is a map from string to MyMessage
+
 ### Optional Types
 
 Any field of a message may be marked as optional by appending a ? to the type. Eg
