@@ -21,6 +21,7 @@ std::string Token::TypeName() {
     case kRBracket:return "kRBracket";
     case kMessage:return "kMessage";
     case kList:return "kList";
+    case kMap:return "kMap";
     case kService:return "kService";
     case kCall:return "kCall";
     case kLineFeed: return "kLineFeed";
@@ -41,6 +42,7 @@ std::string Token::Literal() const {
     case kRBracket:return repr;
     case kMessage:return kKeywordMessage;
     case kList:return kKeywordList;
+    case kMap: return kKeywordMap;
     case kService:return kKeywordService;
     case kCall:return kKeywordCall;
     case kLineFeed: return "\n";

@@ -2,7 +2,6 @@
 #include "../compiler/Token.h"
 #include "fmt/core.h"
 
-
 namespace til {
 
 TEST_CASE("Token.TypeName") {
@@ -29,6 +28,9 @@ TEST_CASE("Token.Literal") {
   }SECTION("List") {
     Token tk{Token::kList, 0, 0, ""};
     CHECK(tk.Literal()==kKeywordList);
+  }SECTION("Map") {
+    Token tk{Token::kMap, 0, 0, ""};
+    CHECK(tk.Literal()==kKeywordMap);
   }SECTION("Service") {
     Token tk{Token::kService, 0, 0, ""};
     CHECK(tk.Literal()==kKeywordService);

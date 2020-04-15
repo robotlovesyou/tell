@@ -7,6 +7,7 @@ namespace til {
 
 static const char *kKeywordMessage = "message";
 static const char *kKeywordList = "list";
+static const char *kKeywordMap = "Map";
 static const char *kKeywordService = "service";
 static const char *kKeywordCall = "call";
 
@@ -30,12 +31,13 @@ struct Token {
         kBang = 4, kColon = 5, kQMark = 6, kLBrace = 7, kRBrace = 8, kLBracket = 9, kRBracket = 10,
 
     // Keywords
-        kMessage = 11, kList = 12, kService = 13, kCall = 14,
+        kMessage = 11, kList = 12, kMap = 13, kService = 14, kCall = 15,
+
     // String Termination
-        kLineFeed = 15,
+        kLineFeed = 16,
 
     // File Termination
-        kEOF = 16,
+        kEOF = 17,
   };
   /**
    * The Type of the token
