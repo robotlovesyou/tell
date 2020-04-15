@@ -27,11 +27,14 @@ class Lexer : public Cursor<Token> {
   Lexer &operator=(Lexer &&) = delete;
 
  private:
-  void next_token();
+  void read_next_token();
   void handle_unexpected(char c);
   std::optional<Token> try_read_string_token();
+  std::optional<Token> try_read_docstring_token();
+  bool expect_peek(char c);
   void consume_nbsp();
   void try_consume_newline();
+  void consume_remaining_line();
   static bool is_nbsp(char c);
   std::optional<char> read_next_char();
   void report_error(const std::string &message);

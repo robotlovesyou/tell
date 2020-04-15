@@ -67,7 +67,7 @@ struct Token {
    * Return a valid string literal for the token
    * @return a valid literal for the token
    */
-  std::string Literal();
+  std::string Literal() const;
 };
 
 } // namespace til

@@ -27,10 +27,10 @@ std::string Token::TypeName() {
     case kEOF: return "kEOF";
   }
 }
-std::string Token::Literal() {
+std::string Token::Literal() const {
   switch (t) {
     case kString:return fmt::format("\"{}\"", repr);
-    case kDocString:return fmt::format("/// {}", repr);
+    case kDocString:return fmt::format("///{}", repr);
     case kIdent:
     case kBang:
     case kColon:

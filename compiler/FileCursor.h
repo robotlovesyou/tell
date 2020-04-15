@@ -9,13 +9,12 @@
 #include <memory>
 #include <string>
 #include <fstream>
-#include "CharCursor.h"
+#include "StringCursor.h"
 
 namespace til {
 /**
  * Cursor over characters from a file source.
- * Implements RIAA for the owned ifstream by opening and closing it in the constructor/destructor
- * Implements the Cursor<char> interface via composition with the owned CharCursor object
+ * Implements the Cursor<char> interface via composition with the owned StringCursor object
  */
 class FileCursor : public Cursor<char> {
  public:
@@ -45,17 +44,13 @@ class FileCursor : public Cursor<char> {
   explicit FileCursor(const std::filesystem::path &path);
 
   // explicitly delete copy constructor and copy assignment operator, move constructor and move assignment operator
-  // to comply with the rule of 5.
-  // An explicit destructor is defined but this class owns a stream so it should not be copied or moved.
   FileCursor(const FileCursor &) = delete;
   FileCursor &operator=(const FileCursor &) = delete;
   FileCursor(FileCursor &&) = delete;
   FileCursor &operator=(FileCursor &&) = delete;
 
-  /**
-   * Clean up the owned ifstream resource
-   */
-  ~FileCursor();
+  // Rule of 5. Explicitly declare the default destructor to be fine
+  ~FileCursor() = default;
 
   /**
    * See Cursor for details
@@ -69,8 +64,7 @@ class FileCursor : public Cursor<char> {
    */
   std::optional<const char *> Peek() override;
  private:
-  std::ifstream stream_;
-  std::unique_ptr<CharCursor> cursor_;
+  std::unique_ptr<StringCursor> cursor_;
 
 };
 }

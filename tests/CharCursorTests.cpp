@@ -58,11 +58,11 @@ TEST_CASE("FileCursor single char") {
   auto val = fc.Next();
   CHECK((val.has_value() && val.value() == 'a'));
   peek_val = fc.Peek();
-  CHECK((peek_val && **peek_val == '\n')); // ifstream adds a termiating newline
+  CHECK_FALSE(peek_val);
 }
 
 TEST_CASE("FileCursor multi character") {
-  const char* input = "a b c d e f g h i j k\n"; // This must match the contents of the file. ifstream adds a terminating newline.
+  const char* input = "a b c d e f g h i j k"; // This must match the contents of the file. ifstream adds a terminating newline.
   til::FileCursor fc("CharCursorTestFile.txt");
   for (int i = 0; i < strlen(input); i++) {
     auto peek_val = fc.Peek();
@@ -71,6 +71,6 @@ TEST_CASE("FileCursor multi character") {
     CHECK((val.has_value() && val.value() == input[i]));
   }
   auto val = fc.Next();
-  CHECK_FALSE(val.has_value());
+  CHECK_FALSE(val);
 }
 

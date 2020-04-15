@@ -8,17 +8,15 @@
 #include "fmt/core.h"
 
 til::FileCursor::FileCursor(const std::filesystem::path& path) {
-  stream_ = std::ifstream(path);
-  if (!stream_.is_open()) {
+  std::ifstream file(path);
+  if (!file.is_open()) {
     throw FileCursor::FileCursorException(path);
   }
-  cursor_ = std::make_unique<CharCursor>(&stream_);
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  cursor_ = std::make_unique<StringCursor>(std::move(buffer.str()));
 }
 
-til::FileCursor::~FileCursor() {
-  // Close the file resource
-  stream_.close();
-}
 std::optional<char> til::FileCursor::Next() {
   return cursor_->Next();
 }

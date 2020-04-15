@@ -8,19 +8,19 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include "CharCursor.h"
+#include "Cursor.h"
 
 namespace til {
 /**
  * Cursor over a string source.
- * Implements the Cursor<char> interface via composition with the owned CharCursor object
+ * Implements the Cursor<char> interface
  */
 class StringCursor : public Cursor<char> {
  public:
   /**
    * @param source The string for the cursor
    */
-  explicit StringCursor(const std::string& source);
+  explicit StringCursor(std::string source);
 
   /**
    * See Cursor for details
@@ -42,8 +42,8 @@ class StringCursor : public Cursor<char> {
   StringCursor(StringCursor &&) = delete;
   StringCursor &operator=(StringCursor &&) = delete;
  private:
-  std::istringstream stream_;
-  std::unique_ptr<CharCursor> cursor_;
+  int position_{0};
+  std::string source_;
 };
 }
 

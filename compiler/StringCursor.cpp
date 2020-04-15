@@ -5,15 +5,18 @@
 #include "StringCursor.h"
 
 #include <memory>
-til::StringCursor::StringCursor(const std::string& source) {
-  stream_ = std::istringstream(source);
-  cursor_ = std::make_unique<CharCursor>(&stream_);
-}
+til::StringCursor::StringCursor(std::string source): source_(std::move(source)) {}
 
 std::optional<char> til::StringCursor::Next() {
-  return cursor_->Next();
+  if (position_ < source_.size()) {
+    return std::optional<char>(source_[position_++]);
+  }
+  return std::optional<char>();
 }
 
 std::optional<const char *> til::StringCursor::Peek() {
-  return cursor_->Peek();
+  if (position_ < source_.size()) {
+    return std::optional<char*>(&source_[position_]);
+  }
+  return std::optional<char *>();
 }
