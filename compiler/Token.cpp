@@ -50,5 +50,23 @@ std::string Token::Literal() const {
   }
 }
 
+Token::Token(Token &&source) noexcept {
+  t = source.t;
+  line = source.line;
+  col = source.col;
+  repr = std::move(source.repr);
+}
+
+Token::Token(Type tp, int l, int c, std::string r): t(tp), line(l), col(c), repr(std::move(r)) {
+}
+
+Token &Token::operator=(Token &&source) noexcept {
+  t = source.t;
+  line = source.line;
+  col = source.col;
+  repr = std::move(source.repr);
+  return *this;
+}
+
 } // namespace til
 

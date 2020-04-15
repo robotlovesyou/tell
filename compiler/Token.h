@@ -22,42 +22,52 @@ struct Token {
    */
   enum Type {
     // String types
-        kString = 1, kDocString = 2,
+    kString = 1, kDocString = 2,
 
     // Identifiers
-        kIdent = 3,
+    kIdent = 3,
 
     // Punctuation marks
-        kBang = 4, kColon = 5, kQMark = 6, kLBrace = 7, kRBrace = 8, kLBracket = 9, kRBracket = 10,
+    kBang = 4, kColon = 5, kQMark = 6, kLBrace = 7, kRBrace = 8, kLBracket = 9, kRBracket = 10,
 
     // Keywords
-        kMessage = 11, kList = 12, kMap = 13, kService = 14, kCall = 15,
+    kMessage = 11, kList = 12, kMap = 13, kService = 14, kCall = 15,
 
     // String Termination
-        kLineFeed = 16,
+    kLineFeed = 16,
 
     // File Termination
-        kEOF = 17,
+    kEOF = 17,
   };
+
+  Token(Type tp, int l, int c, std::string r);
+
+  // Delete the copy constructor and copy assignment
+  Token(const Token &) = delete;
+  Token &operator=(const Token &) = delete;
+
+  // Explicitly define the move and move assignment
+  Token(Token && source) noexcept;
+  Token &operator=(Token &&source) noexcept;
   /**
    * The Type of the token
    */
-  Type t;
+  Type t{};
 
   /**
    * The source line of the start of the token
    */
-  int line;
+  int line{};
 
   /**
    * The source column of the start of the token
    */
-  int col;
+  int col{};
 
   /**
    * The string representation of the value of the token
    */
-  std::string repr;
+  std::string repr{};
 
   /**
    * Return a string containing the type name of the token
