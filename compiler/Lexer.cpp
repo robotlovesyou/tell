@@ -4,12 +4,21 @@
 
 #include "Lexer.h"
 
+std::pair<til::Token::Type, std::string>make_keyword_entry(til::Token::Type t, std::string kw) {
+  return std::pair<til::Token::Type, std::string>(t, kw);
+}
+
 til::Lexer::Lexer(std::unique_ptr<Cursor<char>> cursor, std::shared_ptr<ErrorReporter> error_reporter): cursor_(std::move(cursor)), error_reporter_(std::move(error_reporter)), eof_(false) {
-  keywords_[kKeywordMessage] = std::pair<Token::Type, std::string>(Token::kMessage, kKeywordMessage);
-  keywords_[kKeywordList] = std::pair<Token::Type, std::string>(Token::kList, kKeywordList);
-  keywords_[kKeywordMap] = std::pair<Token::Type, std::string>(Token::kMap, kKeywordMap);
-  keywords_[kKeywordService] = std::pair<Token::Type, std::string>(Token::kService, kKeywordService);
-  keywords_[kKeywordCall] = std::pair<Token::Type, std::string>(Token::kCall, kKeywordCall);
+  keywords_[kKeywordMessage] = make_keyword_entry(Token::kMessage, kKeywordMessage);
+  keywords_[kKeywordList] = make_keyword_entry(Token::kList, kKeywordList);
+  keywords_[kKeywordMap] = make_keyword_entry(Token::kMap, kKeywordMap);
+  keywords_[kKeywordService] = make_keyword_entry(Token::kService, kKeywordService);
+  keywords_[kKeywordCall] = make_keyword_entry(Token::kCall, kKeywordCall);
+  keywords_[kKeywordFloat] = make_keyword_entry(Token::kFloat, kKeywordFloat);
+  keywords_[kKeywordInt] = make_keyword_entry(Token::kInt, kKeywordInt);
+  keywords_[kKeywordBool] = make_keyword_entry(Token::kBool, kKeywordBool);
+  keywords_[kKeywordString] = make_keyword_entry(Token::kStringWord, kKeywordString);
+  keywords_[kKeywordTime] = make_keyword_entry(Token::kTime, kKeywordTime);
   read_next_token();
 }
 
@@ -60,9 +69,9 @@ void til::Lexer::read_next_token() {
     } else if (*oc == '}') {
       otoken = Token{Token::kRBrace, line_, column_, "}"};
     } else if (*oc == '[') {
-      otoken = Token{Token::kLBracket, line_, column_, "["};
+      otoken = Token{Token::kLSqBracket, line_, column_, "["};
     } else if (*oc == ']') {
-      otoken = Token{Token::kRBracket, line_, column_, "]"};
+      otoken = Token{Token::kRSqBracket, line_, column_, "]"};
     } else if (*oc == '\n') {
       otoken = Token{Token::kLineFeed, line_at_newline_, column_at_newline_, "\n"};
     } else {
@@ -123,18 +132,22 @@ std::optional<til::Token> til::Lexer::try_read_string_token() {
   int start_ = column_;
   std::string repr;
 
-  while(auto oc = read_next_char()) {
-    if(*oc == '\n') {
+  while(auto pc = cursor_->Peek()) {
+    if(**pc == '\n') {
       report_error("Unexpected newline in string");
+      read_next_char();
+      consume_remaining_line();
       return std::optional<Token>();
     }
-    if(*oc == '\r') { // ignore carriage return.
+    if(**pc == '\r') { // ignore carriage return.
+      read_next_char();
       continue;
     }
-    if(*oc == '"') {
+    if(**pc == '"') {
+      read_next_char();
       return std::optional<Token>(Token{Token::kString, line_, start_, repr});
     }
-    repr += *oc;
+    repr += *read_next_char();
   }
   report_error("Unexpected eof in string");
   return std::optional<Token>();
@@ -195,7 +208,7 @@ std::optional<char> til::Lexer::read_next_char() {
     column_at_newline_ = column_+1;
     line_ += 1;
     column_ = 0;
-  } else if (oc) {
+  } else {
     column_ += 1;
   }
   return oc;

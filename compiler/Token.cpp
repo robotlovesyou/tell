@@ -17,13 +17,18 @@ std::string Token::TypeName() {
     case kQMark:return "kQMark";
     case kLBrace:return "kLBrace";
     case kRBrace:return "kRBrace";
-    case kLBracket:return "kLBracket";
-    case kRBracket:return "kRBracket";
+    case kLSqBracket:return "kLSqBracket";
+    case kRSqBracket:return "kRSqBracket";
     case kMessage:return "kMessage";
     case kList:return "kList";
     case kMap:return "kMap";
     case kService:return "kService";
     case kCall:return "kCall";
+    case kFloat:return "kFloat";
+    case kInt:return "kInt";
+    case kBool:return "kBool";
+    case kStringWord:return "kStringWord";
+    case kTime:return "kTime";
     case kLineFeed: return "kLineFeed";
     case kEOF: return "kEOF";
   }
@@ -38,13 +43,18 @@ std::string Token::Literal() const {
     case kQMark:
     case kLBrace:
     case kRBrace:
-    case kLBracket:
-    case kRBracket:return repr;
+    case kLSqBracket:
+    case kRSqBracket:return repr;
     case kMessage:return kKeywordMessage;
     case kList:return kKeywordList;
     case kMap: return kKeywordMap;
     case kService:return kKeywordService;
     case kCall:return kKeywordCall;
+    case kFloat:return kKeywordFloat;
+    case kInt:return kKeywordInt;
+    case kBool:return kKeywordBool;
+    case kStringWord:return kKeywordString;
+    case kTime:return kKeywordTime;
     case kLineFeed: return "\n";
     case kEOF: return "";
   }

@@ -10,6 +10,11 @@ static const char *kKeywordList = "list";
 static const char *kKeywordMap = "map";
 static const char *kKeywordService = "service";
 static const char *kKeywordCall = "call";
+static const char *kKeywordFloat = "float";
+static const char *kKeywordInt = "int";
+static const char *kKeywordBool = "bool";
+static const char *kKeywordString = "string";
+static const char *kKeywordTime = "time";
 
 /**
  * Represents a single token from the lexer
@@ -22,22 +27,22 @@ struct Token {
    */
   enum Type {
     // String types
-    kString = 1, kDocString = 2,
+    kString, kDocString,
 
     // Identifiers
-    kIdent = 3,
+    kIdent,
 
     // Punctuation marks
-    kBang = 4, kColon = 5, kQMark = 6, kLBrace = 7, kRBrace = 8, kLBracket = 9, kRBracket = 10,
+    kBang, kColon, kQMark, kLBrace, kRBrace, kLSqBracket, kRSqBracket, kFloat, kInt, kBool, kStringWord, kTime,
 
     // Keywords
-    kMessage = 11, kList = 12, kMap = 13, kService = 14, kCall = 15,
+    kMessage, kList, kMap, kService, kCall,
 
     // String Termination
-    kLineFeed = 16,
+    kLineFeed,
 
     // File Termination
-    kEOF = 17,
+    kEOF,
   };
 
   Token() = default;
