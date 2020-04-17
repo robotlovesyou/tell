@@ -34,9 +34,6 @@ TEST_CASE("Token.Literal") {
   }SECTION("Service") {
     Token tk{Token::kService, 0, 0, ""};
     CHECK(tk.Literal()==kKeywordService);
-  }SECTION("Call") {
-    Token tk{Token::kCall, 0, 0, ""};
-    CHECK(tk.Literal()==kKeywordCall);
   }
 }
 

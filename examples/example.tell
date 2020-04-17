@@ -36,6 +36,6 @@ message UserForUsernameQuery {
 }
 
 service identity {
-    call user_for_username(UserForUsernameQuery): User
-    call update_user(User): User
+    user_for_username[UserForUsernameQuery]: User
+    update_user[User]: User
 }

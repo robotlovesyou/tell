@@ -9,7 +9,6 @@ static const char *kKeywordMessage = "message";
 static const char *kKeywordList = "list";
 static const char *kKeywordMap = "map";
 static const char *kKeywordService = "service";
-static const char *kKeywordCall = "call";
 static const char *kKeywordFloat = "float";
 static const char *kKeywordInt = "int";
 static const char *kKeywordBool = "bool";
@@ -36,7 +35,7 @@ struct Token {
     kBang, kColon, kQMark, kLBrace, kRBrace, kLSqBracket, kRSqBracket, kFloat, kInt, kBool, kStringWord, kTime,
 
     // Keywords
-    kMessage, kList, kMap, kService, kCall,
+    kMessage, kList, kMap, kService,
 
     // String Termination
     kLineFeed,

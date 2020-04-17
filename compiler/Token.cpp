@@ -23,7 +23,6 @@ std::string Token::TypeName() {
     case kList:return "kList";
     case kMap:return "kMap";
     case kService:return "kService";
-    case kCall:return "kCall";
     case kFloat:return "kFloat";
     case kInt:return "kInt";
     case kBool:return "kBool";
@@ -49,7 +48,6 @@ std::string Token::Literal() const {
     case kList:return kKeywordList;
     case kMap: return kKeywordMap;
     case kService:return kKeywordService;
-    case kCall:return kKeywordCall;
     case kFloat:return kKeywordFloat;
     case kInt:return kKeywordInt;
     case kBool:return kKeywordBool;

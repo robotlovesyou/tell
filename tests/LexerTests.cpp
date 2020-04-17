@@ -37,7 +37,6 @@ TEST_CASE("Lexer.Next for single tokens. Happy path") {
       pairs("list", til::Token::kList),
       pairs("map", til::Token::kMap),
       pairs("service", til::Token::kService),
-      pairs("call", til::Token::kCall),
       pairs("float", til::Token::kFloat),
       pairs("int", til::Token::kInt),
       pairs("bool", til::Token::kBool),
