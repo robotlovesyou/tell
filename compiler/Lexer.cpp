@@ -5,6 +5,11 @@
 #include "Lexer.h"
 
 til::Lexer::Lexer(std::unique_ptr<Cursor<char>> cursor, std::shared_ptr<ErrorReporter> error_reporter): cursor_(std::move(cursor)), error_reporter_(std::move(error_reporter)), eof_(false) {
+  keywords_[kKeywordMessage] = std::pair<Token::Type, std::string>(Token::kMessage, kKeywordMessage);
+  keywords_[kKeywordList] = std::pair<Token::Type, std::string>(Token::kList, kKeywordList);
+  keywords_[kKeywordMap] = std::pair<Token::Type, std::string>(Token::kMap, kKeywordMap);
+  keywords_[kKeywordService] = std::pair<Token::Type, std::string>(Token::kService, kKeywordService);
+  keywords_[kKeywordCall] = std::pair<Token::Type, std::string>(Token::kCall, kKeywordCall);
   read_next_token();
 }
 
@@ -44,6 +49,22 @@ void til::Lexer::read_next_token() {
       otoken = try_read_docstring_token();
     } else if (is_ident_start_char(*oc)) {
       otoken = try_read_ident_token(*oc);
+    } else if (*oc == '!') {
+      otoken = Token{Token::kBang, line_, column_, "!"};
+    } else if (*oc == ':') {
+      otoken = Token{Token::kColon, line_, column_, ":"};
+    } else if (*oc == '?') {
+      otoken = Token{Token::kQMark, line_, column_, "?"};
+    } else if (*oc == '{') {
+      otoken = Token{Token::kLBrace, line_, column_, "{"};
+    } else if (*oc == '}') {
+      otoken = Token{Token::kRBrace, line_, column_, "}"};
+    } else if (*oc == '[') {
+      otoken = Token{Token::kLBracket, line_, column_, "["};
+    } else if (*oc == ']') {
+      otoken = Token{Token::kRBracket, line_, column_, "]"};
+    } else if (*oc == '\n') {
+      otoken = Token{Token::kLineFeed, line_at_newline_, column_at_newline_, "\n"};
     } else {
       handle_unexpected(*oc);
     }
@@ -159,12 +180,19 @@ std::optional<til::Token> til::Lexer::try_read_ident_token(char first) {
       break;
     }
   }
-  return std::optional<til::Token>({Token::kIdent, line_, start, repr});
+
+  if(keywords_.count(repr) == 1) {
+    auto parts = keywords_[repr];
+    return Token{std::get<0>(parts), line_, start, std::get<1>(parts)};
+  }
+  return til::Token{Token::kIdent, line_, start, repr};
 }
 
 std::optional<char> til::Lexer::read_next_char() {
   auto oc = cursor_->Next();
   if (oc && *oc == '\n') {
+    line_at_newline_ = line_;
+    column_at_newline_ = column_+1;
     line_ += 1;
     column_ = 0;
   } else if (oc) {

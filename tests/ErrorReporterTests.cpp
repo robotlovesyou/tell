@@ -8,12 +8,12 @@ TEST_CASE("ErrorReporter no errors") {
 
 TEST_CASE("ErrorReporter.ReportError") {
   til::ErrorReporter er;
-  er.ReportError("Ignore me, I'm from the ErrorReporter test");
+  er.ReportError("This is not really an error. It is output from a test");
   CHECK(er.has_errors());
 }
 
 TEST_CASE("ErrorReporter.ReportWarning") {
   til::ErrorReporter er;
-  er.ReportWarning("Ignore me, I'm from the ErrorReporter test");
+  er.ReportWarning("This is not really a warning. It is output from a test");
   CHECK_FALSE(er.has_errors());
 }

@@ -5,6 +5,7 @@
 #ifndef TELL_COMPILER_LEXER_H_
 #define TELL_COMPILER_LEXER_H_
 
+#include <map>
 #include <memory>
 #include <optional>
 #include "Cursor.h"
@@ -47,8 +48,15 @@ class Lexer : public Cursor<Token> {
   std::shared_ptr<ErrorReporter> error_reporter_;
   int line_{1};
   int column_{0};
+
+  // A newline in til is not just whitespace. Keep track of the location of the last seen newline
+  // so that its position can be correctly set in the token
+  int line_at_newline_{};
+  int column_at_newline_{};
+
   Token next_;
   bool eof_;
+  std::map<std::string, std::pair<Token::Type, std::string>> keywords_;
 };
 }
 

@@ -27,8 +27,22 @@ TEST_CASE("Lexer.Next for single tokens. Happy path") {
   auto p = GENERATE(
       pairs("\"This is a string\"", til::Token::kString),
       pairs("/// This is a docstring", til::Token::kDocString),
-      pairs("a_field_name", til::Token::kIdent)
+      pairs("a_field_name", til::Token::kIdent),
+      pairs("!", til::Token::kBang),
+      pairs(":", til::Token::kColon),
+      pairs("?", til::Token::kQMark),
+      pairs("{", til::Token::kLBrace),
+      pairs("}", til::Token::kRBrace),
+      pairs("[", til::Token::kLBracket),
+      pairs("]", til::Token::kRBracket),
+      pairs("message", til::Token::kMessage),
+      pairs("list", til::Token::kList),
+      pairs("map", til::Token::kMap),
+      pairs("service", til::Token::kService),
+      pairs("call", til::Token::kCall),
+      pairs("\n", til::Token::kLineFeed)
       );
+
 
   // Create a token from the generated pair. Check the peek value, check the next value
   auto lx = make_test_lexer(std::get<0>(p));
@@ -43,17 +57,4 @@ TEST_CASE("Lexer.Next for single tokens. Happy path") {
   CHECK((*nt).Literal() == std::get<0>(p));
   CHECK((*nt).line == 1);
   CHECK((*nt).col == 1);
-
-//  SECTION("Bang"){}
-//  SECTION("Colon"){}
-//  SECTION("QMark"){}
-//  SECTION("LBrace"){}
-//  SECTION("RBrace"){}
-//  SECTION("LBracket"){}
-//  SECTION("Message"){}
-//  SECTION("List"){}
-//  SECTION("Service"){}
-//  SECTION("CALL"){}
-//  SECTION("LineFeed"){}
-//  SECTION("EOF"){}
 }

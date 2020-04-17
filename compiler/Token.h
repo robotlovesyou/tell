@@ -7,7 +7,7 @@ namespace til {
 
 static const char *kKeywordMessage = "message";
 static const char *kKeywordList = "list";
-static const char *kKeywordMap = "Map";
+static const char *kKeywordMap = "map";
 static const char *kKeywordService = "service";
 static const char *kKeywordCall = "call";
 
