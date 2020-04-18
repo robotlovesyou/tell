@@ -18,7 +18,7 @@ add_library(
         compiler/FileCursor.cpp compiler/FileCursor.h
         compiler/Lexer.cpp compiler/Lexer.h
         compiler/ErrorReporter.h
-        compiler/DocCommentContext.cpp compiler/DocCommentContext.h compiler/ConsoleErrorReporter.cpp compiler/ConsoleErrorReporter.h compiler/SilentErrorReporter.cpp compiler/SilentErrorReporter.h)
+        compiler/DocCommentContext.cpp compiler/DocCommentContext.h compiler/ConsoleErrorReporter.cpp compiler/ConsoleErrorReporter.h compiler/SilentErrorReporter.cpp compiler/SilentErrorReporter.h compiler/Declaration.h compiler/MessageDeclaration.cpp compiler/MessageDeclaration.h)
 
 add_executable(tellc main.cpp)
 target_link_libraries(tellc tell)
