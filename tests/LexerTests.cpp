@@ -3,9 +3,10 @@
 #include <utility>
 #include "../compiler/Lexer.h"
 #include "../compiler/StringCursor.h"
+#include "../compiler/SilentErrorReporter.h"
 
 std::unique_ptr<til::Lexer> make_test_lexer(const std::string &source,
-                                            const std::shared_ptr<til::ErrorReporter>& er = std::make_shared<til::ErrorReporter>()) {
+                                            const std::shared_ptr<til::ErrorReporter>& er = std::make_shared<til::SilentErrorReporter>()) {
   auto sc = std::make_unique<til::StringCursor>(source);
   return std::make_unique<til::Lexer>(std::move(sc), er);
 }
@@ -16,7 +17,7 @@ std::pair<std::string, til::Token::Type> pairs(const std::string &src, til::Toke
 
 TEST_CASE("Lexer constructor") {
   auto sc = std::make_unique<til::StringCursor>("");
-  auto er = std::make_shared<til::ErrorReporter>();
+  auto er = std::make_shared<til::SilentErrorReporter>();
   CHECK_NOTHROW(til::Lexer(std::move(sc), er));
 }
 
@@ -64,7 +65,7 @@ TEST_CASE("Lexer.Next for single tokens. Happy path") {
 
 TEST_CASE("Lexer.Next string sad paths") {
   SECTION("Newline in string") {
-    auto er = std::make_shared<til::ErrorReporter>();
+    auto er = std::make_shared<til::SilentErrorReporter>();
     auto lx = make_test_lexer("\"This is a \nbroken string", er);
     auto next = lx->Next();
     CHECK(er->has_errors());
@@ -72,7 +73,7 @@ TEST_CASE("Lexer.Next string sad paths") {
     CHECK((*next).t == til::Token::kEOF);
   }
   SECTION("EOF in string") {
-    auto er = std::make_shared<til::ErrorReporter>();
+    auto er = std::make_shared<til::SilentErrorReporter>();
     auto lx = make_test_lexer("\"This is a broken string", er);
     auto next = lx->Next();
     CHECK(er->has_errors());
@@ -83,7 +84,7 @@ TEST_CASE("Lexer.Next string sad paths") {
 
 TEST_CASE("Lexer.Next tokens with whitespace") {
   std::string test_input = "\t   \t\r\r\r\t[  \t]";
-  auto er = std::make_shared<til::ErrorReporter>();
+  auto er = std::make_shared<til::SilentErrorReporter>();
   auto lx = make_test_lexer(test_input);
   auto next = lx->Next();
   CHECK(next);
@@ -110,7 +111,7 @@ TEST_CASE("Lexer.Next message definition") {
       "\tan_optional_field: int?\n"
       "}";
 
-  auto er = std::make_shared<til::ErrorReporter>();
+  auto er = std::make_shared<til::SilentErrorReporter>();
   auto lx = make_test_lexer(test_input, er);
   std::vector<til::Token::Type> types = {
       til::Token::kMessage,
