@@ -17,6 +17,11 @@ til::DocCommentContext test_dcc() {
 til::MessageDeclaration test_message_declaration(til::Token tkn = test_token(), til::DocCommentContext dcc = test_dcc(), const std::string& name = "MyMessage", const std::shared_ptr<til::AST>& ast = std::make_shared<til::AST>()) {
   return til::MessageDeclaration(std::move(tkn), std::move(dcc), name, ast);
 }
+
+TEST_CASE("MessageDeclaration constructor") {
+  CHECK_THROWS_AS(test_message_declaration(til::Token{til::Token::kQMark, 1, 1, "?"}), std::invalid_argument);
+}
+
 TEST_CASE("MessageDeclaration.t()") {
   auto md = test_message_declaration();
   CHECK(md.t() == til::Declaration::kMessage);
