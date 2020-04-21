@@ -1,9 +1,16 @@
 #ifndef TELL_COMPILER_DECLARATION_H_
 #define TELL_COMPILER_DECLARATION_H_
 
+#include <memory>
 #include <string>
 
 namespace til {
+
+/**
+ * Forward declaration of AST class
+ */
+class AST;
+
 /**
  * Declaration is the interface for AST classes representing top level declarations.
  */
@@ -18,6 +25,7 @@ class Declaration {
 
   virtual Type t() = 0;
   virtual std::string name() = 0;
+  virtual std::shared_ptr<AST>ast() = 0;
 };
 }
 
