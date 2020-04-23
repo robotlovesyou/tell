@@ -18,24 +18,18 @@ class DocCommentContext {
   [[nodiscard]] bool has_content() const noexcept;
 
   /**
-   * Same as has_content
-   * @return
-   */
-  explicit operator bool() const noexcept;
-
-  /**
    * Return the content of the DocCommentContext.
    * Behaviour is undefined if the DocCommentContext has no content
    * @return
    */
-  [[nodiscard]] const std::string & operator*() const;
+  const std::string & content() const;
 
   /**
    * Add a new line to the DocCommentContext
    * @param str
    * @return
    */
-  DocCommentContext& operator +=(const std::string& str);
+  void append(const std::string& str);
  private:
   std::optional<std::string> content_{};
 };

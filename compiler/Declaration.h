@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <string>
+#include "DocCommentContext.h"
+#include "Token.h"
 
 namespace til {
 
@@ -24,8 +26,10 @@ class Declaration {
   };
 
   virtual Type t() = 0;
-  virtual std::string name() = 0;
-  virtual std::shared_ptr<AST>ast() = 0;
+  virtual const Token &start_token() = 0;
+  virtual const std::string &name() = 0;
+  virtual const DocCommentContext &doc() = 0;
+  virtual const AST &ast() = 0;
 };
 }
 

@@ -14,15 +14,16 @@
 namespace til {
 class MessageDeclaration: public Declaration {
  public:
-  MessageDeclaration(Token &&start_token, DocCommentContext &&doc, std::string name, const std::shared_ptr<AST> &ast);
+  MessageDeclaration(std::unique_ptr<Token> start_token, std::unique_ptr<DocCommentContext> doc, std::string name, const std::shared_ptr<AST> &ast);
   Type t() override;
-  std::string name() override;
-  DocCommentContext doc();
-  std::shared_ptr<AST> ast() override;
+  const std::string &name() override;
+  const DocCommentContext &doc() override;
+  const AST &ast() override;
+  const Token &start_token() override;
  private:
-  Token start_token_;
+  std::unique_ptr<Token> start_token_;
   std::string name_;
-  DocCommentContext doc_;
+  std::unique_ptr<DocCommentContext> doc_;
   std::weak_ptr<AST> ast_;
 };
 }

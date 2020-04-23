@@ -4,42 +4,42 @@
 static const char* line_1 = "This is a comment";
 static const char* line_2 = "This is more comment";
 
-TEST_CASE("DocCommentContext overrides += to append a new line to the string") {
+TEST_CASE("DocCommentContext.append a new line to the string") {
   SECTION("Empty comment") {
     til::DocCommentContext dc;
-    CHECK_NOTHROW(dc += line_1);
+    CHECK_NOTHROW(dc.append(line_1));
   }
   SECTION("Adding a line") {
     til::DocCommentContext dc;
-    CHECK_NOTHROW(dc += line_1);
-    CHECK_NOTHROW(dc += line_2);
+    CHECK_NOTHROW(dc.append(line_1));
+    CHECK_NOTHROW(dc.append(line_2));
   }
 }
 
-TEST_CASE("DocCommentContext overrides * to access current content") {
+TEST_CASE("DocCommentContext.content accesses current content") {
   SECTION("Single comment") {
     til::DocCommentContext dc;
-    dc += line_1;
-    CHECK(*dc == line_1);
+    dc.append(line_1);
+    CHECK(dc.content() == line_1);
   }
   SECTION("Multiline comment") {
     til::DocCommentContext dc;
-    dc += line_1;
-    dc += line_2;
+    dc.append(line_1);
+    dc.append(line_2);
     std::string ml = line_1;
     ml += "\n";
     ml += line_2;
-    CHECK(*dc == ml);
+    CHECK(dc.content() == ml);
   }
 }
 
-TEST_CASE("DocCommentContext evaluates as false when empty") {
+TEST_CASE("DocCommentContext.has_content is false when empty") {
   til::DocCommentContext dc;
-  CHECK_FALSE(dc);
+  CHECK_FALSE(dc.has_content());
 }
 
-TEST_CASE("DocCommentContext evaluates as true when it has content") {
+TEST_CASE("DocCommentContext.has_content is true when it has content") {
   til::DocCommentContext dc;
-  dc += line_1;
-  CHECK(dc);
+  dc.append(line_1);
+  CHECK(dc.has_content());
 }

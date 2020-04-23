@@ -3,21 +3,16 @@ bool til::DocCommentContext::has_content() const noexcept {
   return content_.has_value();
 }
 
-til::DocCommentContext::operator bool() const noexcept {
-  return this->has_content();
+const std::string &til::DocCommentContext::content() const {
+  return content_.value();
 }
 
-til::DocCommentContext &til::DocCommentContext::operator+=(const std::string& str) {
+void til::DocCommentContext::append(const std::string &str) {
   if(content_) {
     *content_ += "\n";
     *content_ += str;
   } else {
     content_ = str;
   }
-  return *this;
-}
-
-const std::string &til::DocCommentContext::operator*() const {
-  return content_.value();
 }
 

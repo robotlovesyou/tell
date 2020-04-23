@@ -12,15 +12,25 @@
 
 namespace til {
 class DirectiveDeclaration : public Declaration {
-  DirectiveDeclaration(Token &&startToken,
-                       til::DocCommentContext &&doc,
+ public:
+  DirectiveDeclaration(std::unique_ptr<Token> start_token,
+                       std::unique_ptr<til::DocCommentContext> doc,
                        std::string name,
                        std::string value,
-                       std::shared_ptr<AST> ast);
+                       const std::shared_ptr<AST>& ast);
 
   Declaration::Type t() override;
-  std::string name() override;
-  std::shared_ptr<AST> ast() override;
+  const std::string &name() override;
+  const std::string &value();
+  const AST &ast() override;
+  const DocCommentContext &doc() override;
+  const Token &start_token() override;
+ private:
+  std::unique_ptr<Token> start_token_;
+  std::unique_ptr<DocCommentContext> doc_;
+  std::string name_;
+  std::string value_;
+  std::weak_ptr<AST> ast_;
 };
 }
 
