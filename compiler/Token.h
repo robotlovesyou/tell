@@ -83,7 +83,7 @@ struct Token {
    * Return a string containing the type name of the token
    * @return a type name for the toke
    */
-  std::string TypeName();
+  std::string TypeName() const;
 
   /**
    * Return a valid string literal for the token

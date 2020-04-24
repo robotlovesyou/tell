@@ -22,8 +22,8 @@ TEST_CASE("Parser constructor") {
 
 TEST_CASE("Parser.parse directive") {
   const char * source = R"SOURCE(
-!a_directive "the directive value
-")SOURCE";
+!a_directive "the directive value"
+)SOURCE";
 
   auto er = test_error_reporter();
   auto tl = test_lexer(source, er);

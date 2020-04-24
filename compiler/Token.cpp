@@ -7,7 +7,7 @@
 
 namespace til {
 
-std::string Token::TypeName() {
+std::string Token::TypeName() const {
   switch (t) {
     case kString:return "kString";
     case kDocString:return "kDocString";
