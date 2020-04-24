@@ -2,23 +2,24 @@
 #include "fmt/core.h"
 
 #include <utility>
-til::Declaration::Type til::ServiceDeclaration::t() {
+#include <iostream>
+til::Declaration::Type til::ServiceDeclaration::t() const {
   return kService;
 }
 
-const til::Token &til::ServiceDeclaration::start_token() {
+const til::Token &til::ServiceDeclaration::start_token() const {
   return *start_token_;
 }
 
-const std::string &til::ServiceDeclaration::name() {
+const std::string &til::ServiceDeclaration::name() const {
   return name_;
 }
 
-const til::DocCommentContext &til::ServiceDeclaration::doc() {
+const til::DocCommentContext &til::ServiceDeclaration::doc() const {
   return *doc_;
 }
 
-const til::AST &til::ServiceDeclaration::ast() {
+const til::AST &til::ServiceDeclaration::ast() const {
   return *ast_.lock();
 }
 

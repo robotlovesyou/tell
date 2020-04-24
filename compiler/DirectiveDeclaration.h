@@ -19,12 +19,20 @@ class DirectiveDeclaration : public Declaration {
                        std::string value,
                        const std::shared_ptr<AST>& ast);
 
-  Declaration::Type t() override;
-  const std::string &name() override;
-  const std::string &value();
-  const AST &ast() override;
-  const DocCommentContext &doc() override;
-  const Token &start_token() override;
+
+  // Disallow copy construction and assignment. Allow move.
+  ~DirectiveDeclaration() = default;
+  DirectiveDeclaration(const DirectiveDeclaration&) = delete;
+  DirectiveDeclaration &operator=(const DirectiveDeclaration&) = delete;
+  DirectiveDeclaration(DirectiveDeclaration &&) = default;
+  DirectiveDeclaration &operator=(DirectiveDeclaration &&) = default;
+
+  Declaration::Type t() const override;
+  const std::string &name() const override;
+  const std::string &value() const;
+  const AST &ast() const override;
+  const DocCommentContext &doc() const override;
+  const Token &start_token() const override;
  private:
   std::unique_ptr<Token> start_token_;
   std::unique_ptr<DocCommentContext> doc_;

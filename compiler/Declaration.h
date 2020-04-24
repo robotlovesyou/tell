@@ -25,11 +25,20 @@ class Declaration {
     kDirective, kMessage, kService
   };
 
-  virtual Type t() = 0;
-  virtual const Token &start_token() = 0;
-  virtual const std::string &name() = 0;
-  virtual const DocCommentContext &doc() = 0;
-  virtual const AST &ast() = 0;
+  // Set rule of 5 methods and default constructor to default.
+  // See https://stackoverflow.com/questions/26039907/does-rule-of-three-five-apply-to-inheritance-and-virtual-destructors
+  virtual ~Declaration() = default;
+  Declaration() = default;
+  Declaration(const Declaration&) = default;
+  Declaration &operator=(const Declaration&) = default;
+  Declaration(Declaration &&) = default;
+  Declaration &operator=(Declaration &&) = default;
+
+  virtual Type t() const = 0;
+  virtual const Token &start_token() const = 0;
+  virtual const std::string &name() const = 0;
+  virtual const DocCommentContext &doc() const = 0;
+  virtual const AST &ast() const = 0;
 };
 }
 

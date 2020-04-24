@@ -18,26 +18,26 @@ til::DirectiveDeclaration::DirectiveDeclaration(std::unique_ptr<til::Token> star
 
 }
 
-til::Declaration::Type til::DirectiveDeclaration::t() {
+til::Declaration::Type til::DirectiveDeclaration::t() const {
   return kDirective;
 }
 
-const std::string &til::DirectiveDeclaration::name() {
+const std::string &til::DirectiveDeclaration::name() const {
   return name_;
 }
 
-const til::AST &til::DirectiveDeclaration::ast() {
+const til::AST &til::DirectiveDeclaration::ast() const {
   return *ast_.lock();
 }
 
-const til::DocCommentContext &til::DirectiveDeclaration::doc() {
+const til::DocCommentContext &til::DirectiveDeclaration::doc() const {
   return *doc_;
 }
 
-const std::string &til::DirectiveDeclaration::value() {
+const std::string &til::DirectiveDeclaration::value() const {
   return value_;
 }
 
-const til::Token &til::DirectiveDeclaration::start_token() {
+const til::Token &til::DirectiveDeclaration::start_token() const {
   return *start_token_;
 }
