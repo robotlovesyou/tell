@@ -17,7 +17,7 @@ TEST_CASE("Token.Literal") {
   }SECTION("DocString") {
     const std::string repr = "A Doc String";
     Token tk{Token::kDocString, 0, 0, repr};
-    CHECK(tk.Literal()==fmt::format("///{}", repr));
+    CHECK(tk.Literal()==fmt::format("/// {}", repr));
   }SECTION("Ident etc (repr = literal") {
     const std::string repr = "MyMessage";
     Token tk{Token::kIdent, 0, 0, repr};

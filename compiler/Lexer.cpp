@@ -156,7 +156,12 @@ std::optional<til::Token> til::Lexer::try_read_docstring_token() {
   }
 
   // token is a docstring so build it.
-  read_next_char(); // consume the third slash
+  // consume the third slash and a maximum of one leading space;
+  read_next_char();
+  if(expect_peek(' ')) {
+    read_next_char();
+  }
+
   std::string repr;
 
   while (auto oc = read_next_char()) {

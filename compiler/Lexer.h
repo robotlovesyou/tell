@@ -27,13 +27,13 @@ class Lexer : public Cursor<Token> {
    * Return the next token.
    * @return
    */
-  std::optional<Token> Next();
+  std::optional<Token> Next() override;
 
   /**
    * Peek at the next token to be returned
    * @return
    */
-  std::optional<const Token *> Peek();
+  std::optional<const Token *> Peek() override;
 
   // explicitly delete copy constructor and copy assignment operator, move constructor and move assignment operator
   // to encourage use of a unique_ptr
