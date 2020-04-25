@@ -139,7 +139,8 @@ void til::Parser::HandleParsingError(const ParsingException &err, til::Token::Ty
 void til::Parser::HandleUnexpectedTopLevelToken() {
   auto tkn = *lexer_->Next();
   std::string literal = tkn.t==Token::Type::kLineFeed ? "[LineFeed]" : tkn.Literal();
-  ParsingException pe(fmt::format("Unexpected {} \"{}\" at line {} column {}", tkn.TypeName(), literal, tkn.line, tkn.col));
+  ParsingException
+      pe(fmt::format("Unexpected {} \"{}\" at line {} column {}", tkn.TypeName(), literal, tkn.line, tkn.col));
   HandleParsingError(pe, Token::kLineFeed);
 }
 
