@@ -178,6 +178,22 @@ message a_scalar_only_message {
   CHECK(std->scalar_type()==scalar_type);
 }
 
+TEST_CASE("Parser.parse message with message fields") {
+  FAIL("pending");
+}
+
+TEST_CASE("Parser.parse message with map fields") {
+  FAIL("pending");
+}
+
+TEST_CASE("Parser.parse message with list field") {
+  FAIL("pending");
+}
+
+TEST_CASE("Parser.parse message with nested map/list fields") {
+  FAIL("pending");
+}
+
 TEST_CASE("Parser.parse service") {
   FAIL("pending");
 }
