@@ -16,12 +16,14 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   ast_ = std::make_shared<AST>();
 
   // Prepare the map of top level directive parsing functions
-  top_level_parsers_[Token::kBang] = [this]() { this->ParseDirective(); };
-  top_level_parsers_[Token::kMessage] = [this]() { this->ParseMessage(); };
-  top_level_parsers_[Token::kService] = [this]() { this->ParseService(); };
-  top_level_parsers_[Token::kDocString] = [this]() { this->ParseDocComment(); };
-  top_level_parsers_[Token::kLineFeed] = [this]() { this->ConsumeLineFeeds(); };
-  top_level_parsers_[Token::kEOF] = [this]() { this->ConsumeEOF(); };
+  top_level_parsers_[Token::kBang] =
+      [this](std::unique_ptr<til::DocCommentContext> doc) { this->ParseDirective(std::move(doc)); };
+
+  top_level_parsers_[Token::kMessage] =
+      [this](std::unique_ptr<til::DocCommentContext> doc) { this->ParseMessage(std::move(doc)); };
+
+  top_level_parsers_[Token::kService] =
+      [this](std::unique_ptr<til::DocCommentContext> doc) { this->ParseService(std::move(doc)); };
 
   type_def_parsers_[Token::kBool] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kFloat] = [this]() { return this->ParseScalarTypeDef(); };
@@ -33,20 +35,34 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
 std::shared_ptr<til::AST> til::Parser::Parse() {
   while (std::optional<const til::Token *> otkn = lexer_->Peek()) {
 
-    // If the last doc comment context has been consumed then create a new one
-    current_doc_ = current_doc_==nullptr ? std::make_unique<DocCommentContext>() : std::move(current_doc_);
+    otkn = ConsumeLineFeeds();
+    if (!otkn.has_value()) {
+      break;
+    }
+
+    // Create a doc comment context and parse the next docstrings into it.
+    auto doc = ParseDocComment();
+    otkn = lexer_->Peek();
+    if (!otkn.has_value()) {
+      break;
+    }
+
+    if ((**otkn).t==Token::kEOF) {
+      ConsumeEOF();
+      break;
+    }
 
     if (top_level_parsers_.count((**otkn).t)==0) {
       HandleUnexpectedTopLevelToken();
     } else {
-      top_level_parsers_[(**otkn).t]();
+      top_level_parsers_[(**otkn).t](std::move(doc));
     }
   }
 
   return ast_;
 }
 
-void til::Parser::ParseDirective() {
+void til::Parser::ParseDirective(std::unique_ptr<til::DocCommentContext> doc) {
   try {
     auto start_tkn = *lexer_->Next();
 
@@ -57,7 +73,7 @@ void til::Parser::ParseDirective() {
     ExpectPeekConsume(Token::kLineFeed);
 
     ast_->AddDeclaration(std::make_unique<DirectiveDeclaration>(to_unique_tkn(std::move(start_tkn)),
-                                                                std::move(current_doc_),
+                                                                std::move(doc),
                                                                 identTkn.repr,
                                                                 valueTkn.repr,
                                                                 ast_));
@@ -69,7 +85,7 @@ void til::Parser::ParseDirective() {
 
 }
 
-void til::Parser::ParseMessage() {
+void til::Parser::ParseMessage(std::unique_ptr<til::DocCommentContext> doc) {
   try {
     auto start_tkn = *lexer_->Next();
 
@@ -80,15 +96,13 @@ void til::Parser::ParseMessage() {
     ExpectPeek(Token::kLineFeed);
     ConsumeLineFeeds();
 
-    auto message_doc = std::move(current_doc_);
-
     auto fields = ParseMessageFields();
 
     ExpectPeekConsume(Token::kRBrace);
     ExpectPeekConsume(Token::kLineFeed);
 
     ast_->AddDeclaration(std::make_unique<MessageDeclaration>(to_unique_tkn(std::move(start_tkn)),
-                                                              std::move(message_doc),
+                                                              std::move(doc),
                                                               name_tkn.repr,
                                                               std::move(fields),
                                                               ast_));
@@ -99,20 +113,21 @@ void til::Parser::ParseMessage() {
 
 }
 
-void til::Parser::ParseService() {
+void til::Parser::ParseService(std::unique_ptr<til::DocCommentContext> doc) {
   auto tkn = to_unique_tkn(std::move(*lexer_->Next()));
   std::cout << "Parsing service>" << std::endl;
 
   // TODO: Remember to fail on unconsumed doc comments (ie before the closing brace of the service)
 }
 
-void til::Parser::ConsumeLineFeeds() {
+std::optional<const til::Token *> til::Parser::ConsumeLineFeeds() {
   while (std::optional<const Token *> opeek = lexer_->Peek()) {
     if ((**opeek).t!=til::Token::kLineFeed) {
       break;
     }
     lexer_->Next();
   }
+  return lexer_->Peek();
 }
 
 void til::Parser::ExpectPeek(til::Token::Type t) {
@@ -150,23 +165,24 @@ void til::Parser::ConsumeEOF() {
   lexer_->Next();
 }
 
-void til::Parser::ParseDocComment() {
+std::unique_ptr<til::DocCommentContext> til::Parser::ParseDocComment() {
+  auto doc = std::make_unique<DocCommentContext>();
   while (std::optional<const Token *> opeek = lexer_->Peek()) {
     if ((**opeek).t==Token::kDocString) {
       auto tkn = *lexer_->Next();
-      current_doc_->append(tkn.repr);
+      doc->append(tkn.repr);
     } else if ((**opeek).t==Token::kLineFeed) {
       lexer_->Next();
     } else {
       break;
     }
   }
+  return doc;
 }
 
 void til::Parser::HandleParsingError(const ParsingException &err, til::Token::Type consume_past) {
   ConsumePastNext(consume_past);
   error_reporter_->ReportError(err.what());
-  current_doc_ = nullptr;
 }
 
 void til::Parser::HandleUnexpectedTopLevelToken() {
@@ -212,16 +228,43 @@ std::unique_ptr<til::TypeDef> til::Parser::ParseScalarTypeDef() {
 std::vector<std::unique_ptr<til::Field>> til::Parser::ParseMessageFields() {
   std::vector<std::unique_ptr<Field>> fields;
 
-  while (std::optional<const Token*> opeek = lexer_->Peek()) {
-    if ((**opeek).t == Token::kRBrace) {
+  while (std::optional<const Token *> otkn = lexer_->Peek()) {
+    otkn = ConsumeLineFeeds();
+    if (!otkn.has_value()) {
       break;
     }
 
-    // If the last doc comment context has been consumed then create a new one
-    current_doc_ = current_doc_==nullptr ? std::make_unique<DocCommentContext>() : std::move(current_doc_);
+    if ((**otkn).t==Token::kRBrace) {
+      break;
+    }
+
+    auto doc = ParseDocComment();
+    fields.push_back(ParseField(std::move(doc)));
   }
 
   return fields;
+}
+
+std::unique_ptr<til::Field> til::Parser::ParseField(std::unique_ptr<DocCommentContext> doc) {
+  auto ident_tkn = ExpectPeekConsume(Token::kIdent);
+
+  ExpectPeekConsume(Token::kColon);
+
+  auto otkn = lexer_->Peek();
+  if (!otkn.has_value()) {
+    throw ParsingException("Unexpected end of token stream parsing message field");
+  }
+  auto peek = *otkn;
+
+  if (type_def_parsers_.count(peek->t)==0) {
+    throw ParsingException(fmt::format("Unexpected {} \"{}\" at line {} column {} parsing message field",
+                                           peek->TypeName(),
+                                           peek->Literal(),
+                                           peek->line,
+                                           peek->col));
+  }
+  auto field_type = type_def_parsers_[peek->t]();
+  return std::make_unique<Field>(ident_tkn.repr, std::move(field_type), std::move(doc));
 }
 
 

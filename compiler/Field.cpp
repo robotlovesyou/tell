@@ -5,8 +5,8 @@ std::string til::Field::name() const {
   return name_;
 }
 
-const til::TypeDef &til::Field::type_def() const {
-  return *type_def_;
+const til::TypeDef *til::Field::type_def() const {
+  return type_def_.get();
 }
 
 til::Field::Field(std::string name,

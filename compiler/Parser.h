@@ -19,7 +19,7 @@
 
 using unique_doc = std::unique_ptr<til::DocCommentContext>;
 using unique_tkn = std::unique_ptr<til::Token>;
-using directive_parser = std::function<void()>;
+using directive_parser = std::function<void(std::unique_ptr<til::DocCommentContext>)>;
 using type_def_parser = std::function<std::unique_ptr<til::TypeDef>()>;
 
 namespace til {
@@ -34,16 +34,14 @@ class Parser {
   std::shared_ptr<AST> ast_;
   std::map<Token::Type, directive_parser> top_level_parsers_;
   std::map<Token::Type, type_def_parser> type_def_parsers_;
-  unique_doc current_doc_;
 
   /**
    * Top Level Parsing Functions
    */
-  void ParseDirective();
-  void ParseMessage();
-  void ParseService();
-  void ParseDocComment();
-  void ConsumeLineFeeds();
+  void ParseDirective(std::unique_ptr<til::DocCommentContext> doc);
+  void ParseMessage(std::unique_ptr<til::DocCommentContext> doc);
+  void ParseService(std::unique_ptr<til::DocCommentContext> doc);
+  std::unique_ptr<DocCommentContext> ParseDocComment();
   void ConsumeEOF();
 
   /**
@@ -51,10 +49,12 @@ class Parser {
    */
   std::unique_ptr<TypeDef> ParseScalarTypeDef();
   std::vector<std::unique_ptr<Field>> ParseMessageFields();
+  std::unique_ptr<Field> ParseField(std::unique_ptr<DocCommentContext> doc);
 
   /**
    * Helper Functions
    */
+  std::optional<const Token*> ConsumeLineFeeds();
   void ExpectPeek(Token::Type t);
   til::Token ExpectPeekConsume(Token::Type t);
   void ConsumePastNext(Token::Type t);

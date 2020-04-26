@@ -16,7 +16,7 @@ class Field {
  public:
   Field(std::string name, std::unique_ptr<TypeDef> type_def, std::unique_ptr<DocCommentContext> doc);
   [[nodiscard]] std::string name() const;
-  [[nodiscard]] const TypeDef &type_def() const;
+  [[nodiscard]] const TypeDef *type_def() const;
   [[nodiscard]] const DocCommentContext &doc() const;
  private:
   std::string name_;

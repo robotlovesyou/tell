@@ -17,8 +17,8 @@ class TypeDef {
   // Set rule of 5 methods and default constructor to default.
   // See https://stackoverflow.com/questions/26039907/does-rule-of-three-five-apply-to-inheritance-and-virtual-destructors
   virtual ~TypeDef() = default;
-  TypeDef(const TypeDef&) = default;
-  TypeDef &operator=(const TypeDef&) = default;
+  TypeDef(const TypeDef&) = delete;
+  TypeDef &operator=(const TypeDef&) = delete;
   TypeDef (TypeDef &&) = default;
   TypeDef &operator=(TypeDef &&) = default;
 

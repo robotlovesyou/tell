@@ -11,6 +11,7 @@
 #include "../compiler/DirectiveDeclaration.h"
 #include "../compiler/MessageDeclaration.h"
 #include "../compiler/ServiceDeclaration.h"
+#include "../compiler/ScalarTypeDef.h"
 
 static std::unique_ptr<til::Token> test_token(til::Token::Type t) {
   return std::make_unique<til::Token>(t, 1, 1, "");
@@ -52,6 +53,16 @@ static std::unique_ptr<til::ServiceDeclaration> test_service_declaration(std::un
                                                  const std::string &name = "my_service",
                                                  const std::shared_ptr<til::AST> &ast = test_ast()) {
   return std::make_unique<til::ServiceDeclaration>(std::move(tkn), std::move(dcc), name, ast);
+}
+
+static std::unique_ptr<til::TypeDef> test_td() {
+  return std::make_unique<til::ScalarTypeDef>(til::ScalarTypeDef::kBool, false);
+}
+
+static til::Field test_field(const std::string &name = "a_field",
+                      std::unique_ptr<til::TypeDef> type_def = test_td(),
+                      std::unique_ptr<til::DocCommentContext> doc = test_dcc()) {
+  return til::Field(name, std::move(type_def), std::move(doc));
 }
 
 #endif //TELL_TESTS_PARSERTESTHELPERS_H_

@@ -35,6 +35,8 @@ class MessageDeclaration : public Declaration {
   const DocCommentContext &doc() const override;
   const AST &ast() const override;
   const Token &start_token() const override;
+  int FieldCount() const;
+  const Field &FieldEntry(int idx) const;
  private:
   std::unique_ptr<Token> start_token_;
   std::string name_;

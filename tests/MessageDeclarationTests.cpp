@@ -45,3 +45,23 @@ TEST_CASE("MessageDeclaration.start_token()") {
   auto md = test_message_declaration(std::move(tk));
   CHECK(&md->start_token()==tk_ptr);
 }
+
+TEST_CASE("MessageDeclaration.FieldCount()") {
+  auto fields = test_empty_fields();
+  fields.push_back(std::unique_ptr<til::Field>(new til::Field(test_field())));
+  auto md = test_message_declaration(test_token(til::Token::kMessage), test_dcc(), "MyMessage", std::move(fields));
+  CHECK(md->FieldCount() == 1);
+}
+
+TEST_CASE("MessageDeclaration.FieldEntry()") {
+  auto fields = test_empty_fields();
+  fields.push_back(std::unique_ptr<til::Field>(new til::Field(test_field())));
+  auto md = test_message_declaration(test_token(til::Token::kMessage), test_dcc(), "MyMessage", std::move(fields));
+  SECTION("Valid Entry") {
+    CHECK_FALSE(md->FieldEntry(0).name().empty());
+  }
+
+  SECTION("Invalid Entry") {
+    CHECK_THROWS_AS(md->FieldEntry(1), std::out_of_range);
+  }
+}

@@ -45,3 +45,14 @@ const til::AST &til::MessageDeclaration::ast() const {
 const til::Token &til::MessageDeclaration::start_token() const {
   return *start_token_;
 }
+
+int til::MessageDeclaration::FieldCount() const {
+  return fields_.size();
+}
+
+const til::Field &til::MessageDeclaration::FieldEntry(int idx) const {
+  if (idx >= fields_.size()) {
+    throw std::out_of_range(fmt::format("invalid field entry {}", idx));
+  }
+  return *fields_[idx];
+}
