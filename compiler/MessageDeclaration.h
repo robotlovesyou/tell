@@ -7,19 +7,26 @@
 
 #include <optional>
 #include <string>
+#include <vector>
+
 #include "Declaration.h"
 #include "Token.h"
 #include "DocCommentContext.h"
+#include "Field.h"
 
 namespace til {
-class MessageDeclaration: public Declaration {
+class MessageDeclaration : public Declaration {
  public:
-  MessageDeclaration(std::unique_ptr<Token> start_token, std::unique_ptr<DocCommentContext> doc, std::string name, const std::shared_ptr<AST> &ast);
+  MessageDeclaration(std::unique_ptr<Token> start_token,
+                     std::unique_ptr<DocCommentContext> doc,
+                     std::string name,
+                     std::vector<std::unique_ptr<Field>> fields,
+                     const std::shared_ptr<AST> &ast);
 
   // Disallow copy construction and assignment. Allow move.
   ~MessageDeclaration() = default;
-  MessageDeclaration(const MessageDeclaration&) = delete;
-  MessageDeclaration &operator=(const MessageDeclaration&) = delete;
+  MessageDeclaration(const MessageDeclaration &) = delete;
+  MessageDeclaration &operator=(const MessageDeclaration &) = delete;
   MessageDeclaration(MessageDeclaration &&) = default;
   MessageDeclaration &operator=(MessageDeclaration &&) = default;
 
@@ -32,6 +39,7 @@ class MessageDeclaration: public Declaration {
   std::unique_ptr<Token> start_token_;
   std::string name_;
   std::unique_ptr<DocCommentContext> doc_;
+  std::vector<std::unique_ptr<Field>> fields_;
   std::weak_ptr<AST> ast_;
 };
 }

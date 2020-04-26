@@ -35,11 +35,16 @@ static std::unique_ptr<til::DirectiveDeclaration> test_directive_declaration(std
   return std::make_unique<til::DirectiveDeclaration>(std::move(token), std::move(dcc), name, value, ast);
 }
 
+static std::vector<std::unique_ptr<til::Field>> test_empty_fields() {
+  return std::vector<std::unique_ptr<til::Field>>();
+}
+
 static std::unique_ptr<til::MessageDeclaration> test_message_declaration(std::unique_ptr<til::Token> tkn = test_token(til::Token::kMessage),
                                                  std::unique_ptr<til::DocCommentContext> dcc = test_dcc(),
                                                  const std::string &name = "MyMessage",
+                                                 std::vector<std::unique_ptr<til::Field>> fields = test_empty_fields(),
                                                  const std::shared_ptr<til::AST> &ast = std::make_shared<til::AST>()) {
-  return std::make_unique<til::MessageDeclaration>(std::move(tkn), std::move(dcc), name, ast);
+  return std::make_unique<til::MessageDeclaration>(std::move(tkn), std::move(dcc), name, std::move(fields), ast);
 }
 
 static std::unique_ptr<til::ServiceDeclaration> test_service_declaration(std::unique_ptr<til::Token> tkn = test_token(til::Token::kService),

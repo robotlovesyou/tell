@@ -1,10 +1,11 @@
 #include "Parser.h"
+#include "fmt/core.h"
 
 #include <optional>
 #include <utility>
 #include <iostream>
 
-#include "fmt/core.h"
+#include "ScalarTypeDef.h"
 
 unique_tkn to_unique_tkn(til::Token tkn) {
   return std::unique_ptr<til::Token>(new til::Token(std::move(tkn))); // NOLINT(modernize-make-unique)
@@ -21,6 +22,12 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   top_level_parsers_[Token::kDocString] = [this]() { this->ParseDocComment(); };
   top_level_parsers_[Token::kLineFeed] = [this]() { this->ConsumeLineFeeds(); };
   top_level_parsers_[Token::kEOF] = [this]() { this->ConsumeEOF(); };
+
+  type_def_parsers_[Token::kBool] = [this]() { return this->ParseScalarTypeDef(); };
+  type_def_parsers_[Token::kFloat] = [this]() { return this->ParseScalarTypeDef(); };
+  type_def_parsers_[Token::kInt] = [this]() { return this->ParseScalarTypeDef(); };
+  type_def_parsers_[Token::kStringWord] = [this]() { return this->ParseScalarTypeDef(); };
+  type_def_parsers_[Token::kTime] = [this]() { return this->ParseScalarTypeDef(); };
 }
 
 std::shared_ptr<til::AST> til::Parser::Parse() {
@@ -41,17 +48,15 @@ std::shared_ptr<til::AST> til::Parser::Parse() {
 
 void til::Parser::ParseDirective() {
   try {
-    auto start_tkn = to_unique_tkn(std::move(*lexer_->Next()));
+    auto start_tkn = *lexer_->Next();
 
-    ExpectPeek(Token::kIdent);
-    auto identTkn = *lexer_->Next();
+    auto identTkn = ExpectPeekConsume(Token::kIdent);
 
-    ExpectPeek(Token::kString);
-    auto valueTkn = *lexer_->Next();
+    auto valueTkn = ExpectPeekConsume(Token::kString);
 
-    ExpectPeek(Token::kLineFeed);
+    ExpectPeekConsume(Token::kLineFeed);
 
-    ast_->AddDeclaration(std::make_unique<DirectiveDeclaration>(std::move(start_tkn),
+    ast_->AddDeclaration(std::make_unique<DirectiveDeclaration>(to_unique_tkn(std::move(start_tkn)),
                                                                 std::move(current_doc_),
                                                                 identTkn.repr,
                                                                 valueTkn.repr,
@@ -65,10 +70,33 @@ void til::Parser::ParseDirective() {
 }
 
 void til::Parser::ParseMessage() {
-  auto tkn = to_unique_tkn(std::move(*lexer_->Next()));
-  std::cout << "Parsing message" << std::endl;
+  try {
+    auto start_tkn = *lexer_->Next();
 
-  // TODO: Remember to fail on unconsumed doc comments (ie before the closing brace of the message)
+    auto name_tkn = ExpectPeekConsume(Token::kIdent);
+
+    ExpectPeekConsume(Token::kLBrace);
+
+    ExpectPeek(Token::kLineFeed);
+    ConsumeLineFeeds();
+
+    auto message_doc = std::move(current_doc_);
+
+    auto fields = ParseMessageFields();
+
+    ExpectPeekConsume(Token::kRBrace);
+    ExpectPeekConsume(Token::kLineFeed);
+
+    ast_->AddDeclaration(std::make_unique<MessageDeclaration>(to_unique_tkn(std::move(start_tkn)),
+                                                              std::move(message_doc),
+                                                              name_tkn.repr,
+                                                              std::move(fields),
+                                                              ast_));
+
+  } catch (const ParsingException &e) {
+    HandleParsingError(e, Token::kRBrace);
+  }
+
 }
 
 void til::Parser::ParseService() {
@@ -103,6 +131,11 @@ void til::Parser::ExpectPeek(til::Token::Type t) {
                                        tkn.col,
                                        expected_fake.TypeName()));
   }
+}
+
+til::Token til::Parser::ExpectPeekConsume(til::Token::Type t) {
+  ExpectPeek(t);
+  return *lexer_->Next();
 }
 
 void til::Parser::ConsumePastNext(til::Token::Type t) {
@@ -143,4 +176,52 @@ void til::Parser::HandleUnexpectedTopLevelToken() {
       pe(fmt::format("Unexpected {} \"{}\" at line {} column {}", tkn.TypeName(), literal, tkn.line, tkn.col));
   HandleParsingError(pe, Token::kLineFeed);
 }
+
+std::unique_ptr<til::TypeDef> til::Parser::ParseScalarTypeDef() {
+  auto tkn = *lexer_->Next();
+  ScalarTypeDef::ScalarType scalar_type;
+
+  switch (tkn.t) {
+    case Token::kBool:scalar_type = ScalarTypeDef::kBool;
+      break;
+    case Token::kFloat:scalar_type = ScalarTypeDef::ScalarType::kFloat;
+      break;
+    case Token::kInt:scalar_type = ScalarTypeDef::kInt;
+      break;
+    case Token::kStringWord:scalar_type = ScalarTypeDef::kString;
+      break;
+    case Token::kTime:scalar_type = ScalarTypeDef::kTime;
+      break;
+    default:
+      throw std::invalid_argument(fmt::format("Got a {} parsing a scalar message type at line {} column {}",
+                                              tkn.TypeName(),
+                                              tkn.line,
+                                              tkn.col));
+  }
+
+  bool optional = false;
+  auto opeek = lexer_->Peek();
+  if (opeek.has_value() && (**opeek).t==Token::kQMark) {
+    optional = true;
+    lexer_->Next();
+  }
+
+  return std::make_unique<ScalarTypeDef>(scalar_type, optional);
+}
+
+std::vector<std::unique_ptr<til::Field>> til::Parser::ParseMessageFields() {
+  std::vector<std::unique_ptr<Field>> fields;
+
+  while (std::optional<const Token*> opeek = lexer_->Peek()) {
+    if ((**opeek).t == Token::kRBrace) {
+      break;
+    }
+
+    // If the last doc comment context has been consumed then create a new one
+    current_doc_ = current_doc_==nullptr ? std::make_unique<DocCommentContext>() : std::move(current_doc_);
+  }
+
+  return fields;
+}
+
 

@@ -86,7 +86,39 @@ TEST_CASE("Parser.parse directive") {
 }
 
 TEST_CASE("Parser.parse message") {
-  FAIL("pending");
+  SECTION("Message with no fields") {
+    const char *source=R"SOURCE(
+message an_empty_message {
+}
+)SOURCE";
+
+    auto er = test_error_reporter();
+    auto tl = test_lexer(source, er);
+    til::Parser p(std::move(tl), er);
+    auto ast = p.Parse();
+    CHECK_FALSE (er->has_errors());
+    CHECK(ast->DeclarationCount() == 1);
+    CHECK(ast->Declaration(0)->t() == til::Declaration::kMessage);
+    auto md = dynamic_cast<const til::MessageDeclaration*>(ast->Declaration(0));
+    CHECK(md->name() == "an_empty_message");
+  }
+
+  SECTION("Message with scalar fields") {
+    const char *source=R"SOURCE(
+message a_scalar_only_message {
+  a_bool_field: bool
+  an_optional_bool_field: bool?
+  a_float_field: float
+  an_optional_float_field: float?
+  an_int_field: int
+  an_optional_int_field: int?
+  a_string_field: string
+  an_optional_string_field: string?
+  a_time_field: time
+  an_optional_time_field: time?
+}
+)SOURCE";
+  }
 }
 
 TEST_CASE("Parser.parse service") {

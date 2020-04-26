@@ -23,14 +23,19 @@ TEST_CASE("MessageDeclaration.doc()") {
   std::string comment = "This is a comment";
   auto dcc = std::make_unique<til::DocCommentContext>();
   dcc->append(comment);
-  auto dcc_ptr = dcc.get();
   auto md = test_message_declaration(test_token(til::Token::kMessage), std::move(dcc));
   CHECK(md->doc().content()==comment);
 }
 
 TEST_CASE("MessageDeclaration.ast()") {
   auto ast = std::make_shared<til::AST>();
-  auto md = test_message_declaration(test_token(til::Token::kMessage), test_dcc(), "SomeName", ast);
+  auto md = test_message_declaration(
+      test_token(til::Token::kMessage),
+      test_dcc(),
+      "SomeName",
+      test_empty_fields(),
+      ast);
+
   CHECK(&md->ast()==ast.get());
 }
 
