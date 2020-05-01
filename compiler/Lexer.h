@@ -78,6 +78,12 @@ class Lexer : public Cursor<Token> {
   std::optional<Token> try_read_ident_token(char first);
 
   /**
+   * Read a sequence of one or more line feeds, optionally separated by other non-breaking space
+   * @return
+   */
+  std::optional<Token> read_line_feed_token();
+
+  /**
    * Return true if peeking at the cursor returns the provided character
    * @param c
    * @return

@@ -201,7 +201,7 @@ message a_message_with_message_fields {
   CHECK(ast->DeclarationCount()==2);
   // We only care about the second declaration
   CHECK(ast->Declaration(1)->t()==til::Declaration::kMessage);
-  CHECK(ast->Declaration(0)->doc().has_content());
+  CHECK(ast->Declaration(1)->doc().has_content());
   auto md = dynamic_cast<const til::MessageDeclaration*>(ast->Declaration(1));
   CHECK(md->name() == "a_message_with_message_fields");
   CHECK(md->FieldCount() == 2);
@@ -226,7 +226,7 @@ TEST_CASE("Parser.parse message with map fields") {
   FAIL("pending");
 }
 
-TEST_CASE("Parser.parse message with list field") {
+TEST_CASE("Parser.parse message with list fields") {
   FAIL("pending");
 }
 

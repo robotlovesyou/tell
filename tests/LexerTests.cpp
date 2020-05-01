@@ -106,7 +106,7 @@ TEST_CASE("Lexer.Next tokens with whitespace") {
 
 TEST_CASE("Lexer.Next message definition") {
   std::string test_input =
-      "message {\n"
+      "message {\n\r\n"
       "\ta_field: int\n"
       "\tan_optional_field: int?\n"
       "}";

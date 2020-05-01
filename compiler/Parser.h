@@ -48,13 +48,14 @@ class Parser {
    * Field Parsing Functions
    */
   std::unique_ptr<TypeDef> ParseScalarTypeDef();
+  std::unique_ptr<TypeDef> ParseMessageTypeDef();
   std::vector<std::unique_ptr<Field>> ParseMessageFields();
   std::unique_ptr<Field> ParseField(std::unique_ptr<DocCommentContext> doc);
 
   /**
    * Helper Functions
    */
-  std::optional<const Token*> ConsumeLineFeeds();
+  std::optional<const Token*> ConsumeLineFeed();
   void ExpectPeek(Token::Type t);
   til::Token ExpectPeekConsume(Token::Type t);
   void ConsumePastNext(Token::Type t);

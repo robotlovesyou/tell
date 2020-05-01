@@ -73,7 +73,7 @@ void til::Lexer::read_next_token() {
     } else if (*oc==']') {
       otoken = Token{Token::kRSqBracket, line_, column_, "]"};
     } else if (*oc=='\n') {
-      otoken = Token{Token::kLineFeed, line_at_newline_, column_at_newline_, "\n"};
+      otoken = read_line_feed_token();
     } else {
       handle_unexpected(*oc);
     }
@@ -195,6 +195,20 @@ std::optional<til::Token> til::Lexer::try_read_ident_token(char first) {
     return Token{std::get<0>(parts), line_, start, std::get<1>(parts)};
   }
   return til::Token{Token::kIdent, line_, start, repr};
+}
+
+std::optional<til::Token> til::Lexer::read_line_feed_token() {
+  int start_line = line_at_newline_;
+  int start_col = column_at_newline_;
+
+  while(auto peeked = cursor_->Peek()) {
+    if(!(is_nbsp(**peeked) || (**peeked) == '\n')) {
+      break;
+    }
+    read_next_char();
+  }
+
+  return til::Token{Token::kLineFeed, start_line, start_col, "\n"};
 }
 
 std::optional<char> til::Lexer::read_next_char() {
