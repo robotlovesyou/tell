@@ -6,6 +6,7 @@
 #include "../compiler/Lexer.h"
 #include "../compiler/TypeDef.h"
 #include "ParserTestHelpers.h"
+#include "../compiler/MessageTypeDef.h"
 
 std::shared_ptr<til::ErrorReporter> test_error_reporter() {
   return std::make_shared<til::ConsoleErrorReporter>();
@@ -179,7 +180,46 @@ message a_scalar_only_message {
 }
 
 TEST_CASE("Parser.parse message with message fields") {
-  FAIL("pending");
+  const char *source = R"SOURCE(
+message Empty {
+}
+
+/// A comment for the message with messages
+message a_message_with_message_fields {
+  /// A comment for the empty field
+  an_empty_field: Empty
+
+  /// A comment for the optional empty field
+  an_optional_empty_field: Empty?
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  auto ast = p.Parse();
+  CHECK_FALSE(er->has_errors());
+  CHECK(ast->DeclarationCount()==2);
+  // We only care about the second declaration
+  CHECK(ast->Declaration(1)->t()==til::Declaration::kMessage);
+  CHECK(ast->Declaration(0)->doc().has_content());
+  auto md = dynamic_cast<const til::MessageDeclaration*>(ast->Declaration(1));
+  CHECK(md->name() == "a_message_with_message_fields");
+  CHECK(md->FieldCount() == 2);
+
+  CHECK(md->FieldEntry(0).type_def()->t() == til::TypeDef::kMessage);
+  CHECK_FALSE(md->FieldEntry(0).type_def()->optional());
+  CHECK(md->FieldEntry(0).name() == "an_empty_field");
+  CHECK(md->FieldEntry(0).doc().has_content());
+  auto msgt = dynamic_cast<const til::MessageTypeDef*>(md->FieldEntry(0).type_def());
+  CHECK(msgt->name() == "Empty");
+
+  CHECK(md->FieldEntry(1).type_def()->t() == til::TypeDef::kMessage);
+  CHECK(md->FieldEntry(1).type_def()->optional());
+  CHECK(md->FieldEntry(1).name() == "an_optional_empty_field");
+  CHECK(md->FieldEntry(1).doc().has_content());
+  msgt = dynamic_cast<const til::MessageTypeDef*>(md->FieldEntry(1).type_def());
+  CHECK(msgt->name() == "Empty");
+
 }
 
 TEST_CASE("Parser.parse message with map fields") {

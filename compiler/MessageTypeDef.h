@@ -7,12 +7,20 @@
 
 #include "TypeDef.h"
 
+#include <string>
+
 namespace til {
+class AST; // forward declaration of AST
 class MessageTypeDef: public TypeDef {
  public:
-  bool optional() const override;
-  Type t() const override;
-
+  // TODO: AST is required for later validation of the message
+  MessageTypeDef(std::string name, const std::shared_ptr<AST>& ast, bool optional);
+  [[nodiscard]] bool optional() const override;
+  [[nodiscard]] Type t() const override;
+  [[nodiscard]] const std::string &name() const;
+ private:
+  std::string name_;
+  std::weak_ptr<AST> ast_;
 };
 }
 
