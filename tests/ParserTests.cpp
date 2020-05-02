@@ -7,6 +7,7 @@
 #include "../compiler/TypeDef.h"
 #include "ParserTestHelpers.h"
 #include "../compiler/MessageTypeDef.h"
+#include "../compiler/MapTypeDef.h"
 
 std::shared_ptr<til::ErrorReporter> test_error_reporter() {
   return std::make_shared<til::ConsoleErrorReporter>();
@@ -90,7 +91,7 @@ TEST_CASE("Parser.parse directive") {
 std::tuple<int, bool, bool, std::string, til::ScalarTypeDef::ScalarType> scalar_test_opt(int idx,
                                                                                          bool optional,
                                                                                          bool has_docs,
-                                                                                         std::string name,
+                                                                                         const std::string& name,
                                                                                          til::ScalarTypeDef::ScalarType t) {
   return std::tuple<int, bool, bool, std::string, til::ScalarTypeDef::ScalarType>(idx, optional, has_docs, name, t);
 }
@@ -222,8 +223,69 @@ message a_message_with_message_fields {
 
 }
 
+std::tuple<int, std::string, til::TypeDef::Type, bool, bool> map_test_opt(int idx, const std::string& name, til::TypeDef::Type sub_t, bool optional, bool sub_optional) {
+  return std::tuple<int, std::string, til::TypeDef::Type, bool, bool>(idx, name, sub_t, optional, sub_optional);
+}
+
 TEST_CASE("Parser.parse message with map fields") {
-  FAIL("pending");
+  const char*source = R"SOURCE(
+/// This message only exists to be a type for a map
+message Sub {
+  a_field: bool
+}
+
+/// A comment for the message with maps
+message a_message_with_map_fields {
+  a_map_of_ints_field: map[int]
+
+  /// a doc comment
+  an_optional_map_of_ints_field: map[int]?
+  a_map_of_optional_ints_field: map[int?]
+  an_optional_map_of_optional_ints_field: map[int?]?
+
+  // another doc comment
+  a_map_of_messages_field: map[Sub]
+  an_optional_map_of_messages_field: map[Sub]?
+  a_map_of_optional_messages_field: map[Sub?]
+  an_optional_map_of_optional_messages_field: map[Sub?]?
+}
+)SOURCE";
+
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  auto ast = p.Parse();
+  CHECK_FALSE(er->has_errors());
+  CHECK(ast->DeclarationCount() == 2);
+  CHECK(ast->Declaration(1)->t() == til::Declaration::kMessage);
+  CHECK(ast->Declaration(1)->doc().has_content());
+
+  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
+
+  auto opts = GENERATE(
+      map_test_opt(0, "a_map_of_ints_field", til::TypeDef::kScalar, false, false),
+      map_test_opt(1, "an_optional_map_of_ints_field", til::TypeDef::kScalar, true, false),
+      map_test_opt(2, "a_map_of_optional_ints_field", til::TypeDef::kScalar, false, true),
+      map_test_opt(3, "an_optional_map_of_optional_ints_field", til::TypeDef::kScalar, true, true),
+      map_test_opt(4, "a_map_of_messages_field", til::TypeDef::kMessage, false, false),
+      map_test_opt(5, "an_optional_map_of_messages_field", til::TypeDef::kMessage, true, false),
+      map_test_opt(6, "a_map_of_optional_messages_field", til::TypeDef::kMessage, false, true),
+      map_test_opt(7, "an_optional_map_of_optional_messages_field", til::TypeDef::kMessage, true, true)
+      );
+
+  auto idx = std::get<0>(opts);
+  auto name = std::get<1>(opts);
+  auto sub_t = std::get<2>(opts);
+  auto optional = std::get<3>(opts);
+  auto sub_optional = std::get<4>(opts);
+
+  CHECK(md->FieldEntry(idx).name() == name);
+  auto mtd = dynamic_cast<const til::MapTypeDef *>(md->FieldEntry(idx).type_def());
+  CHECK(mtd->t() == til::TypeDef::kMap);
+  CHECK(mtd->optional() == optional);
+  CHECK(mtd->sub_type()->t() == sub_t);
+  CHECK(mtd->sub_type()->optional() == sub_optional);
+
 }
 
 TEST_CASE("Parser.parse message with list fields") {

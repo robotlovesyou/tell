@@ -6,11 +6,14 @@
 #define TELL_COMPILER_MAPTYPEDEF_H_
 
 #include "TypeDef.h"
+#include "SubTypeDef.h"
 
 namespace til {
-class MapTypeDef: TypeDef {
-  bool optional() const override;
-  Type t() const override;
+class MapTypeDef: public TypeDef, public SubTypeDef {
+ public:
+  MapTypeDef(std::unique_ptr<TypeDef> sub_type, bool optional);
+  [[nodiscard]] bool optional() const override;
+  [[nodiscard]] Type t() const override;
 };
 }
 

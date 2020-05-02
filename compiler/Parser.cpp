@@ -7,6 +7,7 @@
 
 #include "ScalarTypeDef.h"
 #include "MessageTypeDef.h"
+#include "MapTypeDef.h"
 
 unique_tkn to_unique_tkn(til::Token tkn) {
   return std::unique_ptr<til::Token>(new til::Token(std::move(tkn))); // NOLINT(modernize-make-unique)
@@ -32,6 +33,7 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   type_def_parsers_[Token::kStringWord] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kTime] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kIdent] = [this]() {return this->ParseMessageTypeDef(); };
+  type_def_parsers_[Token::kMap] = [this]() {return this->ParseMapTypeDef(); };
 }
 
 std::shared_ptr<til::AST> til::Parser::Parse() {
@@ -214,26 +216,26 @@ std::unique_ptr<til::TypeDef> til::Parser::ParseScalarTypeDef() {
                                               tkn.col));
   }
 
-  bool optional = false;
-  auto opeek = lexer_->Peek();
-  if (opeek.has_value() && (**opeek).t==Token::kQMark) {
-    optional = true;
-    lexer_->Next();
-  }
+  bool optional = TypeIsOptional();
 
   return std::make_unique<ScalarTypeDef>(scalar_type, optional);
 }
 
 std::unique_ptr<til::TypeDef> til::Parser::ParseMessageTypeDef() {
   auto tkn = *lexer_->Next();
-  bool optional = false;
-  auto opeek = lexer_->Peek();
-  if (opeek.has_value() && (**opeek).t==Token::kQMark) {
-    optional = true;
-    lexer_->Next();
-  }
+  bool optional = TypeIsOptional();
 
   return std::make_unique<MessageTypeDef>(tkn.repr, ast_, optional);
+}
+
+std::unique_ptr<til::TypeDef> til::Parser::ParseMapTypeDef() {
+  lexer_->Next(); // consume the map token
+  ExpectPeekConsume(til::Token::kLSqBracket);
+  auto sub_type = ParseTypeDef();
+  ExpectPeekConsume(til::Token::kRSqBracket);
+  bool optional = TypeIsOptional();
+
+  return std::make_unique<MapTypeDef>(std::move(sub_type), optional);
 }
 
 std::vector<std::unique_ptr<til::Field>> til::Parser::ParseMessageFields() {
@@ -256,24 +258,39 @@ std::unique_ptr<til::Field> til::Parser::ParseField(std::unique_ptr<DocCommentCo
 
   ExpectPeekConsume(Token::kColon);
 
-  auto otkn = lexer_->Peek();
-  if (!otkn.has_value()) {
-    throw ParsingException("Unexpected end of token stream parsing message field");
-  }
-  auto peek = *otkn;
+  //TODO: Delete this dead code if it is really unnecessary.
+//  auto otkn = lexer_->Peek();
+//  if (!otkn.has_value()) {
+//    throw ParsingException("Unexpected end of token stream parsing message field");
+//  }
 
-  if (type_def_parsers_.count(peek->t)==0) {
-    throw ParsingException(fmt::format("Unexpected {} \"{}\" at line {} column {} parsing message field",
-                                           peek->TypeName(),
-                                           peek->Literal(),
-                                           peek->line,
-                                           peek->col));
-  }
-  auto field_type = type_def_parsers_[peek->t]();
+  auto field_type = ParseTypeDef();
   ExpectPeekConsume(Token::kLineFeed);
 
   return std::make_unique<Field>(ident_tkn.repr, std::move(field_type), std::move(doc));
+}
 
+std::unique_ptr<til::TypeDef> til::Parser::ParseTypeDef() {
+  auto peek = *lexer_->Peek();
+
+  if (type_def_parsers_.count(peek->t)==0) {
+    throw ParsingException(fmt::format("Unexpected {} \"{}\" at line {} column {} parsing message field",
+                                       peek->TypeName(),
+                                       peek->Literal(),
+                                       peek->line,
+                                       peek->col));
+  }
+  return type_def_parsers_[peek->t]();
+}
+
+bool til::Parser::TypeIsOptional() {
+  bool optional = false;
+  auto opeek = lexer_->Peek();
+  if (opeek.has_value() && (**opeek).t==Token::kQMark) {
+    optional = true;
+    lexer_->Next();
+  }
+  return optional;
 }
 
 
