@@ -21,6 +21,7 @@ using unique_doc = std::unique_ptr<til::DocCommentContext>;
 using unique_tkn = std::unique_ptr<til::Token>;
 using directive_parser = std::function<void(std::unique_ptr<til::DocCommentContext>)>;
 using type_def_parser = std::function<std::unique_ptr<til::TypeDef>()>;
+using sub_type_constructor = std::function<std::unique_ptr<til::TypeDef>(std::unique_ptr<til::TypeDef>, bool)>;
 
 namespace til {
 class Parser {
@@ -50,7 +51,9 @@ class Parser {
   std::unique_ptr<TypeDef> ParseTypeDef();
   std::unique_ptr<TypeDef> ParseScalarTypeDef();
   std::unique_ptr<TypeDef> ParseMessageTypeDef();
+  std::unique_ptr<TypeDef> ParseSubType(const sub_type_constructor& cons);
   std::unique_ptr<TypeDef> ParseMapTypeDef();
+  std::unique_ptr<TypeDef> ParseListTypeDef();
   std::vector<std::unique_ptr<Field>> ParseMessageFields();
   std::unique_ptr<Field> ParseField(std::unique_ptr<DocCommentContext> doc);
 

@@ -8,6 +8,7 @@
 #include "ParserTestHelpers.h"
 #include "../compiler/MessageTypeDef.h"
 #include "../compiler/MapTypeDef.h"
+#include "../compiler/ListTypeDef.h"
 
 std::shared_ptr<til::ErrorReporter> test_error_reporter() {
   return std::make_shared<til::ConsoleErrorReporter>();
@@ -223,7 +224,7 @@ message a_message_with_message_fields {
 
 }
 
-std::tuple<int, std::string, til::TypeDef::Type, bool, bool> map_test_opt(int idx, const std::string& name, til::TypeDef::Type sub_t, bool optional, bool sub_optional) {
+std::tuple<int, std::string, til::TypeDef::Type, bool, bool> sub_type_test_opt(int idx, const std::string& name, til::TypeDef::Type sub_t, bool optional, bool sub_optional) {
   return std::tuple<int, std::string, til::TypeDef::Type, bool, bool>(idx, name, sub_t, optional, sub_optional);
 }
 
@@ -243,7 +244,7 @@ message a_message_with_map_fields {
   a_map_of_optional_ints_field: map[int?]
   an_optional_map_of_optional_ints_field: map[int?]?
 
-  // another doc comment
+  /// another doc comment
   a_map_of_messages_field: map[Sub]
   an_optional_map_of_messages_field: map[Sub]?
   a_map_of_optional_messages_field: map[Sub?]
@@ -263,14 +264,14 @@ message a_message_with_map_fields {
   auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
 
   auto opts = GENERATE(
-      map_test_opt(0, "a_map_of_ints_field", til::TypeDef::kScalar, false, false),
-      map_test_opt(1, "an_optional_map_of_ints_field", til::TypeDef::kScalar, true, false),
-      map_test_opt(2, "a_map_of_optional_ints_field", til::TypeDef::kScalar, false, true),
-      map_test_opt(3, "an_optional_map_of_optional_ints_field", til::TypeDef::kScalar, true, true),
-      map_test_opt(4, "a_map_of_messages_field", til::TypeDef::kMessage, false, false),
-      map_test_opt(5, "an_optional_map_of_messages_field", til::TypeDef::kMessage, true, false),
-      map_test_opt(6, "a_map_of_optional_messages_field", til::TypeDef::kMessage, false, true),
-      map_test_opt(7, "an_optional_map_of_optional_messages_field", til::TypeDef::kMessage, true, true)
+      sub_type_test_opt(0, "a_map_of_ints_field", til::TypeDef::kScalar, false, false),
+      sub_type_test_opt(1, "an_optional_map_of_ints_field", til::TypeDef::kScalar, true, false),
+      sub_type_test_opt(2, "a_map_of_optional_ints_field", til::TypeDef::kScalar, false, true),
+      sub_type_test_opt(3, "an_optional_map_of_optional_ints_field", til::TypeDef::kScalar, true, true),
+      sub_type_test_opt(4, "a_map_of_messages_field", til::TypeDef::kMessage, false, false),
+      sub_type_test_opt(5, "an_optional_map_of_messages_field", til::TypeDef::kMessage, true, false),
+      sub_type_test_opt(6, "a_map_of_optional_messages_field", til::TypeDef::kMessage, false, true),
+      sub_type_test_opt(7, "an_optional_map_of_optional_messages_field", til::TypeDef::kMessage, true, true)
       );
 
   auto idx = std::get<0>(opts);
@@ -289,7 +290,64 @@ message a_message_with_map_fields {
 }
 
 TEST_CASE("Parser.parse message with list fields") {
-  FAIL("pending");
+  const char*source = R"SOURCE(
+/// This message only exists to be a type for a list
+message Sub {
+  a_field: bool
+}
+
+/// A comment for the message with lists
+message a_message_with_list_fields {
+  a_list_of_ints_field: list[int]
+
+  /// a doc comment
+  an_optional_list_of_ints_field: list[int]?
+  a_list_of_optional_ints_field: list[int?]
+  an_optional_list_of_optional_ints_field: list[int?]?
+
+  /// another doc comment
+  a_list_of_messages_field: list[Sub]
+  an_optional_list_of_messages_field: list[Sub]?
+  a_list_of_optional_messages_field: list[Sub?]
+  an_optional_list_of_optional_messages_field: list[Sub?]?
+}
+)SOURCE";
+
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  auto ast = p.Parse();
+  CHECK_FALSE(er->has_errors());
+  CHECK(ast->DeclarationCount() == 2);
+  CHECK(ast->Declaration(1)->t() == til::Declaration::kMessage);
+  CHECK(ast->Declaration(1)->doc().has_content());
+
+  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
+
+  auto opts = GENERATE(
+      sub_type_test_opt(0, "a_list_of_ints_field", til::TypeDef::kScalar, false, false),
+      sub_type_test_opt(1, "an_optional_list_of_ints_field", til::TypeDef::kScalar, true, false),
+      sub_type_test_opt(2, "a_list_of_optional_ints_field", til::TypeDef::kScalar, false, true),
+      sub_type_test_opt(3, "an_optional_list_of_optional_ints_field", til::TypeDef::kScalar, true, true),
+      sub_type_test_opt(4, "a_list_of_messages_field", til::TypeDef::kMessage, false, false),
+      sub_type_test_opt(5, "an_optional_list_of_messages_field", til::TypeDef::kMessage, true, false),
+      sub_type_test_opt(6, "a_list_of_optional_messages_field", til::TypeDef::kMessage, false, true),
+      sub_type_test_opt(7, "an_optional_list_of_optional_messages_field", til::TypeDef::kMessage, true, true)
+  );
+
+  auto idx = std::get<0>(opts);
+  auto name = std::get<1>(opts);
+  auto sub_t = std::get<2>(opts);
+  auto optional = std::get<3>(opts);
+  auto sub_optional = std::get<4>(opts);
+
+  CHECK(md->FieldEntry(idx).name() == name);
+  auto ltd = dynamic_cast<const til::ListTypeDef *>(md->FieldEntry(idx).type_def());
+  CHECK(ltd->t() == til::TypeDef::kList);
+  CHECK(ltd->optional() == optional);
+  CHECK(ltd->sub_type()->t() == sub_t);
+  CHECK(ltd->sub_type()->optional() == sub_optional);
+
 }
 
 TEST_CASE("Parser.parse message with nested map/list fields") {

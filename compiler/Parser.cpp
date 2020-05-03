@@ -8,6 +8,7 @@
 #include "ScalarTypeDef.h"
 #include "MessageTypeDef.h"
 #include "MapTypeDef.h"
+#include "ListTypeDef.h"
 
 unique_tkn to_unique_tkn(til::Token tkn) {
   return std::unique_ptr<til::Token>(new til::Token(std::move(tkn))); // NOLINT(modernize-make-unique)
@@ -34,6 +35,7 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   type_def_parsers_[Token::kTime] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kIdent] = [this]() {return this->ParseMessageTypeDef(); };
   type_def_parsers_[Token::kMap] = [this]() {return this->ParseMapTypeDef(); };
+  type_def_parsers_[Token::kList] = [this]() {return this->ParseListTypeDef(); };
 }
 
 std::shared_ptr<til::AST> til::Parser::Parse() {
@@ -228,14 +230,30 @@ std::unique_ptr<til::TypeDef> til::Parser::ParseMessageTypeDef() {
   return std::make_unique<MessageTypeDef>(tkn.repr, ast_, optional);
 }
 
-std::unique_ptr<til::TypeDef> til::Parser::ParseMapTypeDef() {
-  lexer_->Next(); // consume the map token
+std::unique_ptr<til::TypeDef> til::Parser::ParseSubType(const sub_type_constructor& cons) {
+  lexer_->Next(); // consume the map/list token
   ExpectPeekConsume(til::Token::kLSqBracket);
   auto sub_type = ParseTypeDef();
   ExpectPeekConsume(til::Token::kRSqBracket);
   bool optional = TypeIsOptional();
 
-  return std::make_unique<MapTypeDef>(std::move(sub_type), optional);
+  return cons(std::move(sub_type), optional);
+}
+
+std::unique_ptr<til::TypeDef> til::Parser::ParseMapTypeDef() {
+  auto cons = [this](std::unique_ptr<til::TypeDef> sub_type, bool optional) {
+    return std::make_unique<MapTypeDef>(std::move(sub_type), optional);
+  };
+
+  return ParseSubType(cons);
+}
+
+std::unique_ptr<til::TypeDef> til::Parser::ParseListTypeDef() {
+  auto cons = [this](std::unique_ptr<til::TypeDef> sub_type, bool optional) {
+    return std::make_unique<ListTypeDef>(std::move(sub_type), optional);
+  };
+
+  return ParseSubType(cons);
 }
 
 std::vector<std::unique_ptr<til::Field>> til::Parser::ParseMessageFields() {
@@ -292,5 +310,6 @@ bool til::Parser::TypeIsOptional() {
   }
   return optional;
 }
+
 
 

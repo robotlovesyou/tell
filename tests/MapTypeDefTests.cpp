@@ -1,5 +1,4 @@
 #include "catch2/catch.hpp"
-#include "../compiler/MessageTypeDef.h"
 #include "ParserTestHelpers.h"
 #include "../compiler/MapTypeDef.h"
 

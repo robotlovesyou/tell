@@ -5,8 +5,9 @@
 #include "SubTypeDef.h"
 
 namespace til {
-class ListTypeDef: public TypeDef, SubTypeDef {
+class ListTypeDef: public TypeDef, public SubTypeDef {
  public:
+  ListTypeDef(std::unique_ptr<TypeDef> sub_type, bool optional);
   bool optional() const override;
   Type t() const override;
 };
