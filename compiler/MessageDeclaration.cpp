@@ -20,7 +20,7 @@ const std::string &til::MessageDeclaration::name() const {
 til::MessageDeclaration::MessageDeclaration(std::unique_ptr<til::Token> start_token,
                                             std::unique_ptr<til::DocCommentContext> doc,
                                             std::string name,
-                                            std::vector<std::unique_ptr<Field>> fields,
+                                            std::vector<std::unique_ptr<til::Field>> fields,
                                             const std::shared_ptr<AST> &ast)
     : start_token_(std::move(start_token)),
       doc_(std::move(doc)),
@@ -50,7 +50,7 @@ int til::MessageDeclaration::FieldCount() const {
   return fields_.size();
 }
 
-const til::Field &til::MessageDeclaration::FieldEntry(int idx) const {
+const til::Field &til::MessageDeclaration::Field(int idx) const {
   if (idx >= fields_.size()) {
     throw std::out_of_range(fmt::format("invalid field entry {}", idx));
   }

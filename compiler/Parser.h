@@ -57,6 +57,9 @@ class Parser {
   std::vector<std::unique_ptr<Field>> ParseMessageFields();
   std::unique_ptr<Field> ParseField(std::unique_ptr<DocCommentContext> doc);
 
+  std::vector<std::unique_ptr<Call>> ParseCalls();
+  std::unique_ptr<Call> ParseCall(std::unique_ptr<DocCommentContext>);
+
   /**
    * Helper Functions
    */

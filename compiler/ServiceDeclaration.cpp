@@ -26,8 +26,25 @@ const til::AST &til::ServiceDeclaration::ast() const {
 til::ServiceDeclaration::ServiceDeclaration(std::unique_ptr<Token> start_token,
                                             std::unique_ptr<DocCommentContext> doc,
                                             std::string name,
-                                            const std::shared_ptr<AST>& ast): start_token_(std::move(start_token)), name_(std::move(name)), doc_(std::move(doc)), ast_(ast) {
-  if (start_token_->t != Token::kService) {
+                                            std::vector<std::unique_ptr<til::Call>> calls,
+                                            const std::shared_ptr<AST> &ast)
+    : start_token_(std::move(start_token)),
+      name_(std::move(name)),
+      doc_(std::move(doc)),
+      calls_(std::move(calls)),
+      ast_(ast) {
+  if (start_token_->t!=Token::kService) {
     throw std::invalid_argument(fmt::format("ServiceDeclaration start token cannot be a {}", start_token_->TypeName()));
   }
+}
+
+int til::ServiceDeclaration::CallCount() const {
+  return calls_.size();
+}
+
+const til::Call &til::ServiceDeclaration::Call(int idx) const {
+  if (idx >= calls_.size()) {
+    throw std::out_of_range("Invalid call index");
+  }
+  return *calls_[idx];
 }

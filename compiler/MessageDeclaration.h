@@ -24,24 +24,24 @@ class MessageDeclaration : public Declaration {
                      const std::shared_ptr<AST> &ast);
 
   // Disallow copy construction and assignment. Allow move.
-  ~MessageDeclaration() = default;
+  ~MessageDeclaration() override = default;
   MessageDeclaration(const MessageDeclaration &) = delete;
   MessageDeclaration &operator=(const MessageDeclaration &) = delete;
   MessageDeclaration(MessageDeclaration &&) = default;
   MessageDeclaration &operator=(MessageDeclaration &&) = default;
 
-  Type t() const override;
-  const std::string &name() const override;
-  const DocCommentContext &doc() const override;
-  const AST &ast() const override;
-  const Token &start_token() const override;
-  int FieldCount() const;
-  const Field &FieldEntry(int idx) const;
+  [[nodiscard]] Type t() const override;
+  [[nodiscard]] const std::string &name() const override;
+  [[nodiscard]] const DocCommentContext &doc() const override;
+  [[nodiscard]] const AST &ast() const override;
+  [[nodiscard]] const Token &start_token() const override;
+  [[nodiscard]] int FieldCount() const;
+  [[nodiscard]] const Field &Field(int idx) const;
  private:
   std::unique_ptr<Token> start_token_;
   std::string name_;
   std::unique_ptr<DocCommentContext> doc_;
-  std::vector<std::unique_ptr<Field>> fields_;
+  std::vector<std::unique_ptr<til::Field>> fields_;
   std::weak_ptr<AST> ast_;
 };
 }

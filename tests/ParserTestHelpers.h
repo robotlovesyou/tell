@@ -51,8 +51,9 @@ static std::unique_ptr<til::MessageDeclaration> test_message_declaration(std::un
 static std::unique_ptr<til::ServiceDeclaration> test_service_declaration(std::unique_ptr<til::Token> tkn = test_token(til::Token::kService),
                                                  std::unique_ptr<til::DocCommentContext> dcc = test_dcc(),
                                                  const std::string &name = "my_service",
+                                                 std::vector<std::unique_ptr<til::Call>> calls = std::vector<std::unique_ptr<til::Call>>(),
                                                  const std::shared_ptr<til::AST> &ast = test_ast()) {
-  return std::make_unique<til::ServiceDeclaration>(std::move(tkn), std::move(dcc), name, ast);
+  return std::make_unique<til::ServiceDeclaration>(std::move(tkn), std::move(dcc), name, std::move(calls), ast);
 }
 
 static std::unique_ptr<til::TypeDef> test_td() {

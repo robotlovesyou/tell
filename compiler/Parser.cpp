@@ -33,9 +33,9 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   type_def_parsers_[Token::kInt] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kStringWord] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kTime] = [this]() { return this->ParseScalarTypeDef(); };
-  type_def_parsers_[Token::kIdent] = [this]() {return this->ParseMessageTypeDef(); };
-  type_def_parsers_[Token::kMap] = [this]() {return this->ParseMapTypeDef(); };
-  type_def_parsers_[Token::kList] = [this]() {return this->ParseListTypeDef(); };
+  type_def_parsers_[Token::kIdent] = [this]() { return this->ParseMessageTypeDef(); };
+  type_def_parsers_[Token::kMap] = [this]() { return this->ParseMapTypeDef(); };
+  type_def_parsers_[Token::kList] = [this]() { return this->ParseListTypeDef(); };
 }
 
 std::shared_ptr<til::AST> til::Parser::Parse() {
@@ -117,10 +117,59 @@ void til::Parser::ParseMessage(std::unique_ptr<til::DocCommentContext> doc) {
 }
 
 void til::Parser::ParseService(std::unique_ptr<til::DocCommentContext> doc) {
-  auto tkn = to_unique_tkn(std::move(*lexer_->Next()));
-  std::cout << "Parsing service>" << std::endl;
+  // consume and discard the service token
+  // consume the service name
+  // consume and discard the opening lbrace
+  // consume and discard the linefeed
+  // parse the calls
+  // consume and discard the closing rbrace and the linefeed
 
-  // TODO: Remember to fail on unconsumed doc comments (ie before the closing brace of the service)
+  try {
+    auto start_tkn = ExpectPeekConsume(Token::kService);
+    auto name_tkn = ExpectPeekConsume(Token::kIdent);
+    ExpectPeekConsume(Token::kLBrace);
+    ExpectPeekConsume(Token::kLineFeed);
+    auto calls = ParseCalls();
+    ExpectPeekConsume(Token::kRBrace);
+    ExpectPeekConsume(Token::kLineFeed);
+    ast_->AddDeclaration(std::make_unique<ServiceDeclaration>(to_unique_tkn(std::move(start_tkn)),
+                                                              std::move(doc),
+                                                              name_tkn.repr,
+                                                              std::move(calls),
+                                                              ast_));
+  } catch (const ParsingException &e) {
+    HandleParsingError(e, Token::kRBrace);
+  }
+
+}
+
+std::vector<std::unique_ptr<til::Call>> til::Parser::ParseCalls() {
+  std::vector<std::unique_ptr<til::Call>> calls;
+
+  while (std::optional<const Token *> otkn = lexer_->Peek()) {
+    if ((**otkn).t==Token::kRBrace) {
+      break;
+    }
+
+    auto doc = ParseDocComment();
+    calls.push_back(ParseCall(std::move(doc)));
+  }
+
+  return calls;
+}
+
+std::unique_ptr<til::Call> til::Parser::ParseCall(std::unique_ptr<DocCommentContext> doc) {
+  auto name_tkn = ExpectPeekConsume(Token::kIdent);
+  ExpectPeekConsume(Token::kLSqBracket);
+  auto argument_tkn = ExpectPeekConsume(Token::kIdent);
+  ExpectPeekConsume(Token::kRSqBracket);
+  ExpectPeekConsume(Token::kColon);
+  auto returns_tkn = ExpectPeekConsume(Token::kIdent);
+  ExpectPeekConsume(Token::kLineFeed);
+  return std::make_unique<til::Call>(name_tkn.repr,
+                                     std::move(doc),
+                                     std::make_unique<til::Argument>(argument_tkn.repr, ast_),
+                                     std::make_unique<til::Argument>(returns_tkn.repr, ast_));
 }
 
 std::optional<const til::Token *> til::Parser::ConsumeLineFeed() {
@@ -230,7 +279,7 @@ std::unique_ptr<til::TypeDef> til::Parser::ParseMessageTypeDef() {
   return std::make_unique<MessageTypeDef>(tkn.repr, ast_, optional);
 }
 
-std::unique_ptr<til::TypeDef> til::Parser::ParseSubType(const sub_type_constructor& cons) {
+std::unique_ptr<til::TypeDef> til::Parser::ParseSubType(const sub_type_constructor &cons) {
   lexer_->Next(); // consume the map/list token
   ExpectPeekConsume(til::Token::kLSqBracket);
   auto sub_type = ParseTypeDef();
