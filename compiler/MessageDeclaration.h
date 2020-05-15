@@ -6,6 +6,7 @@
 #define TELL_COMPILER_MESSAGEDECLARATION_H_
 
 #include <optional>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -39,10 +40,13 @@ class MessageDeclaration : public Declaration {
   [[nodiscard]] const Field &Field(int idx) const;
   [[nodiscard]] std::string t_name() const override;
  private:
+  void AddFieldsToIndex();
+
   std::unique_ptr<Token> start_token_;
   std::string name_;
   std::unique_ptr<DocCommentContext> doc_;
   std::vector<std::unique_ptr<til::Field>> fields_;
+  std::map<std::string, int> field_index_;
   std::weak_ptr<AST> ast_;
 };
 }

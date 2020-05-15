@@ -1,4 +1,5 @@
 #include "ServiceDeclaration.h"
+#include "ParsingException.h"
 #include "fmt/core.h"
 
 #include <utility>
@@ -36,6 +37,7 @@ til::ServiceDeclaration::ServiceDeclaration(std::unique_ptr<Token> start_token,
   if (start_token_->t!=Token::kService) {
     throw std::invalid_argument(fmt::format("ServiceDeclaration start token cannot be a {}", start_token_->TypeName()));
   }
+  AddCallsToIndex();
 }
 
 int til::ServiceDeclaration::CallCount() const {
@@ -51,4 +53,18 @@ const til::Call &til::ServiceDeclaration::Call(int idx) const {
 
 std::string til::ServiceDeclaration::t_name() const {
   return "service";
+}
+
+void til::ServiceDeclaration::AddCallsToIndex() {
+  for(int i = 0; i < calls_.size(); i++) {
+    std::unique_ptr<til::Call> &call = calls_[i];
+    if (call_index_.count(call->name()) != 0) {
+      throw ParsingException(fmt::format("Duplicate call name {} in service {} at line {} column {}",
+                                         call->name(),
+                                         this->name_,
+                                         this->start_token_->line,
+                                         this->start_token_->col));
+    }
+    call_index_[call->name()] = i;
+  }
 }

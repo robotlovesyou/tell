@@ -1,6 +1,7 @@
 #ifndef TELL_COMPILER_SERVICEDECLARATION_H_
 #define TELL_COMPILER_SERVICEDECLARATION_H_
 
+#import <map>
 #import <memory>
 #import <vector>
 
@@ -33,6 +34,9 @@ class ServiceDeclaration: public Declaration {
   std::unique_ptr<DocCommentContext> doc_;
   std::weak_ptr<AST> ast_;
   std::vector<std::unique_ptr<til::Call>> calls_;
+  std::map<std::string, int> call_index_;
+
+  void AddCallsToIndex();
 };
 }
 

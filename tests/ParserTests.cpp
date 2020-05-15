@@ -42,7 +42,7 @@ TEST_CASE("Parser.parse directive") {
     auto ast = p.Parse();
     CHECK(ast->DeclarationCount()==1);
     CHECK(ast->Declaration(0)->t()==til::Declaration::kDirective);
-    auto dd = dynamic_cast<const til::DirectiveDeclaration *>(ast->Declaration(0));
+    const auto *dd = dynamic_cast<const til::DirectiveDeclaration *>(ast->Declaration(0));
     CHECK(dd->doc().content()=="This is a comment about the directive\nwhich is continued here");
     CHECK(dd->name()=="a_directive");
     CHECK(dd->value()=="the directive value");
@@ -109,7 +109,7 @@ message an_empty_message {
   CHECK_FALSE (er->has_errors());
   CHECK(ast->DeclarationCount()==1);
   CHECK(ast->Declaration(0)->t()==til::Declaration::kMessage);
-  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(0));
+  const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(0));
   CHECK(md->name()=="an_empty_message");
 
 }
@@ -147,7 +147,7 @@ message a_scalar_only_message {
   CHECK(ast->DeclarationCount()==1);
   CHECK(ast->Declaration(0)->t()==til::Declaration::kMessage);
   CHECK(ast->Declaration(0)->doc().has_content());
-  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(0));
+  const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(0));
   CHECK(md->name()=="a_scalar_only_message");
   CHECK(md->FieldCount()==10);
 
@@ -175,7 +175,7 @@ message a_scalar_only_message {
   CHECK(md->Field(idx).type_def()->optional()==optional);
   CHECK(md->Field(idx).name()==name);
   CHECK(md->Field(idx).doc().has_content()==has_docs);
-  auto std = dynamic_cast<const til::ScalarTypeDef *>(md->Field(idx).type_def());
+  const auto *std = dynamic_cast<const til::ScalarTypeDef *>(md->Field(idx).type_def());
   CHECK(std->scalar_type()==scalar_type);
 }
 
@@ -202,7 +202,7 @@ message a_message_with_message_fields {
   // We only care about the second declaration
   CHECK(ast->Declaration(1)->t()==til::Declaration::kMessage);
   CHECK(ast->Declaration(1)->doc().has_content());
-  auto md = dynamic_cast<const til::MessageDeclaration*>(ast->Declaration(1));
+  const auto *md = dynamic_cast<const til::MessageDeclaration*>(ast->Declaration(1));
   CHECK(md->name() == "a_message_with_message_fields");
   CHECK(md->FieldCount() == 2);
 
@@ -210,7 +210,7 @@ message a_message_with_message_fields {
   CHECK_FALSE(md->Field(0).type_def()->optional());
   CHECK(md->Field(0).name() == "an_empty_field");
   CHECK(md->Field(0).doc().has_content());
-  auto msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(0).type_def());
+  const auto *msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(0).type_def());
   CHECK(msgt->name() == "Empty");
 
   CHECK(md->Field(1).type_def()->t() == til::TypeDef::kMessage);
@@ -259,7 +259,7 @@ message a_message_with_map_fields {
   CHECK(ast->Declaration(1)->t() == til::Declaration::kMessage);
   CHECK(ast->Declaration(1)->doc().has_content());
 
-  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
+  const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
 
   auto opts = GENERATE(
       sub_type_test_opt(0, "a_map_of_ints_field", til::TypeDef::kScalar, false, false),
@@ -279,7 +279,7 @@ message a_message_with_map_fields {
   auto sub_optional = std::get<4>(opts);
 
   CHECK(md->Field(idx).name() == name);
-  auto mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(idx).type_def());
+  const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(idx).type_def());
   CHECK(mtd->t() == til::TypeDef::kMap);
   CHECK(mtd->optional() == optional);
   CHECK(mtd->sub_type()->t() == sub_t);
@@ -320,7 +320,7 @@ message a_message_with_list_fields {
   CHECK(ast->Declaration(1)->t() == til::Declaration::kMessage);
   CHECK(ast->Declaration(1)->doc().has_content());
 
-  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
+  const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
 
   auto opts = GENERATE(
       sub_type_test_opt(0, "a_list_of_ints_field", til::TypeDef::kScalar, false, false),
@@ -340,7 +340,7 @@ message a_message_with_list_fields {
   auto sub_optional = std::get<4>(opts);
 
   CHECK(md->Field(idx).name() == name);
-  auto ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(idx).type_def());
+  const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(idx).type_def());
   CHECK(ltd->t() == til::TypeDef::kList);
   CHECK(ltd->optional() == optional);
   CHECK(ltd->sub_type()->t() == sub_t);
@@ -369,40 +369,40 @@ message NestAllTheThings {
   CHECK(ast->DeclarationCount() == 2);
   CHECK(ast->Declaration(1)->t() == til::Declaration::kMessage);
   CHECK_FALSE(ast->Declaration(1)->doc().has_content());
-  auto md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
+  const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
 
   SECTION("a list of maps") {
     CHECK(md->Field(0).name() == "a_list_of_maps");
-    auto ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(0).type_def());
+    const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(0).type_def());
     CHECK(ltd->t() == til::TypeDef::kList);
     CHECK_FALSE(ltd->optional());
     CHECK(ltd->sub_type()->t() == til::TypeDef::kMap);
     CHECK_FALSE(ltd->sub_type()->optional());
-    auto sub = dynamic_cast<const til::MapTypeDef*>(ltd->sub_type());
+    const auto *sub = dynamic_cast<const til::MapTypeDef*>(ltd->sub_type());
     CHECK(sub->sub_type()->t() == til::TypeDef::kMessage);
   }
 
   SECTION("an optional map of optional lists of optional messages") {
     CHECK(md->Field(1).name() == "an_optional_map_of_optional_lists");
-    auto mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(1).type_def());
+    const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(1).type_def());
     CHECK(mtd->t() == til::TypeDef::kMap);
     CHECK(mtd->optional());
     CHECK(mtd->sub_type()->t() == til::TypeDef::kList);
     CHECK(mtd->sub_type()->optional());
-    auto sub = dynamic_cast<const til::ListTypeDef*>(mtd->sub_type());
+    const auto *sub = dynamic_cast<const til::ListTypeDef*>(mtd->sub_type());
     CHECK(sub->sub_type()->t() == til::TypeDef::kMessage);
     CHECK(sub->sub_type()->optional());
   }
 
   SECTION("a very deeply nested field") {
     CHECK(md->Field(2).name() == "a_very_deeply_nested_field");
-    auto td = md->Field(2).type_def();
+    const auto *td = md->Field(2).type_def();
     for(int i = 0; i < 3; i++) {
-      auto ltd = dynamic_cast<const til::ListTypeDef*>(td);
-      auto mtd = dynamic_cast<const til::MapTypeDef*>(ltd->sub_type());
+      const auto *ltd = dynamic_cast<const til::ListTypeDef*>(td);
+      const auto *mtd = dynamic_cast<const til::MapTypeDef*>(ltd->sub_type());
       td = mtd->sub_type();
     }
-    auto sd = dynamic_cast<const til::ScalarTypeDef*>(td);
+    const auto *sd = dynamic_cast<const til::ScalarTypeDef*>(td);
     CHECK(sd->scalar_type() == til::ScalarTypeDef::kInt);
   }
 }
@@ -420,7 +420,7 @@ service my_service {
   CHECK_FALSE(er->has_errors());
   CHECK(ast->DeclarationCount() == 1);
   CHECK(ast->Declaration(0)->t() == til::Declaration::kService);
-  auto sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(0));
+  const auto *sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(0));
   CHECK(sd->name() == "my_service");
 }
 
@@ -440,7 +440,7 @@ service my_service {
   CHECK_FALSE(er->has_errors());
   CHECK(ast->DeclarationCount() == 1);
   CHECK(ast->Declaration(0)->t() == til::Declaration::kService);
-  auto sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(0));
+  const auto *sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(0));
   CHECK(sd->name() == "my_service");
   CHECK(sd->doc().has_content());
   CHECK(sd->CallCount() == 2);
@@ -455,8 +455,17 @@ service my_service {
 }
 
 TEST_CASE("Parser.parse message with repeated field name") {
-  FAIL("pending");
-  // Add each field to a set of field names. If any clashes occur then error
+  const char *source = R"SOURCE(
+message my_message {
+  duplicate_field: int
+  duplicate_field: int
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  auto ast = p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse message with unowned doc comment (not commenting a field)") {
@@ -512,8 +521,20 @@ service a_duplicate_service {
 }
 
 TEST_CASE("Parser.parse duplicate call within a service") {
-  FAIL("pending");
-  // as the calls are added add each name to a set of service names. If any clashes occur then error.
+  const char *source = R"SOURCE(
+message MyMessage {
+}
+
+service my_service {
+  my_call[MyMessage]: MyMessage
+  my_call[MyMessage]: MyMessage
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse unknown message as field type") {

@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "fmt/core.h"
+#include "ParsingException.h"
 
 til::Declaration::Type til::MessageDeclaration::t() const {
   return kMessage;
@@ -32,6 +33,7 @@ til::MessageDeclaration::MessageDeclaration(std::unique_ptr<til::Token> start_to
     throw std::invalid_argument(
         fmt::format("MessageDeclaration start token cannot be a {}", start_token_->TypeName()));
   }
+  AddFieldsToIndex();
 }
 
 const til::DocCommentContext &til::MessageDeclaration::doc() const {
@@ -59,4 +61,20 @@ const til::Field &til::MessageDeclaration::Field(int idx) const {
 
 std::string til::MessageDeclaration::t_name() const {
   return "message";
+}
+
+void til::MessageDeclaration::AddFieldsToIndex() {
+  for(int i = 0; i < fields_.size(); i++) {
+    std::unique_ptr<til::Field> &field = fields_[i];
+
+    if (field_index_.count(field->name())!=0) {
+      throw ParsingException(fmt::format("Duplicate field name {} in message {} at line {} column {}",
+                                         field->name(),
+                                         this->name_,
+                                         this->start_token_->line,
+                                         this->start_token_->col));
+    }
+
+    field_index_[field->name()] = i;
+  }
 }
