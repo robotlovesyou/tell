@@ -34,12 +34,14 @@ class Declaration {
   Declaration(Declaration &&) = default;
   Declaration &operator=(Declaration &&) = default;
 
-  virtual Type t() const = 0;
-  virtual const Token &start_token() const = 0;
-  virtual const std::string &name() const = 0;
-  virtual const DocCommentContext &doc() const = 0;
-  virtual const AST &ast() const = 0;
+  [[nodiscard]] virtual Type t() const = 0;
+  [[nodiscard]] virtual const Token &start_token() const = 0;
+  [[nodiscard]] virtual const std::string &name() const = 0;
+  [[nodiscard]] virtual const DocCommentContext &doc() const = 0;
+  [[nodiscard]] virtual const AST &ast() const = 0;
+  [[nodiscard]] virtual std::string t_name() const = 0;
 };
+
 }
 
 

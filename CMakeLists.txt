@@ -18,7 +18,42 @@ add_library(
         compiler/FileCursor.cpp compiler/FileCursor.h
         compiler/Lexer.cpp compiler/Lexer.h
         compiler/ErrorReporter.h
-        compiler/DocCommentContext.cpp compiler/DocCommentContext.h compiler/ConsoleErrorReporter.cpp compiler/ConsoleErrorReporter.h compiler/SilentErrorReporter.cpp compiler/SilentErrorReporter.h compiler/Declaration.h compiler/MessageDeclaration.cpp compiler/MessageDeclaration.h compiler/AST.cpp compiler/AST.h compiler/DirectiveDeclaration.cpp compiler/DirectiveDeclaration.h compiler/ServiceDeclaration.cpp compiler/ServiceDeclaration.h compiler/Parser.cpp compiler/Parser.h compiler/ParsingException.cpp compiler/ParsingException.h compiler/Field.cpp compiler/Field.h compiler/TypeDef.cpp compiler/TypeDef.h compiler/ScalarTypeDef.cpp compiler/ScalarTypeDef.h compiler/MessageTypeDef.cpp compiler/MessageTypeDef.h compiler/ListTypeDef.cpp compiler/ListTypeDef.h compiler/MapTypeDef.cpp compiler/MapTypeDef.h compiler/SubTypeDef.cpp compiler/SubTypeDef.h compiler/Argument.cpp compiler/Argument.h compiler/Call.cpp compiler/Call.h)
+        compiler/DocCommentContext.cpp
+        compiler/DocCommentContext.h
+        compiler/ConsoleErrorReporter.cpp
+        compiler/ConsoleErrorReporter.h
+        compiler/SilentErrorReporter.cpp
+        compiler/SilentErrorReporter.h
+        compiler/Declaration.h
+        compiler/MessageDeclaration.cpp
+        compiler/MessageDeclaration.h
+        compiler/AST.cpp compiler/AST.h
+        compiler/DirectiveDeclaration.cpp
+        compiler/DirectiveDeclaration.h
+        compiler/ServiceDeclaration.cpp
+        compiler/ServiceDeclaration.h
+        compiler/Parser.cpp
+        compiler/Parser.h
+        compiler/ParsingException.cpp
+        compiler/ParsingException.h
+        compiler/Field.cpp
+        compiler/Field.h
+        compiler/TypeDef.cpp
+        compiler/TypeDef.h
+        compiler/ScalarTypeDef.cpp
+        compiler/ScalarTypeDef.h
+        compiler/MessageTypeDef.cpp
+        compiler/MessageTypeDef.h
+        compiler/ListTypeDef.cpp
+        compiler/ListTypeDef.h
+        compiler/MapTypeDef.cpp
+        compiler/MapTypeDef.h
+        compiler/SubTypeDef.cpp
+        compiler/SubTypeDef.h
+        compiler/Argument.cpp
+        compiler/Argument.h
+        compiler/Call.cpp
+        compiler/Call.h)
 
 add_executable(tellc main.cpp)
 target_link_libraries(tellc tell)

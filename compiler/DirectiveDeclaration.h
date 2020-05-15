@@ -27,12 +27,13 @@ class DirectiveDeclaration : public Declaration {
   DirectiveDeclaration(DirectiveDeclaration &&) = default;
   DirectiveDeclaration &operator=(DirectiveDeclaration &&) = default;
 
-  Declaration::Type t() const override;
-  const std::string &name() const override;
-  const std::string &value() const;
-  const AST &ast() const override;
-  const DocCommentContext &doc() const override;
-  const Token &start_token() const override;
+  [[nodiscard]] Declaration::Type t() const override;
+  [[nodiscard]] const std::string &name() const override;
+  [[nodiscard]] const std::string &value() const;
+  [[nodiscard]] const AST &ast() const override;
+  [[nodiscard]] const DocCommentContext &doc() const override;
+  [[nodiscard]] const Token &start_token() const override;
+  [[nodiscard]] std::string t_name() const override;
  private:
   std::unique_ptr<Token> start_token_;
   std::unique_ptr<DocCommentContext> doc_;

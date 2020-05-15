@@ -3,8 +3,6 @@
 #include "../compiler/Parser.h"
 #include "../compiler/StringCursor.h"
 #include "../compiler/ConsoleErrorReporter.h"
-#include "../compiler/Lexer.h"
-#include "../compiler/TypeDef.h"
 #include "ParserTestHelpers.h"
 #include "../compiler/MessageTypeDef.h"
 #include "../compiler/MapTypeDef.h"
@@ -458,6 +456,7 @@ service my_service {
 
 TEST_CASE("Parser.parse message with repeated field name") {
   FAIL("pending");
+  // Add each field to a set of field names. If any clashes occur then error
 }
 
 TEST_CASE("Parser.parse message with unowned doc comment (not commenting a field)") {
@@ -466,34 +465,80 @@ TEST_CASE("Parser.parse message with unowned doc comment (not commenting a field
 
 TEST_CASE("Parser.parse recursive message loop") {
   FAIL("pending");
+  // Build a graph with a vector of message pointers and a map of message -> outward edges and a map of message -> inward edges
+  // That will detect any reference to an undefined message
+  // Filter out optional edges since they do not contribute to recursive message loops
+  // Apply a topological sorting such as Kahn's algorithn or a DFS cycle check.
+}
+
+TEST_CASE("Parser.parse duplicate directive name") {
+  const char *source = R"SOURCE(
+!a_duplicate_directive "the directive value"
+!a_duplicate_directive "the directive value"
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse duplicate message name") {
-  FAIL("pending");
+  const char *source = R"SOURCE(
+message a_duplicate_message {
+}
+message a_duplicate_message {
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse duplicate service name") {
+  const char *source = R"SOURCE(
+service a_duplicate_service {
+}
+service a_duplicate_service {
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
+}
+
+TEST_CASE("Parser.parse duplicate call within a service") {
   FAIL("pending");
+  // as the calls are added add each name to a set of service names. If any clashes occur then error.
 }
 
 TEST_CASE("Parser.parse unknown message as field type") {
   FAIL("pending");
+  // Algorithm is described in the recursive message loop test
 }
 
 TEST_CASE("Parser.parse unknown message as array type") {
   FAIL("pending");
+  // Algorithm is described in the recursive message loop test
 }
 
 TEST_CASE("Parser.parse unknown message as map type") {
   FAIL("pending");
+  // Algorithm is described in the recursive message loop test
 }
 
 TEST_CASE("Parser.parse unknown message as call argument") {
   FAIL("pending");
+  // For each call query the map of message names. If a missing name is found then error.
 }
 
 TEST_CASE("Parser.parse unknown message as call response") {
   FAIL("pending");
+  // For each call query the map of message names. If a missing name is found then error.
 }
 
 //TODO: Also add some bad syntax tests. Messages with unmatched curley braces, lists and maps with unmatched square brackets. Double colons in fields, repeated keywords, missing idents etc

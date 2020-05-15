@@ -37,6 +37,7 @@ class MessageDeclaration : public Declaration {
   [[nodiscard]] const Token &start_token() const override;
   [[nodiscard]] int FieldCount() const;
   [[nodiscard]] const Field &Field(int idx) const;
+  [[nodiscard]] std::string t_name() const override;
  private:
   std::unique_ptr<Token> start_token_;
   std::string name_;

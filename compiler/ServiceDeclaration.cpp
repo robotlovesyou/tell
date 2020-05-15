@@ -48,3 +48,7 @@ const til::Call &til::ServiceDeclaration::Call(int idx) const {
   }
   return *calls_[idx];
 }
+
+std::string til::ServiceDeclaration::t_name() const {
+  return "service";
+}

@@ -26,6 +26,7 @@ class ServiceDeclaration: public Declaration {
   [[nodiscard]] const AST &ast() const override;
   [[nodiscard]] int CallCount() const;
   [[nodiscard]] const Call &Call(int idx) const;
+  [[nodiscard]] std::string t_name() const override;
  private:
   std::unique_ptr<Token> start_token_;
   std::string name_;

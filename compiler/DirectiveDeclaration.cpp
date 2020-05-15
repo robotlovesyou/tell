@@ -41,3 +41,7 @@ const std::string &til::DirectiveDeclaration::value() const {
 const til::Token &til::DirectiveDeclaration::start_token() const {
   return *start_token_;
 }
+
+std::string til::DirectiveDeclaration::t_name() const {
+  return "directive";
+}

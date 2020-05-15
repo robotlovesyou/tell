@@ -56,3 +56,7 @@ const til::Field &til::MessageDeclaration::Field(int idx) const {
   }
   return *fields_[idx];
 }
+
+std::string til::MessageDeclaration::t_name() const {
+  return "message";
+}
