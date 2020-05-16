@@ -44,11 +44,11 @@ int til::ServiceDeclaration::CallCount() const {
   return calls_.size();
 }
 
-const til::Call &til::ServiceDeclaration::Call(int idx) const {
+const til::Call *til::ServiceDeclaration::Call(int idx) const {
   if (idx >= calls_.size()) {
     throw std::out_of_range("Invalid call index");
   }
-  return *calls_[idx];
+  return calls_[idx].get();
 }
 
 std::string til::ServiceDeclaration::t_name() const {

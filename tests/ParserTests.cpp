@@ -426,6 +426,18 @@ service my_service {
 
 TEST_CASE("Parser.parse service with calls") {
   const char *source = R"SOURCE(
+message MyArgument {
+}
+
+message MyReturn {
+}
+
+message MyOtherArgument {
+}
+
+message MyOtherReturn {
+}
+
 /// a doc comment for the service
 service my_service {
   call_one[MyArgument]: MyReturn
@@ -438,20 +450,20 @@ service my_service {
   til::Parser p(std::move(tl), er);
   auto ast = p.Parse();
   CHECK_FALSE(er->has_errors());
-  CHECK(ast->DeclarationCount() == 1);
-  CHECK(ast->Declaration(0)->t() == til::Declaration::kService);
-  const auto *sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(0));
+  CHECK(ast->DeclarationCount() == 5);
+  CHECK(ast->Declaration(4)->t() == til::Declaration::kService);
+  const auto *sd = dynamic_cast<const til::ServiceDeclaration*>(ast->Declaration(4));
   CHECK(sd->name() == "my_service");
   CHECK(sd->doc().has_content());
   CHECK(sd->CallCount() == 2);
-  CHECK_FALSE(sd->Call(0).doc().has_content());
-  CHECK(sd->Call(0).name() == "call_one");
-  CHECK(sd->Call(0).argument().name() == "MyArgument");
-  CHECK(sd->Call(0).returns().name() == "MyReturn");
-  CHECK(sd->Call(1).doc().has_content());
-  CHECK(sd->Call(1).name() == "call_two");
-  CHECK(sd->Call(1).argument().name() == "MyOtherArgument");
-  CHECK(sd->Call(1).returns().name() == "MyOtherReturn");
+  CHECK_FALSE(sd->Call(0)->doc().has_content());
+  CHECK(sd->Call(0)->name() == "call_one");
+  CHECK(sd->Call(0)->argument().name() == "MyArgument");
+  CHECK(sd->Call(0)->returns().name() == "MyReturn");
+  CHECK(sd->Call(1)->doc().has_content());
+  CHECK(sd->Call(1)->name() == "call_two");
+  CHECK(sd->Call(1)->argument().name() == "MyOtherArgument");
+  CHECK(sd->Call(1)->returns().name() == "MyOtherReturn");
 }
 
 TEST_CASE("Parser.parse message with repeated field name") {
@@ -553,19 +565,22 @@ message MyMessage {
   CHECK(er->has_errors());
 }
 
-TEST_CASE("Parser.parse unknown message as array type") {
-  FAIL("pending");
-  // Algorithm is described in the recursive message loop test
+TEST_CASE("Parser.parse unknown message as call argument or return") {
+  const char *source = R"SOURCE(
+message KnownMessage {
 }
 
-TEST_CASE("Parser.parse unknown message as map type") {
-  FAIL("pending");
-  // Algorithm is described in the recursive message loop test
+service MyService {
+  my_call_with_unknown_argument[UnknownMessage]: KnownMessage
+  my_call_with_unknown_return[KnownMessage]: UnknownMessage
+  my_call_with_unknown_arg_and_return[UknownMessage]: KnownMessage
 }
-
-TEST_CASE("Parser.parse unknown message as call argument") {
-  FAIL("pending");
-  // For each call query the map of message names. If a missing name is found then error.
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse unknown message as call response") {

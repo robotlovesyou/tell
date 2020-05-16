@@ -64,7 +64,7 @@ TEST_CASE("ServiceDeclaration.Call()") {
     std::vector<std::unique_ptr<til::Call>> calls;
     calls.push_back(std::move(call));
     auto sd = test_service_declaration(test_token(til::Token::kService), test_dcc(), "a_name", std::move(calls), ast);
-    CHECK(sd->Call(0).name() == "call_name");
+    CHECK(sd->Call(0)->name() == "call_name");
   }
 
   SECTION("Invalid idx") {

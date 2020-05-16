@@ -13,6 +13,7 @@ til::ASTValidator::ASTValidator(std::shared_ptr<ErrorReporter> error_reporter, t
 
 void til::ASTValidator::Validate() {
   ResolveMessages();
+  ResolveAllServiceArgs();
 }
 
 void til::ASTValidator::ResolveMessages() {
@@ -68,5 +69,41 @@ void til::ASTValidator::ResolveListTypeDef(const til::ListTypeDef *ltd, const Fi
 void til::ASTValidator::ResolveMapTypeDef(const til::MapTypeDef *mtd, const Field *f, const MessageDeclaration *md) {
   // Just recurse into ResolveTypeDef for the map subtype
   ResolveTypeDef(mtd->sub_type(), f, md);
+}
+
+void til::ASTValidator::ResolveAllServiceArgs() {
+  for (int i = 0; i < ast_->DeclarationCount(); i++) {
+    if(ast_->Declaration(i)->t() != Declaration::kService) {
+      continue;
+    }
+    ResolveServiceArgs(dynamic_cast<const ServiceDeclaration*>(ast_->Declaration(i)));
+  }
+}
+
+void til::ASTValidator::ResolveServiceArgs(const til::ServiceDeclaration *sd) {
+  for (int i = 0; i < sd->CallCount(); i++) {
+    ResolveCallArguments(sd->Call(i), sd);
+  }
+}
+
+void til::ASTValidator::ResolveCallArguments(const til::Call *call, const til::ServiceDeclaration *sd) {
+  auto arg = ast_->ResolveMessage(call->argument().name());
+  auto ret = ast_->ResolveMessage((call->argument().name()));
+  if (!arg.has_value()) {
+    error_reporter_->ReportError(fmt::format("Call {} has unknown argument type {} in Service {} at line {} column {}",
+                                             call->name(),
+                                             call->argument().name(),
+                                             sd->name(),
+                                             sd->start_token().line,
+                                             sd->start_token().col));
+  }
+  if(!ret.has_value()) {
+    error_reporter_->ReportError(fmt::format("Call {} has unknown return type {} in Service {} at line {} column {}",
+                                             call->name(),
+                                             call->returns().name(),
+                                             sd->name(),
+                                             sd->start_token().line,
+                                             sd->start_token().col));
+  }
 }
 
