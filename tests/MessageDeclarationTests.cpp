@@ -58,7 +58,7 @@ TEST_CASE("MessageDeclaration.FieldEntry()") {
   fields.push_back(std::unique_ptr<til::Field>(new til::Field(test_field())));
   auto md = test_message_declaration(test_token(til::Token::kMessage), test_dcc(), "MyMessage", std::move(fields));
   SECTION("Valid Entry") {
-    CHECK_FALSE(md->Field(0).name().empty());
+    CHECK_FALSE(md->Field(0)->name().empty());
   }
 
   SECTION("Invalid Entry") {

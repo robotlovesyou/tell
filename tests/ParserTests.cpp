@@ -171,11 +171,11 @@ message a_scalar_only_message {
   auto scalar_type = std::get<4>(opts);
 
   INFO(name);
-  CHECK(md->Field(idx).type_def()->t()==til::TypeDef::kScalar);
-  CHECK(md->Field(idx).type_def()->optional()==optional);
-  CHECK(md->Field(idx).name()==name);
-  CHECK(md->Field(idx).doc().has_content()==has_docs);
-  const auto *std = dynamic_cast<const til::ScalarTypeDef *>(md->Field(idx).type_def());
+  CHECK(md->Field(idx)->type_def()->t()==til::TypeDef::kScalar);
+  CHECK(md->Field(idx)->type_def()->optional()==optional);
+  CHECK(md->Field(idx)->name()==name);
+  CHECK(md->Field(idx)->doc().has_content()==has_docs);
+  const auto *std = dynamic_cast<const til::ScalarTypeDef *>(md->Field(idx)->type_def());
   CHECK(std->scalar_type()==scalar_type);
 }
 
@@ -206,18 +206,18 @@ message a_message_with_message_fields {
   CHECK(md->name() == "a_message_with_message_fields");
   CHECK(md->FieldCount() == 2);
 
-  CHECK(md->Field(0).type_def()->t() == til::TypeDef::kMessage);
-  CHECK_FALSE(md->Field(0).type_def()->optional());
-  CHECK(md->Field(0).name() == "an_empty_field");
-  CHECK(md->Field(0).doc().has_content());
-  const auto *msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(0).type_def());
+  CHECK(md->Field(0)->type_def()->t() == til::TypeDef::kMessage);
+  CHECK_FALSE(md->Field(0)->type_def()->optional());
+  CHECK(md->Field(0)->name() == "an_empty_field");
+  CHECK(md->Field(0)->doc().has_content());
+  const auto *msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(0)->type_def());
   CHECK(msgt->name() == "Empty");
 
-  CHECK(md->Field(1).type_def()->t() == til::TypeDef::kMessage);
-  CHECK(md->Field(1).type_def()->optional());
-  CHECK(md->Field(1).name() == "an_optional_empty_field");
-  CHECK(md->Field(1).doc().has_content());
-  msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(1).type_def());
+  CHECK(md->Field(1)->type_def()->t() == til::TypeDef::kMessage);
+  CHECK(md->Field(1)->type_def()->optional());
+  CHECK(md->Field(1)->name() == "an_optional_empty_field");
+  CHECK(md->Field(1)->doc().has_content());
+  msgt = dynamic_cast<const til::MessageTypeDef*>(md->Field(1)->type_def());
   CHECK(msgt->name() == "Empty");
 
 }
@@ -278,8 +278,8 @@ message a_message_with_map_fields {
   auto optional = std::get<3>(opts);
   auto sub_optional = std::get<4>(opts);
 
-  CHECK(md->Field(idx).name() == name);
-  const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(idx).type_def());
+  CHECK(md->Field(idx)->name() == name);
+  const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(idx)->type_def());
   CHECK(mtd->t() == til::TypeDef::kMap);
   CHECK(mtd->optional() == optional);
   CHECK(mtd->sub_type()->t() == sub_t);
@@ -339,8 +339,8 @@ message a_message_with_list_fields {
   auto optional = std::get<3>(opts);
   auto sub_optional = std::get<4>(opts);
 
-  CHECK(md->Field(idx).name() == name);
-  const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(idx).type_def());
+  CHECK(md->Field(idx)->name() == name);
+  const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(idx)->type_def());
   CHECK(ltd->t() == til::TypeDef::kList);
   CHECK(ltd->optional() == optional);
   CHECK(ltd->sub_type()->t() == sub_t);
@@ -372,8 +372,8 @@ message NestAllTheThings {
   const auto *md = dynamic_cast<const til::MessageDeclaration *>(ast->Declaration(1));
 
   SECTION("a list of maps") {
-    CHECK(md->Field(0).name() == "a_list_of_maps");
-    const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(0).type_def());
+    CHECK(md->Field(0)->name() == "a_list_of_maps");
+    const auto *ltd = dynamic_cast<const til::ListTypeDef *>(md->Field(0)->type_def());
     CHECK(ltd->t() == til::TypeDef::kList);
     CHECK_FALSE(ltd->optional());
     CHECK(ltd->sub_type()->t() == til::TypeDef::kMap);
@@ -383,8 +383,8 @@ message NestAllTheThings {
   }
 
   SECTION("an optional map of optional lists of optional messages") {
-    CHECK(md->Field(1).name() == "an_optional_map_of_optional_lists");
-    const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(1).type_def());
+    CHECK(md->Field(1)->name() == "an_optional_map_of_optional_lists");
+    const auto *mtd = dynamic_cast<const til::MapTypeDef *>(md->Field(1)->type_def());
     CHECK(mtd->t() == til::TypeDef::kMap);
     CHECK(mtd->optional());
     CHECK(mtd->sub_type()->t() == til::TypeDef::kList);
@@ -395,8 +395,8 @@ message NestAllTheThings {
   }
 
   SECTION("a very deeply nested field") {
-    CHECK(md->Field(2).name() == "a_very_deeply_nested_field");
-    const auto *td = md->Field(2).type_def();
+    CHECK(md->Field(2)->name() == "a_very_deeply_nested_field");
+    const auto *td = md->Field(2)->type_def();
     for(int i = 0; i < 3; i++) {
       const auto *ltd = dynamic_cast<const til::ListTypeDef*>(td);
       const auto *mtd = dynamic_cast<const til::MapTypeDef*>(ltd->sub_type());
@@ -538,8 +538,19 @@ service my_service {
 }
 
 TEST_CASE("Parser.parse unknown message as field type") {
-  FAIL("pending");
-  // Algorithm is described in the recursive message loop test
+  const char *source = R"SOURCE(
+message MyMessage {
+  my_field: UnknownMessage
+  my_map_field: map[UnknownMessage]
+  my_list_field: list[UnknownMessage]
+  my_nested_field: list[map[list[UnknownMessage]]]
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse unknown message as array type") {
@@ -562,5 +573,5 @@ TEST_CASE("Parser.parse unknown message as call response") {
   // For each call query the map of message names. If a missing name is found then error.
 }
 
-//TODO: Also add some bad syntax tests. Messages with unmatched curley braces, lists and maps with unmatched square brackets. Double colons in fields, repeated keywords, missing idents etc
+//TODO: Also add some bad syntax tests. Messages with unmatched curly braces, lists and maps with unmatched square brackets. Double colons in fields, repeated keywords, missing idents etc
 

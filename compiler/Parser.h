@@ -39,6 +39,8 @@ class Parser {
   /**
    * Top Level Parsing Functions
    */
+  std::shared_ptr<AST> DoParse();
+  void DoValidate(AST *ast);
   void ParseDirective(std::unique_ptr<til::DocCommentContext> doc);
   void ParseMessage(std::unique_ptr<til::DocCommentContext> doc);
   void ParseService(std::unique_ptr<til::DocCommentContext> doc);

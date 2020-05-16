@@ -52,11 +52,11 @@ int til::MessageDeclaration::FieldCount() const {
   return fields_.size();
 }
 
-const til::Field &til::MessageDeclaration::Field(int idx) const {
+const til::Field *til::MessageDeclaration::Field(int idx) const {
   if (idx >= fields_.size()) {
     throw std::out_of_range(fmt::format("invalid field entry {}", idx));
   }
-  return *fields_[idx];
+  return fields_[idx].get();
 }
 
 std::string til::MessageDeclaration::t_name() const {

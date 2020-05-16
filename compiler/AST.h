@@ -6,6 +6,7 @@
 #define TELL_COMPILER_AST_H_
 
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 #include "Declaration.h"
@@ -16,6 +17,7 @@ class AST {
   [[nodiscard]] int DeclarationCount() const;
   void AddDeclaration(std::unique_ptr<Declaration> decl);
   const Declaration *Declaration(int idx);
+  [[nodiscard]] std::optional<int> ResolveMessage(const std::string& name) const;
  private:
   void AddDeclToIndex(const til::Declaration *decl, std::map<std::string, int> *index, int ord);
 

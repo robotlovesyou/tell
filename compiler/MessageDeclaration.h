@@ -37,7 +37,7 @@ class MessageDeclaration : public Declaration {
   [[nodiscard]] const AST &ast() const override;
   [[nodiscard]] const Token &start_token() const override;
   [[nodiscard]] int FieldCount() const;
-  [[nodiscard]] const Field &Field(int idx) const;
+  [[nodiscard]] const Field *Field(int idx) const;
   [[nodiscard]] std::string t_name() const override;
  private:
   void AddFieldsToIndex();

@@ -53,7 +53,7 @@ add_library(
         compiler/Argument.cpp
         compiler/Argument.h
         compiler/Call.cpp
-        compiler/Call.h)
+        compiler/Call.h compiler/ASTValidator.cpp compiler/ASTValidator.h)
 
 add_executable(tellc main.cpp)
 target_link_libraries(tellc tell)

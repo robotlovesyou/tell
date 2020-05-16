@@ -44,3 +44,10 @@ void til::AST::AddDeclToIndex(const til::Declaration *decl, std::map<std::string
   }
   (*index)[decl->name()] = ord;
 }
+
+std::optional<int> til::AST::ResolveMessage(const std::string& name) const {
+  if (message_index_.count(name) == 1) {
+    return std::optional<int>(message_index_.at(name));
+  }
+  return std::optional<int>();
+}

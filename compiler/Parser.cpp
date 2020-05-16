@@ -5,6 +5,7 @@
 #include <utility>
 #include <iostream>
 
+#include "ASTValidator.h"
 #include "ScalarTypeDef.h"
 #include "MessageTypeDef.h"
 #include "MapTypeDef.h"
@@ -39,6 +40,14 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
 }
 
 std::shared_ptr<til::AST> til::Parser::Parse() {
+  auto ast = DoParse();
+  if (!error_reporter_->has_errors()) {
+    DoValidate(ast.get());
+  }
+  return ast;
+}
+
+std::shared_ptr<til::AST> til::Parser::DoParse() {
   // possible to get a line feed as the first token
   ConsumeLineFeed();
 
@@ -64,6 +73,10 @@ std::shared_ptr<til::AST> til::Parser::Parse() {
   }
 
   return ast_;
+}
+
+void til::Parser::DoValidate(AST *ast) {
+  ASTValidator(error_reporter_, ast).Validate();
 }
 
 void til::Parser::ParseDirective(std::unique_ptr<til::DocCommentContext> doc) {
@@ -247,7 +260,7 @@ void til::Parser::HandleUnexpectedTopLevelToken() {
 
 std::unique_ptr<til::TypeDef> til::Parser::ParseScalarTypeDef() {
   auto tkn = *lexer_->Next();
-  ScalarTypeDef::ScalarType scalar_type;
+  ScalarTypeDef::ScalarType scalar_type = ScalarTypeDef::kBool;
 
   switch (tkn.t) {
     case Token::kBool:scalar_type = ScalarTypeDef::kBool;
@@ -338,7 +351,7 @@ std::unique_ptr<til::Field> til::Parser::ParseField(std::unique_ptr<DocCommentCo
 }
 
 std::unique_ptr<til::TypeDef> til::Parser::ParseTypeDef() {
-  auto peek = *lexer_->Peek();
+  const auto *peek = *lexer_->Peek();
 
   if (type_def_parsers_.count(peek->t)==0) {
     throw ParsingException(fmt::format("Unexpected {} \"{}\" at line {} column {} parsing message field",

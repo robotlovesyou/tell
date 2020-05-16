@@ -28,7 +28,7 @@ TEST_CASE("AST.Declaration()") {
 
   ast.AddDeclaration(std::move(sd));
   SECTION("valid declaration") {
-    auto decl = dynamic_cast<const til::ServiceDeclaration*>(ast.Declaration(0));
+    const auto *decl = dynamic_cast<const til::ServiceDeclaration*>(ast.Declaration(0));
     CHECK(decl->t() == til::Declaration::kService);
     CHECK(decl->doc().content() == doc);
     CHECK(decl->name() == name);
@@ -37,5 +37,22 @@ TEST_CASE("AST.Declaration()") {
 
   SECTION("Invalid declaration") {
     CHECK_THROWS_AS(ast.Declaration(1), std::out_of_range);
+  }
+}
+
+TEST_CASE("ResolveMessage") {
+  til::AST ast;
+  auto md = test_message_declaration();
+  auto name = md->name();
+  ast.AddDeclaration(std::move(md));
+
+  SECTION("Valid Name") {
+    auto resolved = ast.ResolveMessage(name);
+    CHECK(resolved.has_value());
+    CHECK(*resolved == 0);
+  }
+  SECTION("Invalid Name") {
+    auto resolved = ast.ResolveMessage("Missing");
+    CHECK_FALSE(resolved.has_value());
   }
 }
