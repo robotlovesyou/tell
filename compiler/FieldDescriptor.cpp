@@ -41,7 +41,7 @@ std::weak_ptr<MessageDescriptor> FieldDescriptor::TypeMessage() {
   return *type_message_;
 }
 
-bool FieldDescriptor::optional() {
+bool FieldDescriptor::optional() const {
   return optional_;
 }
 

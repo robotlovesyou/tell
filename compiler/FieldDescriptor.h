@@ -155,7 +155,7 @@ class FieldDescriptor : public std::enable_shared_from_this<FieldDescriptor> {
    * Accessor for the optional property
    * @return
    */
-  bool optional();
+  bool optional() const;
 
   /**
    * Accessor for the message property

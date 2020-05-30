@@ -25,9 +25,10 @@ std::optional<const char *> til::FileCursor::Peek() {
   return cursor_->Peek();
 }
 
-til::FileCursor::FileCursorException::FileCursorException(std::filesystem::path path): path_(std::move(path)) {
+til::FileCursor::FileCursorException::FileCursorException(const std::filesystem::path& path){
+  message_ = fmt::format("File at {} not found", path.string());
 }
 
 const char *til::FileCursor::FileCursorException::what() {
-  return fmt::format("File at {} not found", path_.string()).c_str();
+  return message_.c_str();
 }

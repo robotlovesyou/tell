@@ -10,10 +10,6 @@ void til::ConsoleErrorReporter::ReportError(const std::string& message) {
   std::cerr << fmt::format("ERROR: {}", message) << std::endl;
 }
 
-void til::ConsoleErrorReporter::ReportWarning(const std::string& message) {
-  std::cout << fmt::format("WARNING: {}", message) << std::endl;
-}
-
 bool til::ConsoleErrorReporter::has_errors() {
   return has_errors_;
 }

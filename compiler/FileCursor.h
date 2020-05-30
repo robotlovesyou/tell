@@ -26,7 +26,7 @@ class FileCursor : public Cursor<char> {
     /**
      * @param path The requested file path
      */
-    explicit FileCursorException(std::filesystem::path path);
+    explicit FileCursorException(const std::filesystem::path& path);
 
     /**
      * Describe the exception
@@ -34,7 +34,7 @@ class FileCursor : public Cursor<char> {
      */
     const char *what();
    private:
-    const std::filesystem::path path_;
+    std::string message_;
   };
 
   /**

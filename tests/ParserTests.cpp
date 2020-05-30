@@ -2,14 +2,14 @@
 #include <tuple>
 #include "../compiler/Parser.h"
 #include "../compiler/StringCursor.h"
-#include "../compiler/ConsoleErrorReporter.h"
+#include "../compiler/TestErrorReporter.h"
 #include "ParserTestHelpers.h"
 #include "../compiler/MessageTypeDef.h"
 #include "../compiler/MapTypeDef.h"
 #include "../compiler/ListTypeDef.h"
 
 std::shared_ptr<til::ErrorReporter> test_error_reporter() {
-  return std::make_shared<til::ConsoleErrorReporter>();
+  return std::make_shared<til::TestErrorReporter>();
 }
 
 std::unique_ptr<til::Lexer> test_lexer(const char *source, const std::shared_ptr<til::ErrorReporter> &er) {
@@ -20,10 +20,6 @@ std::unique_ptr<til::Lexer> test_lexer(const char *source, const std::shared_ptr
 TEST_CASE("Parser constructor") {
   auto er = test_error_reporter();
   CHECK_NOTHROW(til::Parser(test_lexer("", er), er));
-}
-
-TEST_CASE("Parser.parse bad top level token") {
-  FAIL("pending");
 }
 
 TEST_CASE("Parser.parse directive") {
@@ -480,16 +476,31 @@ message my_message {
   CHECK(er->has_errors());
 }
 
-TEST_CASE("Parser.parse message with unowned doc comment (not commenting a field)") {
-  FAIL("pending");
+TEST_CASE("Parser.parse recursive message loop") {
+  const char *source = R"SOURCE(
+message A {
+  opt_field: B?
+  map_field: map[B]
+  list_field: list[B]
+  recursive_field_a: C
 }
 
-TEST_CASE("Parser.parse recursive message loop") {
-  FAIL("pending");
-  // Build a graph with a vector of message pointers and a map of message -> outward edges and a map of message -> inward edges
-  // That will detect any reference to an undefined message
-  // Filter out optional edges since they do not contribute to recursive message loops
-  // Apply a topological sorting such as Kahn's algorithn or a DFS cycle check.
+message B {
+}
+
+message C {
+  recursive_field_c: D
+}
+
+message D {
+  recursive_field_d: A
+}
+)SOURCE";
+  auto er = test_error_reporter();
+  auto tl = test_lexer(source, er);
+  til::Parser p(std::move(tl), er);
+  auto ast = p.Parse();
+  CHECK(er->has_errors());
 }
 
 TEST_CASE("Parser.parse duplicate directive name") {
@@ -583,10 +594,6 @@ service MyService {
   CHECK(er->has_errors());
 }
 
-TEST_CASE("Parser.parse unknown message as call response") {
-  FAIL("pending");
-  // For each call query the map of message names. If a missing name is found then error.
-}
 
 //TODO: Also add some bad syntax tests. Messages with unmatched curly braces, lists and maps with unmatched square brackets. Double colons in fields, repeated keywords, missing idents etc
 

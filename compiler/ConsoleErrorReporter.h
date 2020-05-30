@@ -10,9 +10,8 @@
 namespace til {
  class ConsoleErrorReporter: public til::ErrorReporter {
   public:
-   void ReportError(const std::string& message);
-   void ReportWarning(const std::string& message);
-   bool has_errors();
+   void ReportError(const std::string& message) override;
+   bool has_errors() override;
   private:
    bool has_errors_{false};
 };

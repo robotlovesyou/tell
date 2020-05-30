@@ -12,7 +12,6 @@ namespace til {
 class ErrorReporter {
  public:
   virtual void ReportError(const std::string& message) = 0;
-  virtual void ReportWarning(const std::string& message) = 0;
   virtual bool has_errors() = 0;
 };
 }

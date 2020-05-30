@@ -22,8 +22,8 @@ add_library(
         compiler/DocCommentContext.h
         compiler/ConsoleErrorReporter.cpp
         compiler/ConsoleErrorReporter.h
-        compiler/SilentErrorReporter.cpp
-        compiler/SilentErrorReporter.h
+        compiler/TestErrorReporter.cpp
+        compiler/TestErrorReporter.h
         compiler/Declaration.h
         compiler/MessageDeclaration.cpp
         compiler/MessageDeclaration.h
