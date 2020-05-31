@@ -486,6 +486,7 @@ message A {
 }
 
 message B {
+  a_field: A
 }
 
 message C {
@@ -593,7 +594,4 @@ service MyService {
   p.Parse();
   CHECK(er->has_errors());
 }
-
-
-//TODO: Also add some bad syntax tests. Messages with unmatched curly braces, lists and maps with unmatched square brackets. Double colons in fields, repeated keywords, missing idents etc
 

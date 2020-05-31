@@ -1,0 +1,64 @@
+{
+  "directives": [
+    {"name": "directive1", "value": "directive1_value"},
+    {"name": "directive2", "value": "directive2_value"}
+  ],
+  "messageDeclarations": [
+    {
+      "name": "AMessage",
+      "fields": [
+        {
+          "name": "a_scalar_field",
+          "typeDef": {
+            "type": 0,
+            "optional": false,
+            "details": {
+              "scalarType": 0
+            }
+          }
+        },
+        {
+          "name": "a_message_field",
+          "typeDef": {
+            "type": 1,
+            "optional": false,
+            "details": {
+              "name": "SomeMessage"
+            }
+          }
+        },
+        {
+          "name": "a_map_field",
+          "typeDef": {
+            "type": 2,
+            "optional": false,
+            "details": {
+              "typeDef": {
+                "type": 0,
+                "details": {
+                  "scalarType": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "a_list_field",
+          "typeDef": {
+            "type": 2,
+            "optional": false,
+            "details": {
+              "typeDef": {
+                "type": 0,
+                "details": {
+                  "scalarType": 1
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "serviceDeclarations": {}
+}

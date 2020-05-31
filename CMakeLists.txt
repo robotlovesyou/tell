@@ -8,10 +8,7 @@ include_directories(include/thirdparty)
 
 add_library(
         tell
-        compiler/MessageDescriptor.cpp compiler/MessageDescriptor.h
-        compiler/FieldDescriptor.cpp compiler/FieldDescriptor.h
         include/thirdparty/fmt/format.cc
-        compiler/SourceDescriptor.cpp compiler/SourceDescriptor.h
         compiler/Token.h compiler/Token.cpp
         compiler/Cursor.h
         compiler/StringCursor.cpp compiler/StringCursor.h

@@ -23,7 +23,7 @@ class TypeDef {
   TypeDef &operator=(TypeDef &&) = default;
 
  protected:
-  TypeDef(bool optional);
+  explicit TypeDef(bool optional);
   bool optional_;
 };
 }
