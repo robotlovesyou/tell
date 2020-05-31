@@ -15,11 +15,15 @@ using nlohmann::json;
 namespace til {
 struct SerializedTypeDef {
   virtual ~SerializedTypeDef() = default;
+  SerializedTypeDef() = default;
+  SerializedTypeDef(bool opt): is_optional(opt) {}
   [[nodiscard]] virtual TypeDef::Type t() const = 0;
   bool is_optional{false};
 };
 
-struct ScalarSerializedTypeDef: public SerializedTypeDef {
+struct ScalarSerializedTypeDef : public SerializedTypeDef {
+  ScalarSerializedTypeDef() = default;
+  ScalarSerializedTypeDef(ScalarTypeDef::ScalarType st, bool opt) : scalar_type(st), SerializedTypeDef(opt) {}
   [[nodiscard]] TypeDef::Type t() const override {
     return TypeDef::kScalar;
   }
@@ -39,7 +43,10 @@ void from_json(const json &j, ScalarSerializedTypeDef &sstd) {
   j.at("is_optional").get_to(sstd.is_optional);
 }
 
-struct MapSerializedTypeDef: public SerializedTypeDef {
+struct MapSerializedTypeDef : public SerializedTypeDef {
+  MapSerializedTypeDef() = default;
+  MapSerializedTypeDef(std::unique_ptr<SerializedTypeDef> sub_t, bool opt) : sub_type(std::move(sub_t)),
+                                                                                      SerializedTypeDef(opt) {}
   [[nodiscard]] TypeDef::Type t() const override {
     return TypeDef::kMap;
   }
@@ -52,23 +59,23 @@ void to_json(json &j, const MapSerializedTypeDef &mstd) {
   switch (mstd.sub_type->t()) {
 
     case TypeDef::kScalar: {
-      const auto *st = dynamic_cast<const ScalarSerializedTypeDef*>(mstd.sub_type.get());
+      const auto *st = dynamic_cast<const ScalarSerializedTypeDef *>(mstd.sub_type.get());
       j["sub_type"] = *st;
       break;
     }
     case TypeDef::kMessage:break;
     case TypeDef::kMap: {
-      const auto *mt = dynamic_cast<const MapSerializedTypeDef*>(mstd.sub_type.get());
+      const auto *mt = dynamic_cast<const MapSerializedTypeDef *>(mstd.sub_type.get());
       j["sub_type"] = *mt;
       break;
     }
     case TypeDef::kList:break;
   }
 }
+
 void to_json(json &j, const std::unique_ptr<MapSerializedTypeDef> &mstd_ptr) {
   to_json(j, *mstd_ptr);
 }
-
 
 void from_json(const json &j, MapSerializedTypeDef &mstd) {
   j.at("is_optional").get_to(mstd.is_optional);
@@ -77,15 +84,14 @@ void from_json(const json &j, MapSerializedTypeDef &mstd) {
     case TypeDef::kScalar: {
       auto sstd = j.at("sub_type").get<ScalarSerializedTypeDef>();
       auto sub_type = std::make_unique<ScalarSerializedTypeDef>();
-      *sub_type = sstd;
+      *sub_type = std::move(sstd);
       mstd.sub_type = std::move(sub_type);
       break;
     }
     case TypeDef::kMap: {
       auto map_std = j.at("sub_type").get<MapSerializedTypeDef>();
       auto sub_type = std::make_unique<MapSerializedTypeDef>();
-      sub_type->is_optional = map_std.is_optional;
-      sub_type->sub_type = std::move(map_std.sub_type);
+      *sub_type = std::move(map_std);
       mstd.sub_type = std::move(sub_type);
       break;
     }
