@@ -4,6 +4,7 @@ static const char *K_SUB_TYPE = "sub_type";
 static const char *K_T = "t";
 static const char *K_SCALAR_TYPE = "scalar_type";
 static const char *K_IS_OPTIONAL = "is_optional";
+static const char *K_NAME = "name";
 
 void sub_type_to_json(json &j, const std::unique_ptr<til::SerializedTypeDef> &td_ptr, const char *key) {
   switch (td_ptr->t()) {
@@ -12,7 +13,11 @@ void sub_type_to_json(json &j, const std::unique_ptr<til::SerializedTypeDef> &td
       j[key] = *st;
       break;
     }
-    case til::TypeDef::kMessage:break;
+    case til::TypeDef::kMessage: {
+      const auto *mt = dynamic_cast<const til::MessageSerializedTypeDef *>(td_ptr.get());
+      j[key] = *mt;
+      break;
+    }
     case til::TypeDef::kMap: {
       const auto *mt = dynamic_cast<const til::MapSerializedTypeDef *>(td_ptr.get());
       j[key] = *mt;
@@ -49,8 +54,10 @@ std::unique_ptr<til::SerializedTypeDef> sub_type_from_json(const json &j, const 
       return sub_type;
     }
     case til::TypeDef::kMessage:{
-      //TODO: This is not right. It's just here to make it compile
-      return std::make_unique<til::MapSerializedTypeDef>();
+      auto msg_std = j.at(K_SUB_TYPE).get<til::MessageSerializedTypeDef>();
+      auto sub_type = std::make_unique<til::MessageSerializedTypeDef>();
+      *sub_type = std::move(msg_std);
+      return sub_type;
     }
   }
 }
@@ -68,7 +75,18 @@ void til::from_json(const json &j, ScalarSerializedTypeDef &sstd) {
   j.at(K_IS_OPTIONAL).get_to(sstd.is_optional);
 }
 
+void til::to_json(json &j, const MessageSerializedTypeDef &mstd) {
+  j = json{{K_T, mstd.t()}, {K_NAME, mstd.name}, {K_IS_OPTIONAL, mstd.is_optional}};
+}
 
+void til::to_json(json &j, const std::unique_ptr<MessageSerializedTypeDef> &mstd_ptr) {
+  to_json(j, *mstd_ptr);
+}
+
+void til::from_json(const json &j, MessageSerializedTypeDef &mstd) {
+  j.at(K_NAME).get_to(mstd.name);
+  j.at(K_IS_OPTIONAL).get_to(mstd.is_optional);
+}
 
 void til::to_json(json &j, const MapSerializedTypeDef &mstd) {
   j[K_T] = mstd.t();

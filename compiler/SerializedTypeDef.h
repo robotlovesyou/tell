@@ -35,6 +35,19 @@ void to_json(json &j, const std::unique_ptr<ScalarSerializedTypeDef> &sstd_ptr);
 
 void from_json(const json &j, ScalarSerializedTypeDef &sstd);
 
+struct MessageSerializedTypeDef : public SerializedTypeDef {
+  MessageSerializedTypeDef() = default;
+  MessageSerializedTypeDef(std::string nm, bool opt): name(nm), SerializedTypeDef(opt) {}
+  [[nodiscard]] TypeDef::Type t() const override {return til::TypeDef::kMessage;}
+  std::string name{};
+};
+
+void to_json(json &j, const MessageSerializedTypeDef &mstd);
+
+void to_json(json &j, const std::unique_ptr<MessageSerializedTypeDef> &mstd_ptr);
+
+void from_json(const json &j, MessageSerializedTypeDef &mstd);
+
 struct ListSerializedTypeDef : public SerializedTypeDef {
   ListSerializedTypeDef() = default;
   ListSerializedTypeDef(std::unique_ptr<SerializedTypeDef> sub_t, bool opt)
