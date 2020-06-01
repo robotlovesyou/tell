@@ -7,7 +7,7 @@ To simplify building the project a number of dependencies are included as header
 Those libraries are:
 1. Catch2 Testing Framework. The header file and license are included as catch.hpp and LICENSE.txt in the include/thirdparty/catch2 directory. See https://github.com/catchorg/Catch2
 2. {fmt} string formatting library. The header and source files are included in the include/thirdparty/fmt directory. See https://fmt.dev/6.2.0/index.html
-3. JSON json parsing/serializing library included in include/thirdparty/json directory. See https://github.com/nlohmann/json
+3. nlohmann/json json parsing/serializing/deserializing library included in include/thirdparty/nlohmann directory. See https://github.com/nlohmann/json
 
 ## Til Interface Language
 

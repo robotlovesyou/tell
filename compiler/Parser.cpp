@@ -12,7 +12,10 @@
 #include "ListTypeDef.h"
 
 unique_tkn to_unique_tkn(til::Token tkn) {
-  return std::unique_ptr<til::Token>(new til::Token(std::move(tkn))); // NOLINT(modernize-make-unique)
+  auto unique_tkn = std::make_unique<til::Token>();
+  *unique_tkn = std::move(tkn);
+  return unique_tkn;
+//  return std::unique_ptr<til::Token>(new til::Token(std::move(tkn))); // NOLINT(modernize-make-unique)
 }
 
 til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::ErrorReporter> error_reporter)
@@ -29,6 +32,7 @@ til::Parser::Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<til::Erro
   top_level_parsers_[Token::kService] =
       [this](std::unique_ptr<til::DocCommentContext> doc) { this->ParseService(std::move(doc)); };
 
+  // Prepare the map of type_def parsing functions
   type_def_parsers_[Token::kBool] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kFloat] = [this]() { return this->ParseScalarTypeDef(); };
   type_def_parsers_[Token::kInt] = [this]() { return this->ParseScalarTypeDef(); };
