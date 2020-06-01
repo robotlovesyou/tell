@@ -176,7 +176,7 @@ std::vector<std::string> til::ASTValidator::CollectRecursionMembers(std::vector<
                                                                     std::vector<std::string> *stack,
                                                                     const std::string& tail) const {
   std::vector<std::string> members;
-  for (auto current = it; it != stack->end(); it++) {
+  for (; it != stack->end(); it++) {
     members.push_back(*it);
   }
   members.push_back(tail);
@@ -189,7 +189,7 @@ til::ASTValidator::InfiniteRecursionError::InfiniteRecursionError(std::vector<st
     path += members[i] + "->";
   }
   path += members[members.size() -1];
-  message_ = fmt::format("Infinitely recursive structure found: {}", path);
+  message_ = fmt::format("Infinitely recursive structure found: {}. Break the recursion by making a field type optional", path);
 }
 
 const char *til::ASTValidator::InfiniteRecursionError::what() {

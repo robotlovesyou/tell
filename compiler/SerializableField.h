@@ -11,19 +11,18 @@
 
 #include "nlohmann/json.hpp"
 
-#include "Field.h"
-#include "TypeDef.h"
+#include "SerializableTypeDef.h"
 
 using nlohmann::json;
 
 namespace til {
-class SerializableField {
+struct SerializableField {
   SerializableField() = default;
-  SerializableField(std::string nm, std::string doc, std::unique_ptr<TypeDef> td)
+  SerializableField(std::string nm, std::string doc, std::unique_ptr<SerializableTypeDef> td)
       : name(std::move(nm)), doc_comment(std::move(doc)), type_def(std::move(td)) {}
   std::string name{};
   std::string doc_comment{};
-  std::unique_ptr<TypeDef> type_def{};
+  std::unique_ptr<SerializableTypeDef> type_def{};
 };
 
 void to_json(json &j, const SerializableField &field);
