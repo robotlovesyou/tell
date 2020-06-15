@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 16/05/2020.
-//
-
 #include "ASTValidator.h"
 #include "fmt/core.h"
 
@@ -15,7 +11,7 @@ til::ASTValidator::ASTValidator(std::shared_ptr<ErrorReporter> error_reporter, t
 void til::ASTValidator::Validate() {
   ResolveMessages();
   ResolveAllServiceArgs();
-  if(!error_reporter_->has_errors()) {
+  if (!error_reporter_->has_errors()) {
     // This validation requires all message types to successfully resolve
     FindInfiniteRecursions();
   }
@@ -78,10 +74,10 @@ void til::ASTValidator::ResolveMapTypeDef(const til::MapTypeDef *mtd, const Fiel
 
 void til::ASTValidator::ResolveAllServiceArgs() {
   for (int i = 0; i < ast_->DeclarationCount(); i++) {
-    if(ast_->Declaration(i)->t() != Declaration::kService) {
+    if (ast_->Declaration(i)->t()!=Declaration::kService) {
       continue;
     }
-    ResolveServiceArgs(dynamic_cast<const ServiceDeclaration*>(ast_->Declaration(i)));
+    ResolveServiceArgs(dynamic_cast<const ServiceDeclaration *>(ast_->Declaration(i)));
   }
 }
 
@@ -102,7 +98,7 @@ void til::ASTValidator::ResolveCallArguments(const til::Call *call, const til::S
                                              sd->start_token().line,
                                              sd->start_token().col));
   }
-  if(!ret.has_value()) {
+  if (!ret.has_value()) {
     error_reporter_->ReportError(fmt::format("Call {} has unknown return type {} in Service {} at line {} column {}",
                                              call->name(),
                                              call->returns().name(),
@@ -119,7 +115,7 @@ void til::ASTValidator::FindInfiniteRecursions() const {
   try {
     for (int i = 0; i < ast_->DeclarationCount(); i++) {
       const auto *decl = ast_->Declaration(i);
-      if (decl->t() != Declaration::kMessage) {
+      if (decl->t()!=Declaration::kMessage) {
         continue;
       }
       const auto *const msg_decl = dynamic_cast<const MessageDeclaration *>(decl);
@@ -147,16 +143,16 @@ void til::ASTValidator::FindInfiniteRecursionsInMessage(const til::MessageDeclar
 
   // if the current message appears in the stack then collect details of the recursion and throw
   // an infinite recursion error
-  if (it != stack->end()) {
+  if (it!=stack->end()) {
     auto members = CollectRecursionMembers(it, stack, md->name());
     throw InfiniteRecursionError(members);
   }
 
   stack->push_back(md->name());
 
-  for(int i = 0; i < md->FieldCount(); i++) {
+  for (int i = 0; i < md->FieldCount(); i++) {
     const auto *td = md->Field(i)->type_def();
-    if(td->t() != TypeDef::kMessage || td->optional()) {
+    if (td->t()!=TypeDef::kMessage || td->optional()) {
       // Only non-optional Message type defs can be part of a recursion.
       // Scalars have no member fields, and the default for a map or a list is to have zero members
       continue;
@@ -164,7 +160,7 @@ void til::ASTValidator::FindInfiniteRecursionsInMessage(const til::MessageDeclar
     const auto *mtd = dynamic_cast<const MessageTypeDef *>(td);
     auto msg_idx = ast_->ResolveMessage(mtd->name());
     // also safe to assume msg_idx has a value as described above
-    const auto * child_md = dynamic_cast<const MessageDeclaration *>(ast_->Declaration(*msg_idx));
+    const auto *child_md = dynamic_cast<const MessageDeclaration *>(ast_->Declaration(*msg_idx));
     FindInfiniteRecursionsInMessage(child_md, visited, stack);
   }
 
@@ -174,9 +170,9 @@ void til::ASTValidator::FindInfiniteRecursionsInMessage(const til::MessageDeclar
 
 std::vector<std::string> til::ASTValidator::CollectRecursionMembers(std::vector<std::string>::iterator it,
                                                                     std::vector<std::string> *stack,
-                                                                    const std::string& tail) const {
+                                                                    const std::string &tail) const {
   std::vector<std::string> members;
-  for (; it != stack->end(); it++) {
+  for (; it!=stack->end(); it++) {
     members.push_back(*it);
   }
   members.push_back(tail);
@@ -188,8 +184,10 @@ til::ASTValidator::InfiniteRecursionError::InfiniteRecursionError(std::vector<st
   for (int i = 0; i < members.size() - 1; i++) {
     path += members[i] + "->";
   }
-  path += members[members.size() -1];
-  message_ = fmt::format("Infinitely recursive structure found: {}. Break the recursion by making a field type optional", path);
+  path += members[members.size() - 1];
+  message_ =
+      fmt::format("Infinitely recursive structure found: {}. Break the recursion by making a field type optional",
+                  path);
 }
 
 const char *til::ASTValidator::InfiniteRecursionError::what() {

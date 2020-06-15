@@ -22,7 +22,7 @@ struct SerializableTypeDef {
   bool is_optional{false};
 };
 
-void to_json(json &j, const SerializableTypeDef *td);
+void to_json(json &j, const std::unique_ptr<SerializableTypeDef> &td);
 
 void from_json(const json &j, std::unique_ptr<SerializableTypeDef> &td);
 

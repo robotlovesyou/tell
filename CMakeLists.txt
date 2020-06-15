@@ -54,7 +54,7 @@ add_library(
         compiler/ASTValidator.cpp
         compiler/ASTValidator.h
         compiler/SerializableTypeDef.cpp
-        compiler/SerializableTypeDef.h compiler/SerializableField.cpp compiler/SerializableField.h)
+        compiler/SerializableTypeDef.h compiler/SerializableField.cpp compiler/SerializableField.h compiler/SerializableMessageDeclaration.cpp compiler/SerializableMessageDeclaration.h compiler/SerializableAST.cpp compiler/SerializableAST.h compiler/SerializableDirectiveDeclaration.cpp compiler/SerializableDirectiveDeclaration.h)
 
 add_executable(tellc main.cpp)
 target_link_libraries(tellc tell)

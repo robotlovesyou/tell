@@ -9,7 +9,7 @@ static const char *K_TYPE_DEF = "type_def";
 static const char *K_DOC_COMMENT = "doc_comment";
 
 void til::to_json(json &j, const til::SerializableField &field) {
-  j = json{{K_NAME, field.name}, {K_DOC_COMMENT, field.doc_comment}, {K_TYPE_DEF, field.type_def.get()}};
+  j = json{{K_NAME, field.name}, {K_DOC_COMMENT, field.doc_comment}, {K_TYPE_DEF, field.type_def}};
 }
 
 void til::from_json(const json &j, til::SerializableField &field) {
