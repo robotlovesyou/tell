@@ -11,6 +11,7 @@
 #include "DocCommentContext.h"
 
 namespace til {
+struct SerializableCall; // forward declaration of SerializableCall
 class Call {
  public:
   Call(std::string name, std::unique_ptr<DocCommentContext> doc, std::unique_ptr<Argument>argument, std::unique_ptr<Argument>returns);
@@ -18,6 +19,7 @@ class Call {
   [[nodiscard]] const DocCommentContext &doc() const;
   [[nodiscard]] const Argument &argument() const;
   [[nodiscard]] const Argument &returns() const;
+  [[nodiscard]] std::unique_ptr<SerializableCall> ToSerializable() const;
  private:
   std::string name_;
   std::unique_ptr<Argument> argument_;

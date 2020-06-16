@@ -16,6 +16,7 @@
 #include "Field.h"
 
 namespace til {
+struct SerializableMessageDeclaration; // forward declaration of SerializableMessageDeclaration
 class MessageDeclaration : public Declaration {
  public:
   MessageDeclaration(std::unique_ptr<Token> start_token,
@@ -39,6 +40,7 @@ class MessageDeclaration : public Declaration {
   [[nodiscard]] int FieldCount() const;
   [[nodiscard]] const Field *Field(int idx) const;
   [[nodiscard]] std::string t_name() const override;
+  [[nodiscard]] std::unique_ptr<SerializableMessageDeclaration> ToSerializable() const;
  private:
   void AddFieldsToIndex();
 

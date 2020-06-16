@@ -18,6 +18,7 @@ class MessageTypeDef: public TypeDef {
   [[nodiscard]] bool optional() const override;
   [[nodiscard]] Type t() const override;
   [[nodiscard]] const std::string &name() const;
+  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
  private:
   std::string name_;
   std::weak_ptr<AST> ast_;

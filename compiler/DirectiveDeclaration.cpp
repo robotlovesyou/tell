@@ -7,6 +7,8 @@
 #include <utility>
 #include "fmt/core.h"
 
+#include "SerializableDirectiveDeclaration.h"
+
 til::DirectiveDeclaration::DirectiveDeclaration(std::unique_ptr<til::Token> start_token,
                                                 std::unique_ptr<til::DocCommentContext> doc,
                                                 std::string name,
@@ -44,4 +46,8 @@ const til::Token &til::DirectiveDeclaration::start_token() const {
 
 std::string til::DirectiveDeclaration::t_name() const {
   return "directive";
+}
+
+std::unique_ptr<til::SerializableDirectiveDeclaration> til::DirectiveDeclaration::ToSerializable() const{
+  return std::make_unique<SerializableDirectiveDeclaration>(name_, doc_->content(), value_);
 }

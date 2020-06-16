@@ -4,7 +4,10 @@ bool til::DocCommentContext::has_content() const noexcept {
 }
 
 const std::string &til::DocCommentContext::content() const {
-  return content_.value();
+  if (content_.has_value()) {
+    return content_.value();
+  }
+  return std::move(std::string(""));
 }
 
 void til::DocCommentContext::append(const std::string &str) {

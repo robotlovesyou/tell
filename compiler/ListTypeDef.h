@@ -10,6 +10,7 @@ class ListTypeDef: public TypeDef, public SubTypeDef {
   ListTypeDef(std::unique_ptr<TypeDef> sub_type, bool optional);
   bool optional() const override;
   Type t() const override;
+  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
 };
 }
 

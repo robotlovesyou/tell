@@ -12,12 +12,14 @@
 #include "Declaration.h"
 
 namespace til {
+struct SerializableAST; // forward declaration of SerializableAST
 class AST {
  public:
   [[nodiscard]] int DeclarationCount() const;
   void AddDeclaration(std::unique_ptr<Declaration> decl);
   const Declaration *Declaration(int idx);
   [[nodiscard]] std::optional<int> ResolveMessage(const std::string& name) const;
+  [[nodiscard]] SerializableAST ToSerializable() const;
  private:
   void AddDeclToIndex(const til::Declaration *decl, std::map<std::string, int> *index, int ord);
 

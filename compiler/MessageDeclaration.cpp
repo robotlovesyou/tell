@@ -9,6 +9,7 @@
 
 #include "fmt/core.h"
 #include "ParsingException.h"
+#include "SerializableMessageDeclaration.h"
 
 til::Declaration::Type til::MessageDeclaration::t() const {
   return kMessage;
@@ -77,4 +78,13 @@ void til::MessageDeclaration::AddFieldsToIndex() {
 
     field_index_[field->name()] = i;
   }
+}
+
+std::unique_ptr<til::SerializableMessageDeclaration> til::MessageDeclaration::ToSerializable() const {
+  std::vector<std::unique_ptr<SerializableField>> sfields;
+  for (const auto & field : fields_) {
+    sfields.push_back(std::move(field->ToSerializable()));
+  }
+
+  return std::make_unique<SerializableMessageDeclaration>(name_, doc_->content(), std::move(sfields));
 }

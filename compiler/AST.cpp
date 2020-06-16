@@ -6,6 +6,10 @@
 #include "fmt/core.h"
 #include "ParsingException.h"
 
+#include "SerializableAST.h"
+#include "DirectiveDeclaration.h"
+#include "MessageDeclaration.h"
+#include "ServiceDeclaration.h"
 int til::AST::DeclarationCount() const {
   return declarations_.size();
 }
@@ -50,4 +54,33 @@ std::optional<int> til::AST::ResolveMessage(const std::string& name) const {
     return std::optional<int>(message_index_.at(name));
   }
   return std::optional<int>();
+}
+
+til::SerializableAST til::AST::ToSerializable() const {
+  std::vector<std::unique_ptr<SerializableDirectiveDeclaration>> sdirs;
+  std::vector<std::unique_ptr<SerializableMessageDeclaration>> smsgs;
+  std::vector<std::unique_ptr<SerializableServiceDeclaration>> ssvcs;
+
+  const DirectiveDeclaration *dir = nullptr;
+  const MessageDeclaration *md = nullptr;
+  const ServiceDeclaration *sd = nullptr;
+
+  for (auto const & decl : declarations_) {
+    switch (decl->t()) {
+      case Declaration::kDirective:
+        dir = dynamic_cast<const DirectiveDeclaration *>(decl.get());
+        sdirs.push_back(std::move(dir->ToSerializable()));
+        break;
+      case Declaration::kMessage:
+        md = dynamic_cast<const MessageDeclaration *>(decl.get());
+        smsgs.push_back(std::move(md->ToSerializable()));
+        break;
+      case Declaration::kService:
+        sd = dynamic_cast<const ServiceDeclaration *>(decl.get());
+        ssvcs.push_back(std::move(sd->ToSerializable()));
+        break;
+    }
+  }
+
+  return SerializableAST(std::move(sdirs), std::move(smsgs), std::move(ssvcs));
 }

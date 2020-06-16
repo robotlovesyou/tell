@@ -9,6 +9,7 @@
 #import "Call.h"
 
 namespace til {
+struct SerializableServiceDeclaration; // forward declaration of SerializableServiceDeclaration
 class ServiceDeclaration: public Declaration {
  public:
   ServiceDeclaration(std::unique_ptr<Token> start_token, std::unique_ptr<DocCommentContext> doc, std::string name, std::vector<std::unique_ptr<Call>> calls, const std::shared_ptr<AST>& ast);
@@ -28,6 +29,7 @@ class ServiceDeclaration: public Declaration {
   [[nodiscard]] int CallCount() const;
   [[nodiscard]] const Call *Call(int idx) const;
   [[nodiscard]] std::string t_name() const override;
+  [[nodiscard]] std::unique_ptr<SerializableServiceDeclaration> ToSerializable() const;
  private:
   std::unique_ptr<Token> start_token_;
   std::string name_;

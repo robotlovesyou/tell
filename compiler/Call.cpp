@@ -3,6 +3,8 @@
 //
 
 #include "Call.h"
+#include "SerializableCall.h"
+
 til::Call::Call(std::string name,
                 std::unique_ptr<DocCommentContext> doc,
                 std::unique_ptr<Argument> argument,
@@ -24,4 +26,8 @@ const til::Argument &til::Call::argument() const {
 
 const til::Argument &til::Call::returns() const {
   return *returns_;
+}
+
+std::unique_ptr<til::SerializableCall> til::Call::ToSerializable() const {
+  return std::make_unique<SerializableCall>(name_, doc_->content(), argument_->name(), returns_->name());
 }

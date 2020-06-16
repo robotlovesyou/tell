@@ -21,6 +21,7 @@ class ScalarTypeDef: public TypeDef {
   ScalarTypeDef(ScalarType st, bool optional);
   [[nodiscard]] Type t() const override;
   ScalarType scalar_type() const;
+  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
  private:
   ScalarType scalar_type_;
 };

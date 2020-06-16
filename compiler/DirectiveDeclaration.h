@@ -11,6 +11,7 @@
 #include "DocCommentContext.h"
 
 namespace til {
+struct SerializableDirectiveDeclaration; // forward declaration of SerializableMessageDeclaration
 class DirectiveDeclaration : public Declaration {
  public:
   DirectiveDeclaration(std::unique_ptr<Token> start_token,
@@ -34,6 +35,7 @@ class DirectiveDeclaration : public Declaration {
   [[nodiscard]] const DocCommentContext &doc() const override;
   [[nodiscard]] const Token &start_token() const override;
   [[nodiscard]] std::string t_name() const override;
+  [[nodiscard]] std::unique_ptr<SerializableDirectiveDeclaration> ToSerializable() const;
  private:
   std::unique_ptr<Token> start_token_;
   std::unique_ptr<DocCommentContext> doc_;

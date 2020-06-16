@@ -12,6 +12,7 @@ namespace til {
 class MapTypeDef: public TypeDef, public SubTypeDef {
  public:
   MapTypeDef(std::unique_ptr<TypeDef> sub_type, bool optional);
+  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
   [[nodiscard]] bool optional() const override;
   [[nodiscard]] Type t() const override;
 };

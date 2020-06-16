@@ -4,6 +4,9 @@
 
 #include <utility>
 #include <iostream>
+
+#include "SerializableServiceDeclaration.h"
+
 til::Declaration::Type til::ServiceDeclaration::t() const {
   return kService;
 }
@@ -67,4 +70,13 @@ void til::ServiceDeclaration::AddCallsToIndex() {
     }
     call_index_[call->name()] = i;
   }
+}
+
+std::unique_ptr<til::SerializableServiceDeclaration> til::ServiceDeclaration::ToSerializable() const {
+  std::vector<std::unique_ptr<SerializableCall>> scalls;
+  for (const auto & call : calls_) {
+    scalls.push_back(std::move(call->ToSerializable()));
+  }
+
+  return std::make_unique<SerializableServiceDeclaration>(name_, doc_->content(), std::move(scalls));
 }

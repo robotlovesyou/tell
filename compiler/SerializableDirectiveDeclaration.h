@@ -11,7 +11,8 @@ using nlohmann::json;
 namespace til {
 struct SerializableDirectiveDeclaration {
   SerializableDirectiveDeclaration() = default;
-  SerializableDirectiveDeclaration(std::string nm, std::string val): name(std::move(nm)), value(std::move(val)) {}
+  SerializableDirectiveDeclaration(std::string nm, std::string doc, std::string val): name(std::move(nm)), doc_comment(std::move(doc)), value(std::move(val)) {}
+  std::string doc_comment;
   std::string name;
   std::string value;
 };
