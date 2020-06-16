@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../compiler/DocCommentContext.h"
+#include "../til/DocCommentContext.h"
 
 static const char* line_1 = "This is a comment";
 static const char* line_2 = "This is more comment";

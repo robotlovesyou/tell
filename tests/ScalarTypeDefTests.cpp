@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../compiler/ScalarTypeDef.h"
+#include "../til/ScalarTypeDef.h"
 
 TEST_CASE("ScalarTypeDef constructor") {
   CHECK_NOTHROW(til::ScalarTypeDef(til::ScalarTypeDef::kString, false));

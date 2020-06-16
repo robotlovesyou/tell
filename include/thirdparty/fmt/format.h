@@ -314,7 +314,7 @@ template <typename It> class is_output_iterator {
   // Check for mutability because all iterator categories derived from
   // std::input_iterator_tag *may* also meet the requirements of an
   // OutputIterator, thereby falling into the category of 'mutable iterators'
-  // [iterator.requirements.general] clause 4. The compiler reveals this
+  // [iterator.requirements.general] clause 4. The til reveals this
   // property only at the point of *actually dereferencing* the iterator!
   template <typename U>
   static decltype(*(std::declval<U>())) test(std::input_iterator_tag);

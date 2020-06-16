@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include <iostream>
-#include "../compiler/SerializableDirectiveDeclaration.h"
+#include "../til/SerializableDirectiveDeclaration.h"
 
 TEST_CASE("Serialize and deserialize SerializableDirectiveDeclaration") {
   til::SerializableDirectiveDeclaration sdd("a_name", "Some docs", "a_value");

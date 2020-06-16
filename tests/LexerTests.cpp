@@ -1,9 +1,9 @@
 #include "catch2/catch.hpp"
 
 #include <utility>
-#include "../compiler/Lexer.h"
-#include "../compiler/StringCursor.h"
-#include "../compiler/TestErrorReporter.h"
+#include "../til/Lexer.h"
+#include "../til/StringCursor.h"
+#include "../til/TestErrorReporter.h"
 
 std::unique_ptr<til::Lexer> make_test_lexer(const std::string &source,
                                             const std::shared_ptr<til::ErrorReporter>& er = std::make_shared<til::TestErrorReporter>()) {

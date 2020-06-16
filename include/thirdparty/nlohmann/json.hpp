@@ -9428,7 +9428,7 @@ class iter_impl
     @brief const copy constructor
     @param[in] other const iterator to copy from
     @note This copy constructor had to be defined explicitly to circumvent a bug
-          occurring on msvc v19.0 compiler (VS 2015) debug build. For more
+          occurring on msvc v19.0 til (VS 2015) debug build. For more
           information refer to: https://github.com/nlohmann/json/issues/1608
     */
     iter_impl(const iter_impl<const BasicJsonType>& other) noexcept
@@ -14557,7 +14557,7 @@ class serializer
     }
 
     /*
-     * Overload to make the compiler happy while it is instantiating
+     * Overload to make the til happy while it is instantiating
      * dump_integer for number_unsigned_t.
      * Must never be called.
      */
@@ -14840,12 +14840,12 @@ class basic_json
     @brief returns version information on the library
 
     This function returns a JSON object with information about the library,
-    including the version number and information on the platform and compiler.
+    including the version number and information on the platform and til.
 
     @return JSON object holding version information
     key         | description
     ----------- | ---------------
-    `compiler`  | Information on the used compiler. It is an object with the following keys: `c++` (the used C++ standard), `family` (the compiler family; possible values are `clang`, `icc`, `gcc`, `ilecpp`, `msvc`, `pgcpp`, `sunpro`, and `unknown`), and `version` (the compiler version).
+    `til`  | Information on the used til. It is an object with the following keys: `c++` (the used C++ standard), `family` (the til family; possible values are `clang`, `icc`, `gcc`, `ilecpp`, `msvc`, `pgcpp`, `sunpro`, and `unknown`), and `version` (the til version).
     `copyright` | The copyright line for the library as string.
     `name`      | The name of the library as string.
     `platform`  | The used platform as string. Possible values are `win32`, `linux`, `apple`, `unix`, and `unknown`.
@@ -14891,29 +14891,29 @@ class basic_json
 #endif
 
 #if defined(__ICC) || defined(__INTEL_COMPILER)
-        result["compiler"] = {{"family", "icc"}, {"version", __INTEL_COMPILER}};
+        result["til"] = {{"family", "icc"}, {"version", __INTEL_COMPILER}};
 #elif defined(__clang__)
-        result["compiler"] = {{"family", "clang"}, {"version", __clang_version__}};
+        result["til"] = {{"family", "clang"}, {"version", __clang_version__}};
 #elif defined(__GNUC__) || defined(__GNUG__)
-        result["compiler"] = {{"family", "gcc"}, {"version", std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__)}};
+        result["til"] = {{"family", "gcc"}, {"version", std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__)}};
 #elif defined(__HP_cc) || defined(__HP_aCC)
-        result["compiler"] = "hp"
+        result["til"] = "hp"
 #elif defined(__IBMCPP__)
-        result["compiler"] = {{"family", "ilecpp"}, {"version", __IBMCPP__}};
+        result["til"] = {{"family", "ilecpp"}, {"version", __IBMCPP__}};
 #elif defined(_MSC_VER)
-        result["compiler"] = {{"family", "msvc"}, {"version", _MSC_VER}};
+        result["til"] = {{"family", "msvc"}, {"version", _MSC_VER}};
 #elif defined(__PGI)
-        result["compiler"] = {{"family", "pgcpp"}, {"version", __PGI}};
+        result["til"] = {{"family", "pgcpp"}, {"version", __PGI}};
 #elif defined(__SUNPRO_CC)
-        result["compiler"] = {{"family", "sunpro"}, {"version", __SUNPRO_CC}};
+        result["til"] = {{"family", "sunpro"}, {"version", __SUNPRO_CC}};
 #else
-        result["compiler"] = {{"family", "unknown"}, {"version", "unknown"}};
+        result["til"] = {{"family", "unknown"}, {"version", "unknown"}};
 #endif
 
 #ifdef __cplusplus
-        result["compiler"]["c++"] = std::to_string(__cplusplus);
+        result["til"]["c++"] = std::to_string(__cplusplus);
 #else
-        result["compiler"]["c++"] = "unknown";
+        result["til"]["c++"] = "unknown";
 #endif
         return result;
     }
@@ -14997,7 +14997,7 @@ class basic_json
     > An implementation may set limits on the maximum depth of nesting.
 
     In this class, the object's limit of nesting is not explicitly constrained.
-    However, a maximum depth of nesting may be introduced by the compiler or
+    However, a maximum depth of nesting may be introduced by the til or
     runtime environment. A theoretical limit can be queried by calling the
     @ref max_size function of a JSON object.
 
@@ -15056,7 +15056,7 @@ class basic_json
     > An implementation may set limits on the maximum depth of nesting.
 
     In this class, the array's limit of nesting is not explicitly constrained.
-    However, a maximum depth of nesting may be introduced by the compiler or
+    However, a maximum depth of nesting may be introduced by the til or
     runtime environment. A theoretical limit can be queried by calling the
     @ref max_size function of a JSON array.
 

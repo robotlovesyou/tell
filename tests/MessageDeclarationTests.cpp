@@ -1,7 +1,7 @@
 #include "catch2/catch.hpp"
 
-#include "../compiler/MessageDeclaration.h"
-#include "../compiler/AST.h"
+#include "../til/MessageDeclaration.h"
+#include "../til/AST.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("MessageDeclaration constructor") {

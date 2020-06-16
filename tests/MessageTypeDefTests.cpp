@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../compiler/MessageTypeDef.h"
+#include "../til/MessageTypeDef.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("MessageTypeDef constructor") {

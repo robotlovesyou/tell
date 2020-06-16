@@ -1,11 +1,11 @@
 
 
 //#include <iostream>
-//#include "google/protobuf/compiler/importer.h"
+//#include "google/protobuf/til/importer.h"
 //
-//using google::protobuf::compiler::DiskSourceTree;
-//using google::protobuf::compiler::MultiFileErrorCollector;
-//using google::protobuf::compiler::Importer;
+//using google::protobuf::til::DiskSourceTree;
+//using google::protobuf::til::MultiFileErrorCollector;
+//using google::protobuf::til::Importer;
 //using google::protobuf::FileDescriptor;
 //using google::protobuf::FieldDescriptor;
 //using google::protobuf::Descriptor;

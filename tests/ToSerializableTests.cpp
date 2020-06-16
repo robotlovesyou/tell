@@ -1,9 +1,8 @@
 #include "catch2/catch.hpp"
-#include "../compiler/TestErrorReporter.h"
-#include "../compiler/Parser.h"
-#include "../compiler/StringCursor.h"
-#include "../compiler/SerializableAST.h"
-#include "../compiler/TypeDef.h"
+#include "../til/TestErrorReporter.h"
+#include "../til/Parser.h"
+#include "../til/StringCursor.h"
+#include "../til/SerializableAST.h"
 
 TEST_CASE("AST.ToSerializable") {
   const char *source = R"SOURCE(

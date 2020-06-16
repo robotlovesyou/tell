@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../compiler/Argument.h"
+#include "../til/Argument.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("Argument constructor") {

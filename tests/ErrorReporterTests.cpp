@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
-#include "../compiler/TestErrorReporter.h"
-#include "../compiler/ConsoleErrorReporter.h"
+#include "../til/TestErrorReporter.h"
+#include "../til/ConsoleErrorReporter.h"
 
 TEST_CASE("SilentErrorReporter no errors") {
   til::TestErrorReporter er;

@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
-#include "../compiler/StringCursor.h"
-#include "../compiler/FileCursor.h"
+#include "../til/StringCursor.h"
+#include "../til/FileCursor.h"
 
 TEST_CASE("StringCursor constructor") {
   CHECK_NOTHROW(til::StringCursor("This is a string"));
