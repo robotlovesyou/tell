@@ -54,9 +54,21 @@ add_library(
         til/ASTValidator.cpp
         til/ASTValidator.h
         til/SerializableTypeDef.cpp
-        til/SerializableTypeDef.h til/SerializableField.cpp til/SerializableField.h til/SerializableMessageDeclaration.cpp til/SerializableMessageDeclaration.h til/SerializableAST.cpp til/SerializableAST.h til/SerializableDirectiveDeclaration.cpp til/SerializableDirectiveDeclaration.h til/SerializableCall.cpp til/SerializableCall.h til/SerializableServiceDeclaration.cpp til/SerializableServiceDeclaration.h)
+        til/SerializableTypeDef.h
+        til/SerializableField.cpp
+        til/SerializableField.h
+        til/SerializableMessageDeclaration.cpp
+        til/SerializableMessageDeclaration.h
+        til/SerializableAST.cpp
+        til/SerializableAST.h
+        til/SerializableDirectiveDeclaration.cpp
+        til/SerializableDirectiveDeclaration.h
+        til/SerializableCall.cpp
+        til/SerializableCall.h
+        til/SerializableServiceDeclaration.cpp
+        til/SerializableServiceDeclaration.h)
 
-add_executable(tellc main.cpp)
-target_link_libraries(tellc tell)
+add_executable(tilc compiler/main.cpp compiler/Compiler.cpp compiler/Compiler.h)
+target_link_libraries(tilc til)
 
 add_subdirectory(tests)
