@@ -29,6 +29,6 @@ til::FileCursor::FileCursorException::FileCursorException(const std::filesystem:
   message_ = fmt::format("File at {} not found", path.string());
 }
 
-const char *til::FileCursor::FileCursorException::what() {
+const char *til::FileCursor::FileCursorException::what() const noexcept {
   return message_.c_str();
 }

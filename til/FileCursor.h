@@ -32,7 +32,7 @@ class FileCursor : public Cursor<char> {
      * Describe the exception
      * @return
      */
-    const char *what();
+    [[nodiscard]] const char *what() const noexcept override ;
    private:
     std::string message_;
   };

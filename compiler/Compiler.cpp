@@ -40,6 +40,8 @@ bool Compiler::Compile() {
     return true;
   } catch (const OutputException &oe) {
     std::cout << fmt::format("Error opening output file: {}", oe.what()) << std::endl;
+  } catch (const til::FileCursor::FileCursorException &fce) {
+    std::cout << fmt::format("Error opening input file: {}", fce.what());
   } catch (const std::exception &e) {
     std::cout << fmt::format("Unexpected error compiling file: {}", e.what());
   }
