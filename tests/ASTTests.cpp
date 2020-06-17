@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../til/AST.h"
+#include "AST.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("AST.DeclarationCount()") {

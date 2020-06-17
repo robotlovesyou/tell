@@ -1,12 +1,12 @@
 #include "catch2/catch.hpp"
 #include <tuple>
-#include "../til/Parser.h"
-#include "../til/StringCursor.h"
-#include "../til/TestErrorReporter.h"
+#include "Parser.h"
+#include "StringCursor.h"
+#include "TestErrorReporter.h"
 #include "ParserTestHelpers.h"
-#include "../til/MessageTypeDef.h"
-#include "../til/MapTypeDef.h"
-#include "../til/ListTypeDef.h"
+#include "MessageTypeDef.h"
+#include "MapTypeDef.h"
+#include "ListTypeDef.h"
 
 std::shared_ptr<til::ErrorReporter> test_error_reporter() {
   return std::make_shared<til::TestErrorReporter>();

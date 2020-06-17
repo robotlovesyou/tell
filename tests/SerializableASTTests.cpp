@@ -1,7 +1,7 @@
 #include "catch2/catch.hpp"
 #include <iostream>
 #include "SerializableTestHelpers.h"
-#include "../til/SerializableAST.h"
+#include "SerializableAST.h"
 
 TEST_CASE("Serialize and deserialize SerializableAST") {
   std::vector<std::unique_ptr<til::SerializableDirectiveDeclaration>> directive_decls;

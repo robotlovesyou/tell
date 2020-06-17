@@ -13,8 +13,8 @@
 
 using nlohmann::json;
 
-Compiler::Compiler(std::string f, std::string o, std::shared_ptr<til::ErrorReporter>  error_reporter)
-    : file_(std::move(f)), out_(std::move(o)), error_reporter_(std::move(error_reporter)) {
+Compiler::Compiler(std::string f, std::string o, std::shared_ptr<til::ErrorReporter>  error_reporter, bool pretty)
+    : file_(std::move(f)), out_(std::move(o)), error_reporter_(std::move(error_reporter)), pretty_(pretty) {
 }
 
 bool Compiler::Compile() {
@@ -31,7 +31,9 @@ bool Compiler::Compile() {
 
     auto sast = ast->ToSerializable();
     json j(sast);
-    out_file << j.dump();
+
+    auto output = pretty_ ? j.dump(4) : j.dump();
+    out_file << output;
     out_file.flush();
     out_file.close();
 

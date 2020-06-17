@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include <iostream>
-#include "../til/SerializableField.h"
+#include "SerializableField.h"
 
 TEST_CASE("Serialize and Deserialize Field") {
   const char * FIELD_NAME = "a_field";

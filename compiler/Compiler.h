@@ -9,7 +9,7 @@
 
 class Compiler {
  public:
-  Compiler(std::string f, std::string o, std::shared_ptr<til::ErrorReporter>  error_reporter);
+  Compiler(std::string f, std::string o, std::shared_ptr<til::ErrorReporter>  error_reporter, bool pretty);
 
  class OutputException: public std::exception {
   public:
@@ -25,6 +25,7 @@ class Compiler {
   std::shared_ptr<til::ErrorReporter> error_reporter_;
   std::string file_;
   std::string out_;
+  bool pretty_;
 };
 
 #endif //TELL_COMPILER_COMPILER_H_

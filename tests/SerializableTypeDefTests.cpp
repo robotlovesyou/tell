@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include "nlohmann/json.hpp"
-#include "../til/SerializableTypeDef.h"
+#include "SerializableTypeDef.h"
 #include <iostream>
 #include <memory>
 

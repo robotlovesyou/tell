@@ -5,10 +5,10 @@
 #import <memory>
 #import <vector>
 
-#import "../til/SerializableTypeDef.h"
-#import "../til/SerializableField.h"
-#import "../til/SerializableMessageDeclaration.h"
-#import "../til/SerializableServiceDeclaration.h"
+#import "SerializableTypeDef.h"
+#import "SerializableField.h"
+#import "SerializableMessageDeclaration.h"
+#import "SerializableServiceDeclaration.h"
 
 static std::unique_ptr<til::SerializableTypeDef> test_scalar_serializable_type_def(til::ScalarTypeDef::ScalarType scalar_type = til::ScalarTypeDef::kString, bool optional = true) {
   return std::make_unique<til::ScalarSerializableTypeDef>(scalar_type, optional);

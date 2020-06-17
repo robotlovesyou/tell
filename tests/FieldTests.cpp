@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
-#include "../til/Field.h"
-#include "../til/ScalarTypeDef.h"
+#include "Field.h"
+#include "ScalarTypeDef.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("Field constructor") {

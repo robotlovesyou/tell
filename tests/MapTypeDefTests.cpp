@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include "ParserTestHelpers.h"
-#include "../til/MapTypeDef.h"
+#include "MapTypeDef.h"
 
 TEST_CASE("MapTypeDef constructor") {
   auto st = std::make_unique<til::ScalarTypeDef>(til::ScalarTypeDef::kBool, false);

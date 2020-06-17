@@ -1,7 +1,7 @@
 #include "catch2/catch.hpp"
 
-#include "../til/ServiceDeclaration.h"
-#include "../til/AST.h"
+#include "ServiceDeclaration.h"
+#include "AST.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("ServiceDeclaration constructor") {

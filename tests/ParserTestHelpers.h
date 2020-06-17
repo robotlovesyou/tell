@@ -5,13 +5,13 @@
 #ifndef TELL_TESTS_PARSERTESTHELPERS_H_
 #define TELL_TESTS_PARSERTESTHELPERS_H_
 
-#include "../til/AST.h"
-#include "../til/DocCommentContext.h"
-#include "../til/Token.h"
-#include "../til/DirectiveDeclaration.h"
-#include "../til/MessageDeclaration.h"
-#include "../til/ServiceDeclaration.h"
-#include "../til/ScalarTypeDef.h"
+#include "AST.h"
+#include "DocCommentContext.h"
+#include "Token.h"
+#include "DirectiveDeclaration.h"
+#include "MessageDeclaration.h"
+#include "ServiceDeclaration.h"
+#include "ScalarTypeDef.h"
 
 static std::unique_ptr<til::Token> test_token(til::Token::Type t) {
   return std::make_unique<til::Token>(t, 1, 1, "");

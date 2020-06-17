@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "../til/Token.h"
+#include "Token.h"
 #include "fmt/core.h"
 
 namespace til {

@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
-#include "../til/Call.h"
-#include "../til/Argument.h"
+#include "Call.h"
+#include "Argument.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("Call constructor"){

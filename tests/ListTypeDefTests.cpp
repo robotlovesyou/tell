@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include "ParserTestHelpers.h"
-#include "../til/ListTypeDef.h"
+#include "ListTypeDef.h"
 
 TEST_CASE("ListTypeDef constructor") {
   auto sd = std::make_unique<til::ScalarTypeDef>(til::ScalarTypeDef::kBool, false);

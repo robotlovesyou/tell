@@ -2,8 +2,8 @@
 
 #include "catch2/catch.hpp"
 
-#include "../til/AST.h"
-#include "../til/DirectiveDeclaration.h"
+#include "AST.h"
+#include "DirectiveDeclaration.h"
 #include "ParserTestHelpers.h"
 
 TEST_CASE("DirectiveDeclaration constructor") {
