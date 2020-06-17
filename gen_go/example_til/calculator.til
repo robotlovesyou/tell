@@ -1,0 +1,58 @@
+message Add {
+    addend: int
+}
+
+message Subtract {
+    subtrahend: int
+}
+
+message Multiply {
+    multiplicand: int
+}
+
+message Divide {
+    divisor: int
+}
+
+message Result {
+    value: int
+}
+
+message Empty {
+}
+
+message Key {
+    name: string
+}
+
+message Memory {
+    name: string
+    value: int
+    at: time
+}
+
+message Memories {
+    list[Memory]
+}
+
+message Input {
+    key: string
+    value: int
+}
+
+message Program {
+    operations: list[map[string]]
+}
+
+service Calculator {
+    add[Add]: Result
+    subtract[Subtract]: Result
+    multiply[Multiply]: Result
+    divide[Divide]: Result
+    get[Empty]: Result
+    all_clear[Empty]: Result
+    remember[Key]: Memory
+    store[Input]: Memory
+    get_stored[Empty]: Stores
+    run[Program]: Result
+}
