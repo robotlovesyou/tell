@@ -31,7 +31,7 @@ class DocCommentContext {
    */
   void append(const std::string& str);
  private:
-  std::optional<std::string> content_{};
+  std::string content_{""};
 };
 }
 

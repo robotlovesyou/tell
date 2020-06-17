@@ -30,13 +30,11 @@ message User {
     version: string
 }
 
-/// A comment
 message UserForUsernameQuery {
     username: string
 }
 
 service identity {
-    /// A comment
     user_for_username[UserForUsernameQuery]: User
     update_user[User]: User
 }
