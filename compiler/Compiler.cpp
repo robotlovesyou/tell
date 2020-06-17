@@ -1,22 +1,59 @@
-//
-// Created by ANDREW SMITH on 16/06/2020.
-//
-
 #include "Compiler.h"
-Compiler::Compiler(std::string f, std::string o): file_(std::move(f)), out_(std::move(o)) {
+
+#include <iostream>
+#include <memory>
+#include <utility>
+
+#include "nlohmann/json.hpp"
+
+#include "FileCursor.h"
+#include "Lexer.h"
+#include "Parser.h"
+#include "SerializableAST.h"
+
+using nlohmann::json;
+
+Compiler::Compiler(std::string f, std::string o, std::shared_ptr<til::ErrorReporter>  error_reporter)
+    : file_(std::move(f)), out_(std::move(o)), error_reporter_(std::move(error_reporter)) {
 }
 
 bool Compiler::Compile() {
-  // open the file for reading
-  // open the out for writing
-  // create a file cursor for the source
-  // create an error reporter
-  // create a lexer
-  // create a parser
-  // parse the file
-  // if the error reporter does not report any errors
-  //    serialize the ast to the out file
-  //    return true
-  // otherwise
-  //    return false
+  try {
+    auto file_cursor = std::make_unique<til::FileCursor>(file_);
+    auto out_file = OpenOutFile();
+    auto lexer = std::make_unique<til::Lexer>(std::move(file_cursor), error_reporter_);
+    til::Parser parser(std::move(lexer), error_reporter_);
+
+    auto ast = parser.Parse();
+    if (error_reporter_->has_errors()) {
+      return false;
+    }
+
+    auto sast = ast->ToSerializable();
+    json j(sast);
+    out_file << j.dump();
+    out_file.flush();
+    out_file.close();
+
+    return true;
+  } catch (const OutputException &oe) {
+    std::cout << fmt::format("Error opening output file: {}", oe.what()) << std::endl;
+  } catch (const std::exception &e) {
+    std::cout << fmt::format("Unexpected error compiling file: {}", e.what());
+  }
+  return false;
+}
+
+std::ofstream Compiler::OpenOutFile() {
+  std::ofstream out_file(out_);
+  if (!out_file) {
+    throw OutputException(fmt::format("cannot open file {} for writing", out_));
+  }
+  return out_file;
+}
+
+Compiler::OutputException::OutputException(std::string reason) : reason_(std::move(reason)) {}
+
+const char *Compiler::OutputException::what() const noexcept {
+  return reason_.c_str();
 }

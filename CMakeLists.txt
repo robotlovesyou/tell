@@ -69,6 +69,7 @@ add_library(
         til/SerializableServiceDeclaration.h)
 
 add_executable(tilc compiler/main.cpp compiler/Compiler.cpp compiler/Compiler.h)
+target_include_directories(tilc PUBLIC til)
 target_link_libraries(tilc til)
 
 add_subdirectory(tests)

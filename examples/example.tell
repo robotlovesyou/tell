@@ -25,17 +25,18 @@ message User {
     first_name: string
     last_name: string
     addresses: list[Address]
-    nicknames: list[example.imported.Alias]
     created_at: time
     updated_at: time
     version: string
 }
 
+/// A comment
 message UserForUsernameQuery {
     username: string
 }
 
 service identity {
+    /// A comment
     user_for_username[UserForUsernameQuery]: User
     update_user[User]: User
 }

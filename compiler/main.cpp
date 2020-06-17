@@ -1,6 +1,9 @@
 #include "cli11/CLI11.hpp"
 #include <iostream>
 
+#include "Compiler.h"
+#include "ConsoleErrorReporter.h"
+
 int main(int argc, char ** argv) {
   CLI::App app{"til interface language compiler"};
 
@@ -11,4 +14,10 @@ int main(int argc, char ** argv) {
   CLI11_PARSE(app, argc, argv);
 
   std::cout << "I will compile: " << file << " to " << out << std::endl;
+  auto error_reporter = std::make_shared<til::ConsoleErrorReporter>();
+  Compiler compiler(file, out, error_reporter);
+  if (compiler.Compile()) {
+    return 0;
+  }
+  return 1;
 }
