@@ -29,6 +29,10 @@ add_executable(Tests_run
         SerializableDirectiveDeclarationTests.cpp
         SerializableCallTests.cpp
         SerializableServiceDeclarationTests.cpp
-        ToSerializableTests.cpp)
-target_include_directories(Tests_run PUBLIC ../til)
-target_link_libraries(Tests_run til)
+        ToSerializableTests.cpp
+        ToSnakeTests.cpp
+        ToCamelTests.cpp
+        CaseTestHelpers.h
+        GoGeneratorTests.cpp)
+target_include_directories(Tests_run PUBLIC ../til ../gen)
+target_link_libraries(Tests_run til gen)

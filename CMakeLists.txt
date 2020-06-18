@@ -68,8 +68,13 @@ add_library(
         til/SerializableServiceDeclaration.cpp
         til/SerializableServiceDeclaration.h)
 
+add_library(gen gen/Strcase.cpp gen/Strcase.h gen/GoGenerator.cpp gen/GoGenerator.h gen/GoTemplate.h gen/MissingDirectiveException.cpp gen/MissingDirectiveException.h)
+target_include_directories(gen PUBLIC til)
+
 add_executable(tilc compiler/main.cpp compiler/Compiler.cpp compiler/Compiler.h)
 target_include_directories(tilc PUBLIC til)
 target_link_libraries(tilc til)
+
+
 
 add_subdirectory(tests)

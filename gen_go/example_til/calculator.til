@@ -32,7 +32,7 @@ message Memory {
 }
 
 message Memories {
-    list[Memory]
+    entries: list[Memory]
 }
 
 message Input {
