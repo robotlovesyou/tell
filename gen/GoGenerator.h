@@ -7,6 +7,13 @@
 #include "GoTemplate.h"
 #include "SerializableAST.h"
 
+/**
+ * At present there are no tests for this generator code.
+ *
+ * In a real world implementation a good approach would be to generate go code and then
+ * compile and test it using the Go toolchain.
+ */
+
 namespace gen {
 class GoGenerator {
  public:

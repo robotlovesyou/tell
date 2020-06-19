@@ -18,36 +18,13 @@ type Multiply {
     Multiplicand int64
 }
 
-type Divide {
-    Divisor int64
-}
-
 type Result {
-    Value int64
+    value int64
 }
 
-type Empty struct {
+type Reset {
 }
 
-type Key struct {
-    Name string
-}
-
-type Memory struct {
-    Name string
-    Value string
-    at: time.Time
-}
-
-type Memories struct {
-    Entries []Memory
-}
-
-type Input struct {
-    Key string
-    Value int64
-}
-
-type Program {
-    Operations []map[string]string
+type TellServer struct {
+    mux *http.Mux
 }
