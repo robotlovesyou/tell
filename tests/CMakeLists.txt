@@ -32,7 +32,6 @@ add_executable(Tests_run
         ToSerializableTests.cpp
         ToSnakeTests.cpp
         ToCamelTests.cpp
-        CaseTestHelpers.h
-        GoGeneratorTests.cpp)
+        CaseTestHelpers.h)
 target_include_directories(Tests_run PUBLIC ../til ../gen)
 target_link_libraries(Tests_run til gen)
