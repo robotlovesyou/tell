@@ -9,6 +9,7 @@ Those libraries are:
 2. {fmt} string formatting library. The header and source files are included in the include/thirdparty/fmt directory. See https://fmt.dev/6.2.0/index.html
 3. nlohmann/json json parsing/serializing/deserializing library included in include/thirdparty/nlohmann directory. See https://github.com/nlohmann/json
 4. CLI11 is a command line parsing library. It is included in include/thirdparty/cli11. See https://github.com/CLIUtils/CLI11 for details
+5. inja is a string templating library. It is included in include/thirdparty/inja. See https://github.com/pantor/inja for details
 
 In addition to the libraries mentioned above, the gen library includes a partial port of the strcase library from Go to C++. 
 See https://github.com/iancoleman/strcase for the original source code.   
