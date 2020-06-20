@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+    "github.com/go-resty/resty/v2"
 )
 
 var _ = time.Now() // Prevent import errors
@@ -181,6 +182,58 @@ func Register{{camel_case(service.name)}}Server({{lower_camel_case(service.name)
 
 /********************************************************************************
 GENERATED SERVER STUBS END
+********************************************************************************/
+
+/********************************************************************************
+GENERATED CLIENTS
+********************************************************************************/
+
+{%for service in service_declarations %}
+{%if has_content(service.doc_comment)%}// {{service.doc_comment}}
+{%endif%}
+type {{camel_case(service.name)}}Client interface {
+    {%for call in service.calls%}
+    {%if has_content(call.doc_comment)%}
+    // {{call.doc_comment}}
+    {%endif%}
+    {{camel_case(call.name)}}(ctx context.Context, arg {{camel_case(call.argument)}}) ({{camel_case(call.returns)}}, error)
+    {%endfor%}
+}
+
+type {{camel_case(service.name)}}ClientImpl struct {
+	client *resty.Client
+	addr string
+}
+
+func New{{camel_case(service.name)}}Client(addr string) *{{camel_case(service.name)}}ClientImpl {
+	return &{{camel_case(service.name)}}ClientImpl{
+		client: resty.New(),
+		addr: addr,
+	}
+}
+
+{%for call in service.calls%}
+func (c *{{camel_case(service.name)}}ClientImpl) {{camel_case(call.name)}}(ctx context.Context, arg {{camel_case(call.argument)}}) ({{camel_case(call.returns)}}, error) {
+	var tellErr TellError
+	var res {{camel_case(call.returns)}}
+	resp, err := c.client.R().
+		SetBody(&arg).
+		SetResult(&res).
+		SetError(&tellErr).
+		Post(fmt.Sprintf("http://%s/{{snake_case(service.name)}}.{{snake_case(call.name)}}", c.addr))
+	if err != nil {
+		return {{camel_case(call.returns)}}{}, err
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return {{camel_case(call.returns)}}{}, tellErr
+	}
+	return res, nil
+}
+
+{%endfor%}
+{%endfor%}
+/********************************************************************************
+GENERATED CLIENTS END
 ********************************************************************************/
 )TEMPLATE";
 
