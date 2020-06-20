@@ -14,8 +14,7 @@ static const char* GO_PATH = "go_path";
 static const char* GO_PACKAGE = "go_package";
 
 std::string gen::GoGenerator::Generate(til::SerializableAST &ast) {
-  // ensure that the ast has a go_package directive and a go_path directive
-  EnsureDirective(ast, GO_PATH);
+  // ensure that the ast has a go_package directive
   EnsureDirective(ast, GO_PACKAGE);
   auto env = PrepareEnvironment(ast);
   json data(ast);

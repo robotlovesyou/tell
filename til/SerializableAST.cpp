@@ -5,14 +5,17 @@ static const char * K_DIRECTIVE_DECLARATIONS = "directive_declarations";
 static const char * K_SERVICE_DECLARATIONS = "service_declarations";
 
 void til::to_json(json &j, const SerializableAST &ast) {
+  j[K_DIRECTIVE_DECLARATIONS] = json::array();
   for (const auto & dir : ast.directive_declarations) {
     j[K_DIRECTIVE_DECLARATIONS].push_back(*dir);
   }
 
+  j[K_MESSAGE_DECLARATIONS] = json::array();
   for (const auto & msg : ast.message_declarations) {
     j[K_MESSAGE_DECLARATIONS].push_back(*msg);
   }
 
+  j[K_SERVICE_DECLARATIONS] = json::array();
   for (const auto & svc : ast.service_declarations) {
     j[K_SERVICE_DECLARATIONS].push_back(*svc);
   }

@@ -10,6 +10,7 @@ static const char* K_FIELDS = "fields";
 
 void til::to_json(json &j, const SerializableMessageDeclaration &smd) {
   j = json{{K_NAME, smd.name}, {K_DOC_COMMENT, smd.doc_comment}};
+  j[K_FIELDS] = json::array();
   for (const auto & field : smd.fields) {
     j[K_FIELDS].push_back(*field);
   }

@@ -1,6 +1,9 @@
 #ifndef TELL_GEN_GOTEMPLATE_H_
 #define TELL_GEN_GOTEMPLATE_H_
 
+/**
+ * This is the inja template for generating a Go representation of the described RPC
+ */
 static const char *go_template = R"TEMPLATE(package {{go_package(directive_declarations)}}
 
 import (
@@ -20,7 +23,7 @@ var _ = time.Now() // Prevent import errors
 CORE TELL CODE.
 
 In a production implementation, this should be in a shared library
-imported by the generated code
+imported by the generated code.
 ********************************************************************************/
 type ErrorCode = string
 const (

@@ -7,6 +7,7 @@ static const char *K_CALLS = "calls";
 void til::to_json(json &j, const SerializableServiceDeclaration &sd) {
   j[K_NAME] = sd.name;
   j[K_DOC_COMMENT] = sd.doc_comment;
+  j[K_CALLS] = json::array();
   for (const auto & call : sd.calls) {
     j[K_CALLS].push_back(*call);
   }

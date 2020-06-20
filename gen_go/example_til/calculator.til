@@ -1,3 +1,5 @@
+!go_package "calculator"
+
 message Add {
     addend: int
 }
@@ -21,38 +23,11 @@ message Result {
 message Empty {
 }
 
-message Key {
-    name: string
-}
-
-message Memory {
-    name: string
-    value: int
-    at: time
-}
-
-message Memories {
-    entries: list[Memory]
-}
-
-message Input {
-    key: string
-    value: int
-}
-
-message Program {
-    operations: list[map[string]]
-}
-
 service Calculator {
     add[Add]: Result
     subtract[Subtract]: Result
     multiply[Multiply]: Result
     divide[Divide]: Result
-    get[Empty]: Result
-    all_clear[Empty]: Result
-    remember[Key]: Memory
-    store[Input]: Memory
-    get_stored[Empty]: Stores
-    run[Program]: Result
+    read[Empty]: Result
+    reset[Empty]: Result
 }
