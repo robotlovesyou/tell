@@ -1,33 +1,50 @@
 !go_package "calculator"
 
-message Add {
-    addend: int
+/// Addend is a value to add
+message Addend {
+    /// The value to apply
+    value: int
 }
 
-message Subtract {
-    subtrahend: int
+/// Subtrahend is a value to subtract
+message Subtrahend {
+    /// The value to apply
+    value: int
 }
 
-message Multiply {
-    multiplicand: int
+/// Multiplicand is a value to multiply by
+message Multiplicand {
+    /// The value to apply
+    value: int
 }
 
-message Divide {
-    divisor: int
+/// Divisor is a value to divide by
+message Divisor {
+    /// The value to apply
+    value: int
 }
 
+/// Result is the result of a request
 message Result {
     value: int
 }
 
+/// Empty is used for methods with no arguments
 message Empty {
 }
 
+/// Calculator is a calculation service
 service Calculator {
-    add[Add]: Result
-    subtract[Subtract]: Result
-    multiply[Multiply]: Result
-    divide[Divide]: Result
+    /// Adds the argument to the current value
+    add[Addend]: Result
+    /// Subtracts the argument from the current value
+    subtract[Subtrahend]: Result
+    /// Multiplies the current value by the argument
+    multiply[Multiplicand]: Result
+    /// Divides the current value by the argument
+    divide[Divisor]: Result
+    /// Reads the current value
     read[Empty]: Result
+    /// Resets the current value to 0
     reset[Empty]: Result
 }

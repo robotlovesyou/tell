@@ -38,8 +38,18 @@ inja::Environment gen::GoGenerator::PrepareEnvironment(til::SerializableAST &ast
   });
 
   env.add_callback("camel_case", 1, [](inja::Arguments &args) {
-    auto message_name = args[0]->get<std::string>();
-    return ToCamel(message_name);
+    auto name = args[0]->get<std::string>();
+    return ToCamel(name);
+  });
+
+  env.add_callback("lower_camel_case", 1, [](inja::Arguments &args) {
+    auto name = args[0]->get<std::string>();
+    return ToCamel(name, false);
+  });
+
+  env.add_callback("snake_case", 1, [](inja::Arguments &args) {
+    auto name = args[0]->get<std::string>();
+    return ToSnake(name);
   });
 
   env.add_callback("has_content", 1, [](inja::Arguments &args) {

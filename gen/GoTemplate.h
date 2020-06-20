@@ -27,8 +27,9 @@ imported by the generated code.
 ********************************************************************************/
 type ErrorCode = string
 const (
+    CodeInternal = "internal"
+    CodeInvalidArgument = "invalid_argument"
 	CodeMalformedRequest ErrorCode = "malformed_request"
-	CodeInternal = "internal"
 )
 
 type TellError struct {
@@ -56,6 +57,10 @@ func InternalError() error {
 	return TellError{Code: CodeInternal}
 }
 
+func InvalidArgumentError(messages map[string]string) error {
+    return TellError{Code: CodeInvalidArgument, Messages: messages}
+}
+
 type TellServer struct {
 	Mux *http.ServeMux
 }
@@ -79,6 +84,7 @@ func writeError(err error, w http.ResponseWriter) {
 	if !errors.As(err, &tellErr) {
 		tellErr = InternalError().(TellError)
 	}
+    w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 	encoder := json.NewEncoder(w)
 	_ = encoder.Encode(tellErr)
@@ -91,18 +97,90 @@ CORE TELL CODE ENDS
 /********************************************************************************
 GENERATED STRUCTS
 ********************************************************************************/
-{%for message in message_declarations%}{%if existsIn(message, "doc_comment") and has_content(message.doc_comment)%}// {{message.doc_comment}}
-{%endif%}type {{camel_case(message.name)}} struct {
-    {%if existsIn(message, "fields")%}{%for field in message.fields%}{%if existsIn(field, "doc_comment") and has_content(field.doc_comment)%}
+{%for message in message_declarations%}{%if has_content(message.doc_comment)%}// {{message.doc_comment}}
+{%endif%}
+type {{camel_case(message.name)}} struct {
+    {%for field in message.fields%}
+    {%if existsIn(field, "doc_comment") and has_content(field.doc_comment)%}
     // {{field.doc_comment}}
     {%endif%}
-    {{camel_case(field.name)}} {{map_type(field.type_def)}} `json:"{{field.name}},omitempty"`
-    {%endfor%}{%endif%}
+    {{camel_case(field.name)}} {{map_type(field.type_def)}} `json:"{{field.name}}"`
+    {%endfor%}
 }
 
 {%endfor%}
 /********************************************************************************
 GENERATED STRUCTS END
+********************************************************************************/
+
+/********************************************************************************
+GENERATED SERVER STUBS
+********************************************************************************/
+{%for service in service_declarations%}
+{%if has_content(service.doc_comment)%}// {{service.doc_comment}}
+{%endif%}
+type {{camel_case(service.name)}}Server interface {
+    {%for call in service.calls%}
+    {%if has_content(call.doc_comment)%}
+    // {{call.doc_comment}}
+    {%endif%}
+    {{camel_case(call.name)}}(ctx context.Context, arg {{camel_case(call.argument)}}) ({{camel_case(call.returns)}}, error)
+    {%endfor%}
+}
+
+type {{lower_camel_case(service.name)}}Server_TellService struct {
+    server {{camel_case(service.name)}}Server
+}
+
+func (service *{{lower_camel_case(service.name)}}Server_TellService) register(tellServer *TellServer) {
+    {%for call in service.calls%}
+    tellServer.Mux.HandleFunc("/{{snake_case(service.name)}}.{{snake_case(call.name)}}", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			log.Printf("request is not a post")
+			writeError(MalformedRequestError(), w)
+			return
+		}
+
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("error reading request body: %v", err)
+			writeError(InternalError(), w)
+			return
+		}
+
+		var arg {{camel_case(call.argument)}}
+		err = json.Unmarshal(body, &arg)
+		if err != nil {
+			log.Printf("error unmarshaling body: %v", err)
+			writeError(MalformedRequestError(), w)
+			return
+		}
+
+		resp, err := service.server.{{camel_case(call.name)}}(r.Context(), arg)
+		if err != nil {
+			log.Printf("error calling server.{{camel_case(call.name)}}: %v", err)
+			writeError(err, w)
+			return
+		}
+		encoder := json.NewEncoder(w)
+        w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = encoder.Encode(&resp)
+	})
+
+    {%endfor%}
+}
+
+func Register{{camel_case(service.name)}}Server({{lower_camel_case(service.name)}}Server {{camel_case(service.name)}}Server, tellServer *TellServer) {
+    service := &{{lower_camel_case(service.name)}}Server_TellService {
+        server: {{lower_camel_case(service.name)}}Server,
+    }
+    service.register(tellServer)
+}
+{%endfor%}
+
+/********************************************************************************
+GENERATED SERVER STUBS END
 ********************************************************************************/
 )TEMPLATE";
 

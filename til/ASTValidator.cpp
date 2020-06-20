@@ -89,7 +89,7 @@ void til::ASTValidator::ResolveServiceArgs(const til::ServiceDeclaration *sd) {
 
 void til::ASTValidator::ResolveCallArguments(const til::Call *call, const til::ServiceDeclaration *sd) {
   auto arg = ast_->ResolveMessage(call->argument().name());
-  auto ret = ast_->ResolveMessage((call->argument().name()));
+  auto ret = ast_->ResolveMessage((call->returns().name()));
   if (!arg.has_value()) {
     error_reporter_->ReportError(fmt::format("Call {} has unknown argument type {} in Service {} at line {} column {}",
                                              call->name(),
