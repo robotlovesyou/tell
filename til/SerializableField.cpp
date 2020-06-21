@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 01/06/2020.
-//
-
 #include "SerializableField.h"
 
 static const char *K_NAME = "name";

@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 02/05/2020.
-//
-
 #include "SubTypeDef.h"
 
 til::SubTypeDef::SubTypeDef(std::unique_ptr<TypeDef> sub_type): sub_type_(std::move(sub_type)) {

@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 13/04/2020.
-//
-
 #ifndef TELL_COMPILER_CURSOR_H_
 #define TELL_COMPILER_CURSOR_H_
 

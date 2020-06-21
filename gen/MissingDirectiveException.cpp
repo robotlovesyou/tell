@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 18/06/2020.
-//
-
 #include "MissingDirectiveException.h"
 #include "fmt/format.h"
 

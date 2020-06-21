@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 18/04/2020.
-//
-
 #include "MessageDeclaration.h"
 
 #include <stdexcept>

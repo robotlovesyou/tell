@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 13/04/2020.
-//
-
 #include "StringCursor.h"
 
 #include <memory>

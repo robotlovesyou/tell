@@ -12,7 +12,8 @@ clients trivial.
 
 The til compiler (tilc) outputs JSON as an intermediate representation. Those wishing to create a new generator 
 can simply parse the intermediate representation and generate code using the language of their choice. Alternatively
-the provided libtil and libgen libraries can be utilised to create generators using C++.
+the provided libtil and libgen libraries can be utilised to create generators using C++. Additionally the simple RPC pattern
+makes the development of new generators quite easy.
 
 ## Status
 
@@ -262,6 +263,7 @@ Further work could include:
 - Enums: Very useful for describing things such as error codes in a single location.
 - OneOf types: ie a field which can be one of several predefined message types. Useful for encoding polymorphic types.
 - Better testing. While the til compiler has a reasonable starting set of tests, the generators do not. A good approach for testing the generators could be to generate code in the target languages and then create and run tests agains the generated code in said languages
-- Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation. 
+- Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation.
+- RPC Improvements. At a minimum the RPC generators should provide interfaces to enable concepts such as authorization, metric gathering or logging. Additonally the core RPC code should be published as shared libraries. The approach of including things such as error codes in the generated output would likely cause issues.   
 - Streams: Streams could be implemented using websockets, which are widely supported.
 - Editor plugins: Code highlighting can make development less error prone and faster. 

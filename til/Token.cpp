@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 12/04/2020.
-//
-
 #include "Token.h"
 #include "fmt/core.h"
 

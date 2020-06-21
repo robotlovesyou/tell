@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 14/04/2020.
-//
-
 #include "Lexer.h"
 
 std::pair<til::Token::Type, std::string> make_keyword_entry(til::Token::Type t, std::string kw) {

@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 16/05/2020.
-//
-
 #ifndef TELL_COMPILER_ASTVALIDATOR_H_
 #define TELL_COMPILER_ASTVALIDATOR_H_
 

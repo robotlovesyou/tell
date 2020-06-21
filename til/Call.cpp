@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 09/05/2020.
-//
-
 #include "Call.h"
 #include "SerializableCall.h"
 

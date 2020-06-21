@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 21/04/2020.
-//
-
 #ifndef TELL_COMPILER_DIRECTIVEDECLARATION_H_
 #define TELL_COMPILER_DIRECTIVEDECLARATION_H_
 
@@ -26,7 +22,7 @@ class DirectiveDeclaration : public Declaration {
 
 
   // Disallow copy construction and assignment. Allow move.
-  ~DirectiveDeclaration() = default;
+  ~DirectiveDeclaration() override = default;
   DirectiveDeclaration(const DirectiveDeclaration&) = delete;
   DirectiveDeclaration &operator=(const DirectiveDeclaration&) = delete;
   DirectiveDeclaration(DirectiveDeclaration &&) = default;

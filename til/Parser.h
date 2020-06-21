@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 24/04/2020.
-//
-
 #ifndef TELL_COMPILER_PARSER_H_
 #define TELL_COMPILER_PARSER_H_
 

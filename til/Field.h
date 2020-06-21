@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 25/04/2020.
-//
-
 #ifndef TELL_COMPILER_FIELD_H_
 #define TELL_COMPILER_FIELD_H_
 

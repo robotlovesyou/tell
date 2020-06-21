@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 25/04/2020.
-//
-
 #include "ScalarTypeDef.h"
 #include "SerializableTypeDef.h"
 til::TypeDef::Type til::ScalarTypeDef::t() const {

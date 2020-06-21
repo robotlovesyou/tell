@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 25/04/2020.
-//
-
 #include "MapTypeDef.h"
 #include "SerializableTypeDef.h"
 bool til::MapTypeDef::optional() const {

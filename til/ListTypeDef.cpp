@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 25/04/2020.
-//
-
 #include "ListTypeDef.h"
 #include "SerializableTypeDef.h"
 bool til::ListTypeDef::optional() const {

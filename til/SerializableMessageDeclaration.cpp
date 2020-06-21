@@ -1,7 +1,3 @@
-//
-// Created by ANDREW SMITH on 02/06/2020.
-//
-
 #include "SerializableMessageDeclaration.h"
 
 static const char* K_NAME = "name";
