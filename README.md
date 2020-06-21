@@ -1,6 +1,25 @@
-# Tell
+# Til/Tell
 
-## Included Open Source Libraries.
+Til/Tell is an experimental interface definition language (til) and rpc generator (tell) with two key goals.
+
+## 1. Optional
+
+Rather than excluding languages and platforms which do not have an available tell generator, the RPC utilises widely
+used technologies (HTTP/JSON) and a very simple implementation pattern, to make hand coding compliant servers and 
+clients trivial.
+
+## 2. Simple to Adopt
+
+The til compiler (tilc) outputs JSON as an intermediate representation. Those wishing to create a new generator 
+can simply parse the intermediate representation and generate code using the language of their choice. Alternatively
+the provided libtil and libgen libraries can be utilised to create generators using C++.
+
+## Status
+
+While the project is not yet production ready it has a functioning compiler for the til interface language and working
+generators for the Go language and for basic HTML documentation. See the section on Further Work for more detail.  
+
+## A Note on Included Open Source Libraries.
 
 To simplify building the project a number of dependencies are included as header only, meaning their source is integrated with this project.
 
@@ -15,6 +34,35 @@ In addition to the libraries mentioned above, the gen library includes a partial
 See https://github.com/iancoleman/strcase for the original source code.   
 
 ## Til Interface Language
+
+Til is an interface definition language. A til file consists of directives, message definitions and service definitions.
+
+### Directives
+
+A til directive consists of a bang symbol '!' followed by a name followed by a value surrounded by double quotes '"', eg
+
+```
+!a_directive "the_directive_value"
+```
+
+The key use of directives is to pass generator specific information, such as the name of a package in go. 
+
+### Messages
+
+Messages definte the data types passed to and from RPCs and appear as follows
+
+```
+message MyMessage {
+    a_field: int
+    another_field: float?
+}
+```
+
+They keyword "message" must appear at the beginning of each message definition, followed by the message name, followed by 
+opening and closing curly braces.
+
+Each field must appear on a separate line. The name of the field appears first, followed by a colon, followed by the type
+of the field. 
 
 ### Types
 
@@ -32,20 +80,27 @@ Scalar types are only valid as members of a message.
 
 **Compound Types**
 
-- **message**: A structure composed of one or more scalar or compound types.
+- **message**: a field of a message may be another message. Infinitely recursive types are disallowed, eg
 
 ```
-message MyMessage {
-    a_string_field: string
-    an_integer_field: int
-    a_bool_field: bool
+message IllegalMessage {
+    a_field: IllegalMessage
+}
+```
+
+However, recursive structures are allowed when at least one link in the path is optional. (see below for more details on
+optional values). Eg
+
+```
+message LegalRecursiveMessage {
+    a_field: LegalRecursiveMessage?
 }
 ```
 
 ---
 
 ### List types.
-Any field can be a list of another type, be it a scalar or compound type. 
+A field can be a list of another type, be it a scalar or compound type. 
 
 ```
 message MyListMessage {
@@ -61,7 +116,7 @@ and a field which is an optional list of another message type
 
 ### Map Types
 
-Any field can be a map type. The key of map types is always a string. The value can be any other type. 
+A field can be a map type. The key of map types is always a string. The value can be any other type. 
 
 ```
 message MyMapMessage {
@@ -73,6 +128,14 @@ message MyMapMessage {
 
 In the example above there is a field which is a map from string to int, a field which is a map from string to MyMessage
 and an optional field which is a map from string to MyMessage
+
+Maps and lists can be nested inside one another, eg
+
+```
+message NestedMapsAndLists {
+    a_field: list[map[list[int?]]]
+}
+```
 
 ### Optional Types
 
@@ -93,8 +156,102 @@ message MyParentMessage {
 In the example above the `nickname` field in both the MyChildMessage and MyParentMessage is marked as optional.
 Additionally the child field in the MyParentMessage is marked as optional.
 
-In host languages which support optional types such as Typescript, Kotlin, Rust or Scala, the appropriate optional type should be used. 
+In host languages which support optional types such as Typescript, Kotlin, Rust or Scala, the appropriate optional or nullable type should be used. 
 In host languages which do not support optional types pointer or nullable representations should be used. For example string? in tell would map to a *string in Go.
+
+## Services
+
+A til file can also define services. A service appears as follows
+
+```
+service my_service {
+    first_call[MyArgumentType]: MyReturnType
+    second_call[MyOtherArgumentType]: MyOtherReturnType
+}
+```
+
+Each service starts with the keyword "service", followed by the name of the service, followed by opening and closing
+curly braces. The calls published by the service appear between the braces.
+
+Each call consists of the name, followed by the name of the argument message surrounded by square brackets, followed by 
+a colon, followed by the name of the return message. 
+
+Each call has exactly one argument, which must be a message, and exactly one return type, which must also be a message.
+If a call should return a list or a map or a scalar type, they must be exposed as fields of a message. They cannot be
+used directly as argument or return values.
+
+## Tell RPC
+
+The Tell RPC is an HTML/JSON RPC with a very simple implementation pattern. 
+
+### Wire encoding of messages. 
+
+Messages are encoded as JSON objects. The fields are converted to object properties with appropriately encoded values. 
+
+The scalar types are encoded as follows
+
+- **float**: Encoded as the JSON number type
+- **int**: Encoded as the JSON number type
+- **bool** Encoded as the JSON boolean type
+- **string** Encoded as the JSON string type 
+- **time** Encoded as a string in RFC3339 Date Time format. RPC implementations are responsible for encoding and decoding this to and from native DateTime types
+
+Message types are encoded as JSON objects, as described here.
+
+Map types are also encoded as JSON objects, with the keys becoming property names of the object and the values appropriately encoded following this specification.
+
+List types are encoded as JSON arrays with the members encoded appropriately following this specification.
+
+### RPC Calls
+
+All calls are made as HTTP POST calls, with an application/json content type header for both the request and response.
+The body of the request is a JSON wire encoding of the call argument message. The body of the response, if successful is a
+JSON wire encoding of the call response. 
+
+Successful calls always return a 200 status.
+
+Errors should always return a 400 status code. Expressed as a til message, the body of an error has the following format.
+
+```
+message Error {
+    code: string
+    messages: map[string]
+}
+```
+
+The code is taken from a fixed, predefined list (see below). The messages field is a map from string to string. It is 
+used for providing further detail about errors. For example it could contain a map from field names to validation errors.
+
+The error codes in this implementation are as follows.
+
+- malformed_request
+- invalid_argument
+- internal
+
+This is clearly not a complete enough list for a production RPC, but it contains enough for the example code included
+with this project 
+
+### Calls
+
+Each call defined by a service is exposed on a path constructed as follows: "/service_name/call_name".
+The service name and the call name are both coerced to lower snake case. 
+
+Taking the following service
+
+```
+service Calculator {
+    add[Operand]: Result
+    subtract[Operand]: Result
+}
+```
+
+the RPCs would be exposed on the paths
+
+/calculator/add
+
+and
+
+/calculator/subtract
 
 ## Further Work
 
@@ -102,16 +259,9 @@ The status of til/tell is entirely experimental. It is not ready for production 
 
 Further work could include:
 - Imports: The current implementation skips the import of packages for the sake of simplicity. A real world implementation would certainly require this.
-- Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation. 
 - Enums: Very useful for describing things such as error codes in a single location.
+- OneOf types: ie a field which can be one of several predefined message types. Useful for encoding polymorphic types.
+- Better testing. While the til compiler has a reasonable starting set of tests, the generators do not. A good approach for testing the generators could be to generate code in the target languages and then create and run tests agains the generated code in said languages
+- Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation. 
 - Streams: Streams could be implemented using websockets, which are widely supported.
 - Editor plugins: Code highlighting can make development less error prone and faster. 
-
-
-1. Create the types to describe the parsed .til file. Ensure they can be serialized as json
-2. Write tests for the descriptor serialization
-3. Define the tokens
-4. Write the lexer + tests
-5. Define the AST + write tests
-6. Write the parser + tests
-7. Write a tree walking interpreter which will generate a descriptor from the AST. 
