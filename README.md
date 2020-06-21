@@ -70,17 +70,17 @@ The types supported by tell are:
 
 **Scalar Types**
 
-- **float**: A floating point number. Should map to a 64 bit float or fall back to highest available floating point scalar type.
-- **int**: An integer type. Should map to a 64 bit int or fall back to the highest available integer scalar type
+- **float**: A floating point number.
+- **int**: An integer type. 
 - **bool** A boolean scalar type.
 - **string** A string type. 
-- **time** A date time with millisecond precision. Transmitted over the wire as an RFC3339 DateTime string. Should be parsed to and from an appropriate DateTime type.
+- **time** A date time with millisecond precision. Transmitted over the wire as an RFC3339 formatted DateTime string. 
 
 Scalar types are only valid as members of a message. 
 
 **Compound Types**
 
-- **message**: a field of a message may be another message. Infinitely recursive types are disallowed, eg
+**Message**: a field of a message may be another message. Infinitely recursive types are disallowed, eg
 
 ```
 message IllegalMessage {
