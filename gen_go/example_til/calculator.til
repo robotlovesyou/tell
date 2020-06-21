@@ -1,26 +1,8 @@
 !go_package "calculator"
 
-/// Addend is a value to add
-message Addend {
-    /// The value to apply
-    value: int
-}
-
-/// Subtrahend is a value to subtract
-message Subtrahend {
-    /// The value to apply
-    value: int
-}
-
-/// Multiplicand is a value to multiply by
-message Multiplicand {
-    /// The value to apply
-    value: int
-}
-
-/// Divisor is a value to divide by
-message Divisor {
-    /// The value to apply
+/// Operand is a value to operate on
+message Operand {
+    /// The value to operate on
     value: int
 }
 
@@ -33,18 +15,44 @@ message Result {
 message Empty {
 }
 
+/// Tag is used to identify a memorized value
+message Tag {
+    /// The name of the stored memory
+    name: string
+}
+
+/// Memory is a memorized value
+message Memory {
+    /// The name of the stored memory
+    name: string
+    /// The time the memory was created
+    at: time
+    /// The value of the memory
+    value: int
+}
+
+/// Memories is a list of memorized values
+message Memories {
+    /// The list of stored memories
+    items: list[Memory]
+}
+
 /// Calculator is a calculation service
 service Calculator {
     /// Adds the argument to the current value
-    add[Addend]: Result
+    add[Operand]: Result
     /// Subtracts the argument from the current value
-    subtract[Subtrahend]: Result
+    subtract[Operand]: Result
     /// Multiplies the current value by the argument
-    multiply[Multiplicand]: Result
+    multiply[Operand]: Result
     /// Divides the current value by the argument
-    divide[Divisor]: Result
+    divide[Operand]: Result
     /// Reads the current value
     read[Empty]: Result
     /// Resets the current value to 0
     reset[Empty]: Result
+    /// memorize stores the current value with a tag to identify it later
+    memorize[Tag]: Memory
+    /// memory_dump lists all items currently in memory
+    memory_dump[Empty]: Memories
 }

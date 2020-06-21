@@ -11,17 +11,18 @@ import (
 
 type calculon struct {
 	current int64
+	memories map[string]calculator.Memory
 	mutex sync.Mutex
 }
 
-func (c *calculon) Add(ctx context.Context, arg calculator.Addend) (calculator.Result, error) {
+func (c *calculon) Add(ctx context.Context, arg calculator.Operand) (calculator.Result, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.current += arg.Value
 	return calculator.Result{Value: c.current}, nil
 }
 
-func (c *calculon) Subtract(ctx context.Context, arg calculator.Subtrahend) (calculator.Result, error) {
+func (c *calculon) Subtract(ctx context.Context, arg calculator.Operand) (calculator.Result, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.current -= arg.Value
@@ -29,7 +30,7 @@ func (c *calculon) Subtract(ctx context.Context, arg calculator.Subtrahend) (cal
 }
 
 // Multiplies the current value by the argument
-func (c *calculon) Multiply(ctx context.Context, arg calculator.Multiplicand) (calculator.Result, error) {
+func (c *calculon) Multiply(ctx context.Context, arg calculator.Operand) (calculator.Result, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.current *= arg.Value
@@ -37,7 +38,7 @@ func (c *calculon) Multiply(ctx context.Context, arg calculator.Multiplicand) (c
 }
 
 // Divides the current value by the argument
-func (c *calculon) Divide(ctx context.Context, arg calculator.Divisor) (calculator.Result, error) {
+func (c *calculon) Divide(ctx context.Context, arg calculator.Operand) (calculator.Result, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if arg.Value == 0 {
@@ -61,8 +62,33 @@ func (c *calculon) Reset(ctx context.Context, arg calculator.Empty) (calculator.
 	return calculator.Result{c.current }, nil
 }
 
+func (c *calculon) Memorize(ctx context.Context, arg calculator.Tag) (calculator.Memory, error) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	memory := calculator.Memory{
+		Name: arg.Name,
+		At: time.Now().UTC(),
+		Value: c.current,
+	}
+	c.memories[memory.Name] = memory
+	return memory, nil
+}
+
+func (c *calculon) MemoryDump(ctx context.Context, arg calculator.Empty) (calculator.Memories, error) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	var memories calculator.Memories
+	for _, memory := range c.memories {
+		memories.Items = append(memories.Items, memory)
+	}
+	return memories, nil
+}
+
 func main() {
-	service := new(calculon)
+	service := &calculon{
+		memories: map[string]calculator.Memory{},
+	}
+
 	server := calculator.NewTellServer()
 	calculator.RegisterCalculatorServer(service, server)
 	go func() {
@@ -71,30 +97,54 @@ func main() {
 	time.Sleep(time.Second)
 
 	client := calculator.NewCalculatorClient("localhost:8000")
-	res, err := client.Add(context.Background(), calculator.Addend{Value: 10})
+	res, err := client.Add(context.Background(), calculator.Operand{Value: 10})
 	if err != nil {
 		log.Fatal("Could not add 10: %v", err)
 	}
 	log.Printf("after adding 10 the result is: %d", res.Value)
 
-	res, err = client.Multiply(context.Background(), calculator.Multiplicand{Value: 100})
+	res, err = client.Multiply(context.Background(), calculator.Operand{Value: 100})
 	if err != nil {
 		log.Fatal("Could not multiply by 100: %v", err)
 	}
 	log.Printf("after multiplcation by 100 the result is: %d", res.Value)
 
 
-	res, err = client.Divide(context.Background(), calculator.Divisor{Value: 2})
+	res, err = client.Divide(context.Background(), calculator.Operand{Value: 2})
 	if err != nil {
 		log.Fatal("Could not divide by 2: %v", err)
 	}
 	log.Printf("after division by 2 the result is: %d", res.Value)
 
-	res, err = client.Subtract(context.Background(), calculator.Subtrahend{Value: 1})
+	res, err = client.Subtract(context.Background(), calculator.Operand{Value: 1})
 	if err != nil {
 		log.Fatal("Could not subtract 1: %v", err)
 	}
 	log.Printf("after subtracting 1 the result is: %d", res.Value)
+
+	mem, err := client.Memorize(context.Background(), calculator.Tag{Name: "first"})
+	if err != nil {
+		log.Fatal("Could not memorize with tag first: %v", err)
+	}
+	log.Printf("memory first: %v", mem)
+
+	res, err = client.Divide(context.Background(), calculator.Operand{Value: 2})
+	if err != nil {
+		log.Fatal("Could not divide by 2: %v", err)
+	}
+	log.Printf("after division by 2 the result is: %d", res.Value)
+
+	mem, err = client.Memorize(context.Background(), calculator.Tag{Name: "second"})
+	if err != nil {
+		log.Fatal("Could not memorize with tag second: %v", err)
+	}
+	log.Printf("memory second: %v", mem)
+
+	dump, err := client.MemoryDump(context.Background(), calculator.Empty{})
+	if err != nil {
+		log.Fatalf("Could not dump memory: %v", err)
+	}
+	log.Printf("memory dump: %v", dump)
 
 	res, err = client.Read(context.Background(), calculator.Empty{})
 	if err != nil {
