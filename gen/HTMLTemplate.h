@@ -1,5 +1,9 @@
 #ifndef TELL_GEN_HTMLTEMPLATE_H_
 #define TELL_GEN_HTMLTEMPLATE_H_
+
+/**
+ * inja template for HTML Documentation
+ */
 static const char *html_template = R"TEMPLATE(<!DOCTYPE html>
 <html lang="en">
 

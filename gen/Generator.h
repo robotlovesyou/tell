@@ -5,6 +5,9 @@
 #import "SerializableAST.h"
 
 namespace gen {
+/**
+ * Abstract class to be implemented by all code generator classes
+ */
 class Generator {
  public:
   virtual std::string Generate(const til::SerializableAST &ast) = 0;

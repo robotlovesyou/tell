@@ -9,10 +9,23 @@
 #include "SerializableAST.h"
 
 namespace gen {
+/**
+ * Generates HTML Documentation from the provided AST
+ */
 class HTMLGenerator: public Generator {
  public:
+  /**
+   * Generate HTML Documentation and return it as a string
+   * @param ast
+   * @return
+   */
   std::string Generate(const til::SerializableAST &ast) override;
+
  private:
+  /**
+   * Set up template callbacks and rendering options
+   * @return
+   */
   inja::Environment PrepareEnvironment();
 
   /**
