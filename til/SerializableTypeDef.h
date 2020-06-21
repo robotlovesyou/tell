@@ -6,6 +6,7 @@
 #define TELL_COMPILER_SERIALIZABLETYPEDEF_H_
 
 #include <memory>
+#include <utility>
 #include "nlohmann/json.hpp"
 
 #include "TypeDef.h"
@@ -14,6 +15,9 @@
 using nlohmann::json;
 
 namespace til {
+/**
+ * Representations of the various type def sub types and root type for easy serialization to and from JSON
+ */
 struct SerializableTypeDef {
   virtual ~SerializableTypeDef() = default;
   SerializableTypeDef() = default;
@@ -41,7 +45,7 @@ void from_json(const json &j, ScalarSerializableTypeDef &sstd);
 
 struct MessageSerializableTypeDef : public SerializableTypeDef {
   MessageSerializableTypeDef() = default;
-  MessageSerializableTypeDef(std::string nm, bool opt): name(nm), SerializableTypeDef(opt) {}
+  MessageSerializableTypeDef(std::string nm, bool opt): name(std::move(nm)), SerializableTypeDef(opt) {}
   [[nodiscard]] TypeDef::Type t() const override {return til::TypeDef::kMessage;}
   std::string name{};
 };

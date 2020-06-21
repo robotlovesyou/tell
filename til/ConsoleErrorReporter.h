@@ -8,6 +8,9 @@
 #include "ErrorReporter.h"
 
 namespace til {
+/**
+ * Error reporter which reports errors to the console
+ */
  class ConsoleErrorReporter: public til::ErrorReporter {
   public:
    void ReportError(const std::string& message) override;

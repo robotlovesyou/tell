@@ -9,12 +9,15 @@
 #include <string>
 
 namespace til {
- class ParsingException: public std::exception {
-  public:
-   explicit ParsingException(std::string message);
-   [[nodiscard]] const char* what() const noexcept override;
-  private:
-   std::string message_;
+/**
+ * Exception thrown upon encountering a parsing issue
+ */
+class ParsingException : public std::exception {
+ public:
+  explicit ParsingException(std::string message);
+  [[nodiscard]] const char *what() const noexcept override;
+ private:
+  std::string message_;
 };
 }
 

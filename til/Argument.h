@@ -11,9 +11,17 @@
 namespace til {
 class AST; // forward declaration of ast
 
+/**
+ * Represents a call argument or return type in the AST
+ */
 class Argument {
  public:
   Argument(std::string name, const std::shared_ptr<AST> &ast);
+
+  /**
+   * The name of the argument
+   * @return
+   */
   [[nodiscard]] std::string name() const;
 
   // disallow copy and explicitly set move and destructor to default

@@ -6,11 +6,14 @@
 #include <memory>
 
 namespace til {
+/**
+ * Abstract class  implemented by all type defs which contain other types (map and list)
+ */
 class SubTypeDef {
  public:
 
   explicit SubTypeDef(std::unique_ptr<TypeDef> sub_type);
-  const TypeDef *sub_type() const;
+  [[nodiscard]] const TypeDef *sub_type() const;
  private:
   std::unique_ptr<TypeDef> sub_type_;
 };

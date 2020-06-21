@@ -34,6 +34,9 @@ class Declaration {
   Declaration(Declaration &&) = default;
   Declaration &operator=(Declaration &&) = default;
 
+  /**
+   * Getters
+   */
   [[nodiscard]] virtual Type t() const = 0;
   [[nodiscard]] virtual const Token &start_token() const = 0;
   [[nodiscard]] virtual const std::string &name() const = 0;

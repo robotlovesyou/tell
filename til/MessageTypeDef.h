@@ -11,14 +11,26 @@
 
 namespace til {
 class AST; // forward declaration of AST
+
+/**
+ * TypeDef implementation to represent Message types
+ */
 class MessageTypeDef: public TypeDef {
  public:
-  // TODO: AST is required for later validation of the message
   MessageTypeDef(std::string name, const std::shared_ptr<AST>& ast, bool optional);
+
+  /**
+   * Getters
+   */
   [[nodiscard]] bool optional() const override;
   [[nodiscard]] Type t() const override;
   [[nodiscard]] const std::string &name() const;
-  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
+
+  /**
+   * Convert the message type def to a SerializableTypeDef
+   * @return
+   */
+  [[nodiscard]] std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
  private:
   std::string name_;
   std::weak_ptr<AST> ast_;

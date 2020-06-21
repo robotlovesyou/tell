@@ -16,6 +16,9 @@
 using nlohmann::json;
 
 namespace til {
+/**
+ * Representation of a message field for easy serialization to and from JSON
+ */
 struct SerializableField {
   SerializableField() = default;
   SerializableField(std::string nm, std::string doc, std::unique_ptr<SerializableTypeDef> td)

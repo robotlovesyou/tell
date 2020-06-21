@@ -24,10 +24,18 @@ using type_def_parser = std::function<std::unique_ptr<til::TypeDef>()>;
 using sub_type_constructor = std::function<std::unique_ptr<til::TypeDef>(std::unique_ptr<til::TypeDef>, bool)>;
 
 namespace til {
+/**
+ * Parser parses a token stream and returns an AST.
+ * Errors are reported to the ErrorReporter
+ */
 class Parser {
  public:
-
   Parser(std::unique_ptr<til::Lexer> lexer, std::shared_ptr<ErrorReporter> error_reporter);
+
+  /**
+   * Parse the source and return an AST
+   * @return
+   */
   std::shared_ptr<AST> Parse();
  private:
   std::unique_ptr<Lexer> lexer_;

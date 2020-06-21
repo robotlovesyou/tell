@@ -13,14 +13,51 @@
 
 namespace til {
 struct SerializableAST; // forward declaration of SerializableAST
+
+/**
+ * Root AST class
+ */
 class AST {
  public:
+  /**
+   * Return the number of top level declarations
+   * @return
+   */
   [[nodiscard]] int DeclarationCount() const;
+
+  /**
+   * Add a new top level declaration
+   * @param decl
+   */
   void AddDeclaration(std::unique_ptr<Declaration> decl);
+
+  /**
+   * Return the top level declaration with the provided index
+   * @param idx
+   * @return
+   */
   const Declaration *Declaration(int idx);
+
+  /**
+   * Find the delcaration index of the message with the provided name
+   * @param name
+   * @return
+   */
   [[nodiscard]] std::optional<int> ResolveMessage(const std::string& name) const;
+
+  /**
+   * Convert the entire AST into a SerializableAST
+   * @return
+   */
   [[nodiscard]] SerializableAST ToSerializable() const;
  private:
+
+  /**
+   * Add the provided declaration to the provided index, mapped by name
+   * @param decl
+   * @param index
+   * @param ord
+   */
   void AddDeclToIndex(const til::Declaration *decl, std::map<std::string, int> *index, int ord);
 
   std::vector<std::unique_ptr<til::Declaration>> declarations_;

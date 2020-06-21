@@ -9,6 +9,9 @@
 using nlohmann::json;
 
 namespace til {
+/**
+ * Representation of a directive declaration for easy serialization to and from JSON
+ */
 struct SerializableDirectiveDeclaration {
   SerializableDirectiveDeclaration() = default;
   SerializableDirectiveDeclaration(std::string nm, std::string doc, std::string val): name(std::move(nm)), doc_comment(std::move(doc)), value(std::move(val)) {}

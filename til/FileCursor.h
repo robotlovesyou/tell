@@ -50,7 +50,7 @@ class FileCursor : public Cursor<char> {
   FileCursor &operator=(FileCursor &&) = delete;
 
   // Rule of 5. Explicitly declare the default destructor to be fine
-  ~FileCursor() = default;
+  ~FileCursor() override = default;
 
   /**
    * See Cursor for details

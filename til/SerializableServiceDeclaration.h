@@ -9,6 +9,9 @@
 #import "SerializableCall.h"
 
 namespace til {
+/**
+ * Representation of a service declaration for easy serialization to and from JSON
+ */
 struct SerializableServiceDeclaration {
   SerializableServiceDeclaration() = default;
   SerializableServiceDeclaration(std::string nm, std::string doc, std::vector<std::unique_ptr<SerializableCall>> cls)

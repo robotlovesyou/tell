@@ -12,6 +12,10 @@
 
 namespace til {
 struct SerializableDirectiveDeclaration; // forward declaration of SerializableMessageDeclaration
+
+/**
+ * Represents a directive top level declaration in the AST
+ */
 class DirectiveDeclaration : public Declaration {
  public:
   DirectiveDeclaration(std::unique_ptr<Token> start_token,
@@ -28,6 +32,9 @@ class DirectiveDeclaration : public Declaration {
   DirectiveDeclaration(DirectiveDeclaration &&) = default;
   DirectiveDeclaration &operator=(DirectiveDeclaration &&) = default;
 
+  /**
+   * Getters
+   */
   [[nodiscard]] Declaration::Type t() const override;
   [[nodiscard]] const std::string &name() const override;
   [[nodiscard]] const std::string &value() const;
@@ -35,6 +42,11 @@ class DirectiveDeclaration : public Declaration {
   [[nodiscard]] const DocCommentContext &doc() const override;
   [[nodiscard]] const Token &start_token() const override;
   [[nodiscard]] std::string t_name() const override;
+
+  /**
+   * Convert the directive declaration to a SerializableDirectiveDeclaration
+   * @return
+   */
   [[nodiscard]] std::unique_ptr<SerializableDirectiveDeclaration> ToSerializable() const;
  private:
   std::unique_ptr<Token> start_token_;

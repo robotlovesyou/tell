@@ -13,12 +13,25 @@
 
 namespace til {
 struct SerializableField; // forward declaration of serializable field
+
+/**
+ * Represents a message field in the AST
+ */
 class Field {
  public:
   Field(std::string name, std::unique_ptr<TypeDef> type_def, std::unique_ptr<DocCommentContext> doc);
+
+  /**
+   * Getters
+   */
   [[nodiscard]] std::string name() const;
   [[nodiscard]] const TypeDef *type_def() const;
   [[nodiscard]] const DocCommentContext &doc() const;
+
+  /**
+   * Convert the field structure to a SerializableField
+   * @return
+   */
   [[nodiscard]] std::unique_ptr<SerializableField> ToSerializable() const;
  private:
   std::string name_;

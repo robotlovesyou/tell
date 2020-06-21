@@ -9,6 +9,9 @@
 using nlohmann::json;
 
 namespace til {
+/**
+ * Representation of a service call for easy serialization to and from JSON
+ */
 struct SerializableCall {
   SerializableCall() = default;
   SerializableCall(std::string nm, std::string doc, std::string arg, std::string ret)

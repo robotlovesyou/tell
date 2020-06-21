@@ -18,6 +18,9 @@ using nlohmann::json;
 #import "SerializableField.h"
 
 namespace til {
+/**
+ * Representation of a message declaration for easy serialization to and from JSON
+ */
 struct SerializableMessageDeclaration {
   SerializableMessageDeclaration() = default;
   SerializableMessageDeclaration(std::string nm, std::string doc, std::vector<std::unique_ptr<SerializableField>> flds)

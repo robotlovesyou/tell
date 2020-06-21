@@ -8,6 +8,9 @@
 #include "ErrorReporter.h"
 
 namespace til {
+/**
+ * Error reporter implementation used in tests.
+ */
 class TestErrorReporter : public til::ErrorReporter {
  public:
   void ReportError(const std::string &message) override;

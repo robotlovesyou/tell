@@ -13,6 +13,12 @@ using nlohmann::json;
 #include "SerializableServiceDeclaration.h"
 
 namespace til {
+/**
+ * The serializbleAST structure is used to serialize the AST
+ * to and from a JSON representation.
+ * The JSON representation is used both as an output format by the tilc compiler
+ * and as a data format by the template library (inja) used by the code generators
+ */
 struct SerializableAST {
   SerializableAST() = default;
   explicit SerializableAST(std::vector<std::unique_ptr<SerializableDirectiveDeclaration>> dir_decls,

@@ -9,12 +9,25 @@
 #include "SubTypeDef.h"
 
 namespace til {
+/**
+ * TypeDef implementation to represent map types in the AST
+ */
 class MapTypeDef: public TypeDef, public SubTypeDef {
  public:
   MapTypeDef(std::unique_ptr<TypeDef> sub_type, bool optional);
-  std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
+
+  /**
+   * Getters
+   * @return
+   */
   [[nodiscard]] bool optional() const override;
   [[nodiscard]] Type t() const override;
+
+  /**
+   * Convert the map type def to a SerializableTypeDef
+   * @return
+   */
+  [[nodiscard]] std::unique_ptr<SerializableTypeDef> ToSerializable() const override;
 };
 }
 

@@ -44,14 +44,17 @@ void GenerateHTML(const til::SerializableAST &ast, const std::string &out_path);
 int main(int argc, char**argv) {
   CLI::App app{"tell RPC code generator"};
 
-  std::string file;
-  std::string go_out;
-  std::string html_out;
+  std::string file; // The path to the JSON AST
+  std::string go_out; // The path to output generated go code
+  std::string html_out; // The path to output generated HTML documentation
+
+  // Set up app options
   app.add_option("-f,--file", file, "The full path to the compiled til json")->required(true);
   app.add_option("--go_out", go_out, "The full path for the generated Go output");
   app.add_option("--html_out", html_out, "The full path for the generated HTML output");
   CLI11_PARSE(app, argc, argv);
 
+  // Read the AST and exit on failure
   til::SerializableAST ast;
   try {
     ast = ReadAST(file);
@@ -60,11 +63,13 @@ int main(int argc, char**argv) {
     return 1;
   }
 
+  // If no output options are selected then exit
   if (go_out.empty() && html_out.empty()) {
     std::cout << "No output format requested." << std::endl;
     return 1;
   }
 
+  // If go is selected as an output option then generate the go code
   if (!go_out.empty()) {
     try {
       GenerateGo(ast, go_out);
@@ -73,6 +78,7 @@ int main(int argc, char**argv) {
     }
   }
 
+  // If HTML is selected as an ouput option then generate the HTML code
   if (!html_out.empty()) {
     try {
       GenerateHTML(ast, html_out);

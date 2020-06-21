@@ -7,8 +7,14 @@ namespace til {
 // forward declaration of serializable type def
 struct SerializableTypeDef;
 
+/**
+ * Abstract class implemented by all type defs (scalar, message, list and map)
+ */
 class TypeDef {
  public:
+  /**
+   * The range of type defs
+   */
   enum Type {
     kScalar,
     kMessage,
