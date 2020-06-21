@@ -1,5 +1,4 @@
 #include "GoGenerator.h"
-#include "iostream"
 
 #include "nlohmann/json.hpp"
 #include "fmt/format.h"
@@ -13,7 +12,7 @@ using nlohmann::json;
 static const char* GO_PATH = "go_path";
 static const char* GO_PACKAGE = "go_package";
 
-std::string gen::GoGenerator::Generate(til::SerializableAST &ast) {
+std::string gen::GoGenerator::Generate(const til::SerializableAST &ast) {
   // ensure that the ast has a go_package directive
   EnsureDirective(ast, GO_PACKAGE);
   auto env = PrepareEnvironment(ast);
@@ -21,7 +20,7 @@ std::string gen::GoGenerator::Generate(til::SerializableAST &ast) {
   return env.render(go_template, data);
 }
 
-void gen::GoGenerator::EnsureDirective(til::SerializableAST &ast, const std::string& name) {
+void gen::GoGenerator::EnsureDirective(const til::SerializableAST &ast, const std::string& name) {
   for (const std::unique_ptr<til::SerializableDirectiveDeclaration> & sdd: ast.directive_declarations) {
     if(sdd->name == name) {
       return;
@@ -30,7 +29,7 @@ void gen::GoGenerator::EnsureDirective(til::SerializableAST &ast, const std::str
   throw MissingDirectiveException(name);
 }
 
-inja::Environment gen::GoGenerator::PrepareEnvironment(til::SerializableAST &ast) {
+inja::Environment gen::GoGenerator::PrepareEnvironment(const til::SerializableAST &ast) {
   inja::Environment env;
 
   env.add_callback("go_package", 1, [this](inja::Arguments &args) {

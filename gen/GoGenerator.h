@@ -4,6 +4,7 @@
 #include <string>
 
 #include "inja/inja.hpp"
+#include "Generator.h"
 #include "GoTemplate.h"
 #include "SerializableAST.h"
 
@@ -17,7 +18,7 @@
  */
 
 namespace gen {
-class GoGenerator {
+ class GoGenerator: public Generator {
  public:
   /**
    * Transform the provided AST into a Golang representation
@@ -25,7 +26,7 @@ class GoGenerator {
    * @param ast
    * @return
    */
-  std::string Generate(til::SerializableAST & ast);
+  std::string Generate(const til::SerializableAST & ast) override;
  private:
 
   /**
@@ -33,7 +34,7 @@ class GoGenerator {
    * @param ast
    * @param name
    */
-  void EnsureDirective(til::SerializableAST &ast, const std::string& name);
+  void EnsureDirective(const til::SerializableAST &ast, const std::string& name);
 
   /**
    * Prepare the inja template environment by adding required callback
@@ -41,7 +42,7 @@ class GoGenerator {
    * @param ast
    * @return
    */
-  inja::Environment PrepareEnvironment(til::SerializableAST &ast);
+  inja::Environment PrepareEnvironment(const til::SerializableAST &ast);
 
   /**
    * Transform the provided argument into a valid go package name
