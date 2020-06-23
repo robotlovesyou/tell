@@ -3,7 +3,7 @@
 #include <utility>
 #include "fmt/core.h"
 
-til::FileCursor::FileCursor(const std::filesystem::path& path) {
+til::FileCursor::FileCursor(const std::experimental::filesystem::path& path) {
   std::ifstream file(path);
   if (!file.is_open()) {
     throw FileCursor::FileCursorException(path);
@@ -21,7 +21,7 @@ std::optional<const char *> til::FileCursor::Peek() {
   return cursor_->Peek();
 }
 
-til::FileCursor::FileCursorException::FileCursorException(const std::filesystem::path& path){
+til::FileCursor::FileCursorException::FileCursorException(const std::experimental::filesystem::path& path){
   message_ = fmt::format("File at {} not found", path.string());
 }
 

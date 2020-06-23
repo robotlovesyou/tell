@@ -22,7 +22,7 @@ class FileCursor : public Cursor<char> {
     /**
      * @param path The requested file path
      */
-    explicit FileCursorException(const std::filesystem::path& path);
+    explicit FileCursorException(const std::experimental::filesystem::path& path);
 
     /**
      * Describe the exception
@@ -37,7 +37,7 @@ class FileCursor : public Cursor<char> {
    * Open a file
    * @param path
    */
-  explicit FileCursor(const std::filesystem::path &path);
+  explicit FileCursor(const std::experimental::filesystem::path &path);
 
   // explicitly delete copy constructor and copy assignment operator, move constructor and move assignment operator
   FileCursor(const FileCursor &) = delete;
