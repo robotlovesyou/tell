@@ -2,13 +2,13 @@
 #ifndef TELL_TESTS_SERIALIZABLETESTHELPERS_H_
 #define TELL_TESTS_SERIALIZABLETESTHELPERS_H_
 
-#import <memory>
-#import <vector>
+#include <memory>
+#include <vector>
 
-#import "SerializableTypeDef.h"
-#import "SerializableField.h"
-#import "SerializableMessageDeclaration.h"
-#import "SerializableServiceDeclaration.h"
+#include "SerializableTypeDef.h"
+#include "SerializableField.h"
+#include "SerializableMessageDeclaration.h"
+#include "SerializableServiceDeclaration.h"
 
 static std::unique_ptr<til::SerializableTypeDef> test_scalar_serializable_type_def(til::ScalarTypeDef::ScalarType scalar_type = til::ScalarTypeDef::kString, bool optional = true) {
   return std::make_unique<til::ScalarSerializableTypeDef>(scalar_type, optional);

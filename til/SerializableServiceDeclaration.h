@@ -1,12 +1,12 @@
 #ifndef TELL_COMPILER_SERIALIZABLESERVICEDECLARATION_H_
 #define TELL_COMPILER_SERIALIZABLESERVICEDECLARATION_H_
 
-#import <memory>
-#import <string>
+#include <memory>
+#include <string>
 
-#import "nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
-#import "SerializableCall.h"
+#include "SerializableCall.h"
 
 namespace til {
 /**

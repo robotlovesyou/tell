@@ -1,8 +1,8 @@
 #ifndef TELL_GEN_GENERATOR_H_
 #define TELL_GEN_GENERATOR_H_
 
-#import <string>
-#import "SerializableAST.h"
+#include <string>
+#include "SerializableAST.h"
 
 namespace gen {
 /**

@@ -1,12 +1,12 @@
 #ifndef TELL_COMPILER_SERVICEDECLARATION_H_
 #define TELL_COMPILER_SERVICEDECLARATION_H_
 
-#import <map>
-#import <memory>
-#import <vector>
+#include <map>
+#include <memory>
+#include <vector>
 
-#import "Declaration.h"
-#import "Call.h"
+#include "Declaration.h"
+#include "Call.h"
 
 namespace til {
 struct SerializableServiceDeclaration; // forward declaration of SerializableServiceDeclaration

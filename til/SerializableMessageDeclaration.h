@@ -1,16 +1,16 @@
 #ifndef TELL_COMPILER_SERIALIZABLEMESSAGEDECLARATION_H_
 #define TELL_COMPILER_SERIALIZABLEMESSAGEDECLARATION_H_
 
-#import <memory>
-#import <string>
+#include <memory>
+#include <string>
 #include <utility>
-#import <vector>
+#include <vector>
 
-#import "nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 using nlohmann::json;
 
-#import "SerializableField.h"
+#include "SerializableField.h"
 
 namespace til {
 /**

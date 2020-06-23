@@ -1,11 +1,11 @@
 #ifndef TELL_COMPILER_SERIALIZABLEAST_H_
 #define TELL_COMPILER_SERIALIZABLEAST_H_
 
-#import <memory>
-#import <string>
-#import <vector>
+#include <memory>
+#include <string>
+#include <vector>
 
-#import "nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 using nlohmann::json;
 
 #include "SerializableDirectiveDeclaration.h"
