@@ -1,4 +1,6 @@
 #include "catch2/catch.hpp"
+
+#include <cstring>
 #include "StringCursor.h"
 #include "FileCursor.h"
 
@@ -25,7 +27,7 @@ TEST_CASE("StringCursor single char") {
 TEST_CASE("Char Cursor Multi character Source") {
   const char* input = "a b c d e f g h i j k";
   til::StringCursor sc(input);
-  for (int i = 0; i < strlen(input); i++) {
+  for (int i = 0; i < std::strlen(input); i++) {
     auto peek_val = sc.Peek();
     CHECK((peek_val.has_value() && *(peek_val.value()) == input[i]));
     auto val = sc.Next();
@@ -64,7 +66,7 @@ TEST_CASE("FileCursor single char") {
 TEST_CASE("FileCursor multi character") {
   const char* input = "a b c d e f g h i j k"; // This must match the contents of the file. ifstream adds a terminating newline.
   til::FileCursor fc("CharCursorTestFile.txt");
-  for (int i = 0; i < strlen(input); i++) {
+  for (int i = 0; i < std::strlen(input); i++) {
     auto peek_val = fc.Peek();
     CHECK((peek_val.has_value() && *(peek_val.value()) == input[i]));
     auto val = fc.Next();
