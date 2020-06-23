@@ -1,7 +1,6 @@
 #ifndef TELL_COMPILER_FILECURSOR_H_
 #define TELL_COMPILER_FILECURSOR_H_
 #include <exception>
-#include <experimental/filesystem>
 #include <memory>
 #include <string>
 #include <fstream>
@@ -22,7 +21,7 @@ class FileCursor : public Cursor<char> {
     /**
      * @param path The requested file path
      */
-    explicit FileCursorException(const std::experimental::filesystem::path& path);
+    explicit FileCursorException(const std::string& path);
 
     /**
      * Describe the exception
@@ -37,7 +36,7 @@ class FileCursor : public Cursor<char> {
    * Open a file
    * @param path
    */
-  explicit FileCursor(const std::experimental::filesystem::path &path);
+  explicit FileCursor(const std::string &path);
 
   // explicitly delete copy constructor and copy assignment operator, move constructor and move assignment operator
   FileCursor(const FileCursor &) = delete;
