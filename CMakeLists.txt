@@ -1,6 +1,5 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.05)
 project(tell)
-include(CMakePrintHelpers)
 
 set(CMAKE_CXX_STANDARD 17)
 

@@ -267,3 +267,7 @@ Further work could include:
 - RPC Improvements. At a minimum the RPC generators should provide interfaces to enable concepts such as authorization, metric gathering or logging. Additonally the core RPC code should be published as shared libraries. The approach of including things such as error codes in the generated output would likely cause issues.   
 - Streams: Streams could be implemented using websockets, which are widely supported.
 - Editor plugins: Code highlighting can make development less error prone and faster. 
+
+## Building.
+
+
