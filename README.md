@@ -462,7 +462,7 @@ cd tell/build
 ./tell -f a.json --html_out doc.html
 ```
 
-You can then activate the VNC desktop, open firefox and open the generated file in /home/workspace/tell/build/doc.html
+You can then activate the VNC desktop, open firefox and open the generated file by visiting the url file:///home/workspace/tell/build/doc.html
 
 
 ## Code Organisation
