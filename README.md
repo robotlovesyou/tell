@@ -2,13 +2,13 @@
 
 Til/Tell is an experimental interface definition language (til) and rpc generator (tell) with two key goals.
 
-## 1. Optional
+**1. Optional**
 
 Rather than excluding languages and platforms which do not have an available tell generator, the RPC utilises widely
 used technologies (HTTP/JSON) and a very simple implementation pattern, to make hand coding compliant servers and 
 clients trivial.
 
-## 2. Simple to Adopt
+**2. Simple to Adopt**
 
 The til compiler (tilc) outputs JSON as an intermediate representation. Those wishing to create a new generator 
 can simply parse the intermediate representation and generate code using the language of their choice. Alternatively
@@ -266,7 +266,9 @@ Further work could include:
 - Formal language specification for til. Currently the language is only specified by the compiler code which does not make for good documentation.
 - RPC Improvements. At a minimum the RPC generators should provide interfaces to enable concepts such as authorization, metric gathering or logging. Additonally the core RPC code should be published as shared libraries. The approach of including things such as error codes in the generated output would likely cause issues.   
 - Streams: Streams could be implemented using websockets, which are widely supported.
+- System installation instructions.
 - Editor plugins: Code highlighting can make development less error prone and faster. 
+ 
 
 ## Building.
 
@@ -313,11 +315,66 @@ cd tell/build/tests
 
 This requires installation of the Go toolchain. Instructions are included here for your convenience
 
-From the workspace directory:
+First you need to uninstall the very outdated version of Go in the Udacity Capstone Workspace
 
 ```
-wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.14.4.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
-mkdir tell/gen_go/calculator
+rm /usr/local/bin/go
+rm -rf /usr/local/go
+```  
+
+Then you can download an up to date version
 ```
+# download the go binary package
+wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
+
+# check the sha checksum for the download. It should be aed845e4185a0b2a3c3d5e1d0a35491702c55889192bb9c30e67a3de6849c067
+sha256sum go1.14.4.linux-amd64.tar.gz
+
+# unpack the binary package
+tar -C /usr/local -xzf go1.14.4.linux-amd64.tar.gz
+
+# add go to the path
+export PATH=$PATH:/usr/local/go/bin
+```
+
+Next you can compile the example til file and use it to generate go source.
+
+These instructions assume you have followed the build steps above.
+
+From the workspace directory
+```
+# create the directory the source will be generated into
+mkdir tell/gen_go/calculator
+cd tell/build
+./tilc -f ../gen_go/calculator.til -o a.json
+./tell -f a.json --go_out ../gen_go/calculator/calculator.go
+```
+
+Finally you can run the example go code. The file main.go imports the calculator.go file you
+just generated.
+
+```
+cd ../gen_go
+go run main.go
+```
+
+The main.go file implements a struct which meets the CalculatorServer interface requirements defined in
+the generated calculator.go file. It creates an instance of that struct, registers it with the Tell server and
+then starts the server in a goroutine.
+
+Next it creates an instance of the generated CalculatorClient and uses it to make calls to the Calculator server. 
+It logs the result of each call to the command line. 
+
+
+### Viewing the generated HTML documentation
+
+Assuming you have followed all the build and test steps to this point, from the workspace directory
+
+```
+cd tell/build
+./tell -f a.json --html_out doc.html
+```
+
+You can then activate the VNC desktop, open firefox and open the generated file in /home/workspace/tell/build/doc.html
+
+
