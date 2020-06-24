@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// calculon complies with the CalculatorServer interface in the generated code.
 type calculon struct {
 	current int64
 	memories map[string]calculator.Memory
@@ -85,17 +86,22 @@ func (c *calculon) MemoryDump(ctx context.Context, arg calculator.Empty) (calcul
 }
 
 func main() {
+    // Create an instance of the calculon server
 	service := &calculon{
 		memories: map[string]calculator.Memory{},
 	}
 
+    // Create a new TellServer and then register the calculator server with the TellServer
 	server := calculator.NewTellServer()
 	calculator.RegisterCalculatorServer(service, server)
+
+	// Start the calculator server in a goroutine so it doesn't block
 	go func() {
 		server.Start(8000)
 	}()
 	time.Sleep(time.Second)
 
+    // Create an instance of the generated Calculator client
 	client := calculator.NewCalculatorClient("localhost:8000")
 	res, err := client.Add(context.Background(), calculator.Operand{Value: 10})
 	if err != nil {
@@ -103,6 +109,7 @@ func main() {
 	}
 	log.Printf("after adding 10 the result is: %d", res.Value)
 
+    // Call a sequence of RPC methods on the calculator server and output the result each time
 	res, err = client.Multiply(context.Background(), calculator.Operand{Value: 100})
 	if err != nil {
 		log.Fatal("Could not multiply by 100: %v", err)
@@ -157,5 +164,7 @@ func main() {
 		log.Fatal("Could not reset: %v", err)
 	}
 	log.Printf("calculator is reset to: %d", res.Value)
+
+	// Exit
 	os.Exit(0)
 }
