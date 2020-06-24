@@ -25,7 +25,8 @@ std::optional<til::Token> til::Lexer::Next() {
   auto out = std::move(next_);
   eof_ = out.t==Token::kEOF;
   read_next_token();
-  return out;
+
+  return std::optional(std::move(out));
 }
 
 std::optional<const til::Token *> til::Lexer::Peek() {
