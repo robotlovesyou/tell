@@ -431,6 +431,20 @@ cd ../gen_go
 go run main.go
 ```
 
+You will get output which looks something like this:
+```
+2020/06/24 13:37:50 after adding 10 the result is: 10
+2020/06/24 13:37:50 after multiplcation by 100 the result is: 1000
+2020/06/24 13:37:50 after division by 2 the result is: 500
+2020/06/24 13:37:50 after subtracting 1 the result is: 499
+2020/06/24 13:37:50 memory first: {first 2020-06-24 13:37:50.381189063 +0000 UTC 499}
+2020/06/24 13:37:50 after division by 2 the result is: 249
+2020/06/24 13:37:50 memory second: {second 2020-06-24 13:37:50.381623473 +0000 UTC 249}
+2020/06/24 13:37:50 memory dump: {[{first 2020-06-24 13:37:50.381189063 +0000 UTC 499} {second 2020-06-24 13:37:50.381623473 +0000 UTC 249}]}
+2020/06/24 13:37:50 reading calculator value: 249
+2020/06/24 13:37:50 calculator is reset to: 0
+```
+
 The main.go file implements a struct which meets the CalculatorServer interface requirements defined in
 the generated calculator.go file. It creates an instance of that struct, registers it with the Tell server and
 then starts the server in a goroutine.
