@@ -31,6 +31,11 @@
         - [libgen](#libgen)
         - [tilc](#tilc)
         - [tell](#tell)
+ - [Udacity Rubric Compliance](#udacity-rubric-compliance)
+    - [Loops. Functions, IO](#loops-functions-io)
+    - [Object Oriented Programming](#object-oriented-programming)
+    - [Memory Management](#memory-management)
+    - [Concurrency](#concurrency)
                 
  
 
@@ -517,9 +522,75 @@ Code for the tell executable is found in the tell directory. It simply consists 
 CLI11 library to parse the command line arguments before utilising the libtil and libgen libraries to deserialize a
 til JSON representation and use it to generate the required source (HTML or Go)
 
+### Tests_run
 
+The tests directory contains a suite of tests for the til library. The tests utilise the catch2 testing library 
 
-  
+# Udacity Rubric Compliance
 
+## Loops, Functions, IO
 
+if and swich statements are used in several places. An example of an if statement can be found in the 
+til::DocCommentContext::append method in til/DocCommentContext.cpp. An example of a switch statement can be found in 
+the std::string gen::HTMLGenerator::MapType method in gen/HTMLGenerator.cpp
+
+All the code is organised into functions. 
+
+For loops (both over iterators and using indexes) are used in many places. An example of the former is found in
+the gen::GoGenerator::EnsureDirective method in gen/GoGenerator.cpp and an example of the latter is found in the 
+til::ASTValidator::ResolveMessages method in til/ASTValidator.go. 
+
+While loops are also used. An example is found in the til::Lexer::read_next_token method in til/Lexer.cpp
+
+The programs accept input from users in the form of command line arguments. See either compiler/main.cpp or 
+tell/main.cpp for examples of this. 
+
+The program also reads from and writes to files. Examples of this can be found in compiler/Compiler.cpp and in
+tell/main.cpp
+
+## Object Oriented Programming
+
+All the code except test code and the two main.cpp files is organised into classes and structs.
+
+All the classes use public and private or protected modifiers for data and methods. The serializable structs expose all
+their data members by choice.
+
+All classes use member initialization lists where appropriate.
+
+All public methods have comments documenting their function and operation, and appropriate names have been chosen. 
+
+All classes encapsulate their data. All member access is via accessor functions. The serializable structs use public data 
+members by choice.
+
+The inheritance hierarchy of the project is fairly flat. There are virtual classes such as TypeDef, with concrete implementations
+such as ScalarTypeDef or MapTypeDef. Implementation inheritance is largely avoided. 
+
+An example of a function overload can be found in the gen::GoGenerator class where the MapType method has implementations for
+each variant of a SerializableTypeDef
+
+Examples of virtual member overrides can be found in any of the concrete implementations of TypeDef, such as ScalarTypeDef
+or MapTypeDef where the t() method is overridden.
+
+There are no examples of templated functions in the project
+
+## Memory Management
+
+The gen::GoGenerator::Generate method takes a reference to a SerializableAST
+
+There are no examples of classes with a customised destructor because all dynamically allocated memory is managed via
+std::unique_ptr or std::shared_ptr instances. 
+
+There are no examples of RAII, for the same reason
+
+There are not any strong examples of use of the rule of 5 for the same reason. There are classes which delete their copy constructors and allocators
+and so explicitly set their move allocators and constructors, as well as destructors to default but this probably doesn't qualify.
+
+The project extensively uses move semantics to move data instead of copying it. There are many examples of the use of std::move throughout the project
+
+The project makes extensive use of smart pointers such as std::unique_ptr and std::shared_ptr. All the structures in the AST manage their children via
+unique pointers. The error reporter class utilised by the lexer and parser is passed around as a shared pointer.
+
+## Concurrency
+
+The project does not make any use of concurrency
 
