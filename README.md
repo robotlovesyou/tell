@@ -1,3 +1,30 @@
+ - [Til/Tell](#tiltell)
+    - [Status](#status)
+    - [Included Open Source Libraries](#a-note-on-included-open-source-libraries)
+    - [Til Interface Language](#til-interface-language)
+        - [Directives](#directives)
+        - [Messages](#messages)
+            - [Types](#types)
+                - [Scalar Types](#scalar-types)
+                - [Compound Types](#compound-types)
+                    - [Messages](#message)
+                    - [List](#list)
+                    - [Map](#map)
+                - [Optional Types](#optional-types)
+        - [Services](#services)
+    - [Tell RPC](#tell-rpc)
+        - [Wire Encoding of Messages](#wire-encoding-of-messages)
+        - [RPC Calls](#rpc-calls)
+        - [Call paths](#call-paths)
+    - [Further Work](#further-work)
+    - [Building](#building)
+    - [Testing](#testing)
+    - [Running the til Test Suite](#running-the-rpc-test-code)
+    - [Running the RPC Test Code](#running-the-rpc-test-code)
+    - [Viewing the generated HTML documentation](#viewing-the-generated-html-documentation)
+                
+ 
+
 # Til/Tell
 
 Til/Tell is an experimental interface definition language (til) and rpc generator (tell) with two key goals.
@@ -65,11 +92,11 @@ opening and closing curly braces.
 Each field must appear on a separate line. The name of the field appears first, followed by a colon, followed by the type
 of the field. 
 
-### Types
+#### Types
 
 The types supported by tell are:
 
-**Scalar Types**
+#### Scalar Types
 
 - **float**: A floating point number.
 - **int**: An integer type. 
@@ -79,9 +106,11 @@ The types supported by tell are:
 
 Scalar types are only valid as members of a message. 
 
-**Compound Types**
+#### Compound Types**
 
-**Message**: a field of a message may be another message. Infinitely recursive types are disallowed, eg
+##### Message
+
+A field of a message may be another message. Infinitely recursive types are disallowed, eg
 
 ```
 message IllegalMessage {
@@ -100,7 +129,7 @@ message LegalRecursiveMessage {
 
 ---
 
-### List types.
+##### List
 A field can be a list of another type, be it a scalar or compound type. 
 
 ```
@@ -115,7 +144,7 @@ In the example above there is a field which is a list of integers, a field which
 and a field which is an optional list of another message type
 
 
-### Map Types
+##### Map
 
 A field can be a map type. The key of map types is always a string. The value can be any other type. 
 
@@ -138,7 +167,7 @@ message NestedMapsAndLists {
 }
 ```
 
-### Optional Types
+#### Optional Types
 
 Any field of a message may be marked as optional by appending a ? to the type. Eg
 ```
@@ -160,7 +189,7 @@ Additionally the child field in the MyParentMessage is marked as optional.
 In host languages which support optional types such as Typescript, Kotlin, Rust or Scala, the appropriate optional or nullable type should be used. 
 In host languages which do not support optional types pointer or nullable representations should be used. For example string? in tell would map to a *string in Go.
 
-## Services
+### Services
 
 A til file can also define services. A service appears as follows
 
@@ -232,7 +261,7 @@ The error codes in this implementation are as follows.
 This is clearly not a complete enough list for a production RPC, but it contains enough for the example code included
 with this project 
 
-### Calls
+### Call paths
 
 Each call defined by a service is exposed on a path constructed as follows: "/service_name/call_name".
 The service name and the call name are both coerced to lower snake case. 
