@@ -59,7 +59,7 @@ makes the development of new generators quite easy.
 
 ## Key outputs
 
-tilc, a compiler for till code, and tell, a generator which transforms compiled til code into server stubs or documentation
+tilc, a compiler for til code, and tell, a generator which transforms compiled til code into server stubs or documentation
 are the key outputs of this project. 
 
 Examples of their operation can be found in the [Testing](#testing) section, specifically under 
