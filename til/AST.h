@@ -32,7 +32,7 @@ class AST {
    * @param idx
    * @return
    */
-  const Declaration *Declaration(int idx);
+  const til::Declaration *Declaration(int idx);
 
   /**
    * Find the delcaration index of the message with the provided name

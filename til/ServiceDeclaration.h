@@ -45,7 +45,7 @@ class ServiceDeclaration: public Declaration {
    * @param idx
    * @return
    */
-  [[nodiscard]] const Call *Call(int idx) const;
+  [[nodiscard]] const til::Call *Call(int idx) const;
 
   /**
    * Convert the entire service structure to a SerializableServiceDeclaration
