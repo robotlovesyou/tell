@@ -15,7 +15,6 @@ class DocCommentContext {
 
   /**
    * Return the content of the DocCommentContext.
-   * Behaviour is undefined if the DocCommentContext has no content
    * @return
    */
   const std::string & content() const;
