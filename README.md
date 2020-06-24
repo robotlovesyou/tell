@@ -270,4 +270,54 @@ Further work could include:
 
 ## Building.
 
+The following build instructions are for the Udacity Capstone Workspace. 
 
+If the project is not already present in the workspace then please clone it from github
+
+```
+git clone https://github.com/robotlovesyou/tell.git
+```
+
+The project builds with the default toolset included in the workspace (gcc-7 and cmake 3.05). All dependencies are
+included header only, so there is no additional software to build or install.
+
+From the workspace directory:
+```
+cd tell
+mkdir build
+cd build
+cmake ..
+make
+```
+
+## Testing
+
+The compiler library (til) has a set of tests written using catch2. 
+
+Additionally, a go source file and a til interface file are included in the gen_go
+folder which can be used to test the Go code output by the RPC generator (tell)
+
+### Running the til Test Suite
+
+**NB The til Test Suite relies on files which are copied to the test build directory by cmake. The tests must be run from
+the test build directory, otherwise they will fail**
+
+From the workspace directory, assuming the build instructions above have been followed
+
+```
+cd tell/build/tests
+./Tests_run -s
+```
+
+### Running the RPC Test code
+
+This requires installation of the Go toolchain. Instructions are included here for your convenience
+
+From the workspace directory:
+
+```
+wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.14.4.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+mkdir tell/gen_go/calculator
+```
