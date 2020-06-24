@@ -53,7 +53,7 @@ class MessageDeclaration : public Declaration {
    * @param idx
    * @return
    */
-  [[nodiscard]] const Field *Field(int idx) const;
+  [[nodiscard]] const til::Field *Field(int idx) const;
 
   /**
    * Convert the entire message structure into a SerializableMessage
