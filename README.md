@@ -1,4 +1,5 @@
  - [Til/Tell](#tiltell)
+    - [Key outputs](#key-outputs)
     - [Status](#status)
     - [Included Open Source Libraries](#a-note-on-included-open-source-libraries)
     - [Til Interface Language](#til-interface-language)
@@ -41,7 +42,7 @@
 
 # Til/Tell
 
-Til/Tell is an experimental interface definition language (til) and rpc generator (tell) with two key goals.
+Til/Tell is an experimental interface definition language (til) and rpc generator (tell) with two key goals. 
 
 **1. Optional**
 
@@ -55,6 +56,15 @@ The til compiler (tilc) outputs JSON as an intermediate representation. Those wi
 can simply parse the intermediate representation and generate code using the language of their choice. Alternatively
 the provided libtil and libgen libraries can be utilised to create generators using C++. Additionally the simple RPC pattern
 makes the development of new generators quite easy.
+
+## Key outputs
+
+tilc, a compiler for till code, and tell, a generator which transforms compiled til code into server stubs or documentation
+are the key outputs of this project. 
+
+Examples of their operation can be found in the [Testing](#testing) section, specifically under 
+[Running the RPC Test Code](#running-the-rpc-test-code) and 
+[Viewing the generated HTML Documentation](#viewing-the-generated-html-documentation)
 
 ## Status
 
