@@ -375,9 +375,20 @@ cd tell/build/tests
 
 ### Running the RPC Test code
 
-This requires installation of the Go toolchain. Instructions are included here for your convenience
+In order to demonstrate the operation of the compiler (tilc) and generator (tell) the project includes an example
+til interface file, and some Go code which makes use of the Go source which can be generated from the til interface file. 
 
-First you need to uninstall the very outdated version of Go in the Udacity Capstone Workspace
+The example interface file is found in gen_go/calculator.til
+
+The supporting go code is found in gen_go/main.go.
+
+The instructions below detail how to compile the til source file, and then generate Go server stubs and a client
+from the compiled til source file.
+
+An up to date Go toolchain is required to run the generated code. Details of how to do so are provided here for your convenience.
+
+First you need to uninstall the very outdated version of Go in the Udacity Capstone Workspace. The included Go source and
+generated output will not compile using the installed version of go. 
 
 ```
 rm /usr/local/bin/go
