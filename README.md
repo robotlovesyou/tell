@@ -2,6 +2,7 @@
     - [Status](#status)
     - [Included Open Source Libraries](#a-note-on-included-open-source-libraries)
     - [Til Interface Language](#til-interface-language)
+        - [Comments and Doc Comments](#comments-and-doc-comments)
         - [Directives](#directives)
         - [Messages](#messages)
             - [Types](#types)
@@ -19,9 +20,17 @@
     - [Further Work](#further-work)
     - [Building](#building)
     - [Testing](#testing)
-    - [Running the til Test Suite](#running-the-rpc-test-code)
-    - [Running the RPC Test Code](#running-the-rpc-test-code)
-    - [Viewing the generated HTML documentation](#viewing-the-generated-html-documentation)
+        - [Running the til Test Suite](#running-the-rpc-test-code)
+        - [Running the RPC Test Code](#running-the-rpc-test-code)
+        - [Viewing the generated HTML documentation](#viewing-the-generated-html-documentation)
+    - [Code Organisation](#code-organisation)
+        - [libtil](#libtil)
+            [AST](#ast)
+            [Lexing and Parsing](#lexing-and-parsing)
+            [Serialization and Deserialization](#serialization-and-deserialization)
+        - [libgen](#libgen)
+        - [tilc](#tilc)
+        - [tell](#tell)
                 
  
 
@@ -64,6 +73,15 @@ See https://github.com/iancoleman/strcase for the original source code.
 ## Til Interface Language
 
 Til is an interface definition language. A til file consists of directives, message definitions and service definitions.
+
+
+### Comments and Doc Comments
+
+Ordinary comments are prefixed with a double forward slash '//'. The entire line will be ignored by the compiler.
+
+Doc comments are prefixed with a triple forward slash '///'. They are automatically associated with the item which 
+follows them in the source, be it a directive, a message, a field a service or a call. The are emitted in generated code
+and can also be used for documentation generation
 
 ### Directives
 
@@ -405,5 +423,103 @@ cd tell/build
 ```
 
 You can then activate the VNC desktop, open firefox and open the generated file in /home/workspace/tell/build/doc.html
+
+
+## Code Organisation
+
+The project consists of two shared libraries (libtil and libgen), two executables (tilc and tell) and an executable
+test suite (Tests_run)
+
+### libtil
+
+All code for libtil is found in the til directory and under the til namespace.
+
+Classes and structs found in the til namespace falls into the following categories
+
+#### AST
+
+The classes Argument, AST, Call, Declaration, DirectiveDeclaration, DocCommentContext, Field, ListTypeDef, MapTypeDef, 
+MessageDeclaration, MessageTypeDef, ScalarTypeDef, ServiceDeclaration, SubTypeDef and TypeDef are all used to define the 
+AST of compiled til code. 
+
+The class AST sits at the root of the AST. 
+Declaration is a virtual class used to represent all top level declarations. DirectiveDeclaration, MessageDeclaration and
+ServiceDeclaration are all concrete implementations of the Declaration class and represent their respective top level 
+declarations. 
+
+The Field class represents a field within a message declaration. TypeDef is a virtual class used to represent all field types. 
+ScalarTypeDef, MessageTypeDef, MapTypeDef and ListType def are concrete implementations of TypeDef used to represent the respective 
+field types.
+
+SubTypeDef is in interface implemented by MapTypeDef and ListTypeDef to give access to the type of the members of the map or list
+
+Call is used to represent a call within a service declaration. Argument is used to represent the parameter or return types of a call. 
+
+DocCommentContext is used to represent comments which should be preserved in the AST at all levels of the structure.
+
+#### Lexing and Parsing
+ASTValidator, Cursor, StringCursor, FileCursor, Lexer, Parser, ErrorReporter, TestErrorReporter, ConsoleErrorReporter, 
+ParsingException and Token are all used in the lexing and parsing of til source files.
+
+ASTValidator examines the AST after parsing to ensure it is valid. It checks that all messages used as field types or 
+call arguments exist within the AST, and that none of the structures declared would be infinitely recursive. 
+
+Cursor is a virtual template class used to represent all iterable types (StringCursor, FileCursor and Lexer). 
+StringCursor and FileCursor both consume til source and produce an iterable source of char. FileCursor wraps a StringCursor and 
+passes it the source of the file it is asked to iterate over. 
+Lexer consumes a Cursor<Char> and produces an iterable source of Tokens.
+
+Parser transforms an iterable source of tokens into an AST
+
+ErrorReporter is a virtual class used to represent all types of ErrorReporter.
+TestErrorReporter and ConsoleErrorReporter are both concrete instances of the ErrorReporter class. They only differ in
+the appearance of the test output. 
+
+Reporting errors will prevent the compilation process from proceeding to the next stage.
+
+#### Serialization and Deserialization
+
+The structs SerializableAST, SerializableCall, SerializableDirectiveDeclaration, SerializableField, SerializableMessageDeclaration,
+SerializableServiceDeclaration and SerializableTypeDef are used for a representation of the AST with two purposes. 
+Firstly serialization to and from the JSON format (making use of the nlohmann/json library) and secondly representation of the AST
+during code generation, as the template library (inja) also makes use of the nlohmann/json library.
+
+Each struct implements the methods (to_json and from_json) required by the nlohmann/json library.
+
+### libgen
+
+libgen and the gen namespace contain code used to generate source code and documentation from a serialized AST. All code in the
+gen namespace is gen directory
+
+Generator is a virtual class which represents all code generators. GoGenerator and HTMLGenerator are both concrete 
+implementations of the Generator class for generating Go and HTML respectively.
+
+GoTemplate contains the inja template for Go generation
+HTMLTemplate contains the inja template for HTML generation
+
+MissingDirectiveException is thrown if a directive required by a generator is missing
+
+Strcase is a partial port of the Golang strcase library (see the note on included open source code for details)
+
+### tilc
+
+Code for the tilc executable is found in the compiler directory. tilc depends on libgen for parsing and serialization of
+til source code. 
+
+The Compiler class is responsible for using the libgen library to read and compile til source before writing it to an
+output file.
+
+The main file uses the included CLI11 library to parse command line arguments in order to correctly configure the Compiler class
+
+### tell
+
+Code for the tell executable is found in the tell directory. It simply consists of a main file which again utilises the
+CLI11 library to parse the command line arguments before utilising the libtil and libgen libraries to deserialize a
+til JSON representation and use it to generate the required source (HTML or Go)
+
+
+
+  
+
 
 
